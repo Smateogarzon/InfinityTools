@@ -1,0 +1,60 @@
+{
+  "root": true,
+  "ignorePatterns": ["node_modules/", "dist/", "*.lock.json"],
+  "overrides": [
+    {
+      "files": ["front/**/*.{js,jsx,ts,tsx}"],
+      "env": { "browser": true, "es2020": true },
+      "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime",
+        "plugin:react-hooks/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "parserOptions": { "ecmaVersion": "latest", "sourceType": "module" },
+      "settings": { "react": { "version": "18.2" } },
+      "plugins": ["react-refresh", "prettier"],
+      "rules": {
+        "react/jsx-no-target-blank": "off",
+        "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
+        "prettier/prettier": ["error"]
+      }
+    },
+    {
+      "files": ["back/**/*.{ts,tsx}"],
+      "parser": "@typescript-eslint/parser",
+      "env": {
+        "node": true,
+        "es6": true,
+        "mocha": true,
+        "jest": true
+      },
+      "ignorePatterns": [".eslintrc.js"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "settings": {
+        "import/resolver": {
+          "phat": {
+            "@/*": ["src/*"]
+          },
+          "node": {
+            "moduleDirectory": ["src", "node_modules"]
+          }
+        }
+      },
+      "plugins": ["@typescript-eslint/eslint-plugin"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off" // Deshabilita la regla
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Chelsea-Market';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/ChelseaMarket-Regular.ttf) format('truetype');
+}
+
+* {
+  list-style-type: none;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  /* quita el highlight azul en chrome para android */
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background: #eee3d6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+/* Por alguna razon aparece la barra de overflow en la parte inferior de la pantalla sin esto */
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}

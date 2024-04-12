@@ -1,0 +1,41 @@
+{
+  "name": "dev_crudproductos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix ./back-infinity\" \"npm run dev --prefix ./front\"",
+    "setup": "npm install && npm i --prefix ./back-infinity && npm i --prefix ./front",
+    "format": "prettier --write \"./**/*.{js,jsx,json,css,ts,tsx}\"",
+    "reset": "rm -rf node_modules/ package-lock.json ./back-infinity/node_modules/ ./back-infinity/package-lock.json ./front/node_modules/ ./front/package-lock.json && npm run setup",
+    "lint": "eslint \"./**/*.{js,jsx,ts,tsx}\"",
+    "prepare": "husky",
+    "render:build": "npm install && npm run build --prefix ./back-infinity",
+    "render:start": "npm start --prefix ./back-infinity"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.2",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  }
+}
