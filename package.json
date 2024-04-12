@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix ./back-infinity\" \"npm run dev --prefix ./front\"",
+    "dev": "concurrently  \"npm run dev --prefix ./front\" \"npm run dev --prefix ./back-infinity\"",
     "setup": "npm install && npm i --prefix ./back-infinity && npm i --prefix ./front",
     "format": "prettier --write \"./**/*.{js,jsx,json,css,ts,tsx}\"",
     "reset": "rm -rf node_modules/ package-lock.json ./back-infinity/node_modules/ ./back-infinity/package-lock.json ./front/node_modules/ ./front/package-lock.json && npm run setup",
