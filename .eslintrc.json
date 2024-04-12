@@ -22,7 +22,7 @@
       }
     },
     {
-      "files": ["back/**/*.{ts,tsx}"],
+      "files": ["back-infinity/**/*.{ts,tsx}"],
       "parser": "@typescript-eslint/parser",
       "env": {
         "node": true,
