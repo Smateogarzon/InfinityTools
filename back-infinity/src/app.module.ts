@@ -1,5 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MulterMiddleware } from './middleware/multer';
@@ -11,20 +11,17 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { UsersModule } from './graphql/users/users.module';
+import typeOrmConfig from './config/typeorm';
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb+srv://mateogarzon1002:CJo51f4gFa5ghIae@cluster0.kuodtgw.mongodb.net/',
-      useNewUrlParser: true,
-      synchronize: true,
-      logging: true,
-      autoLoadEntities: true,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    }),
     ConfigModule.forRoot({
-      envFilePath: [__dirname + '/.env.development'],
+      load: [typeOrmConfig],
       isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => config.get('typeorm'),
     }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
@@ -34,6 +31,13 @@ import { UsersModule } from './graphql/users/users.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      path: 'api/graphql',
+      // buildSchemaOptions: {
+      //   fieldMiddleware: [loggerMiddleware],
+      // },
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     UsersModule,
   ],
