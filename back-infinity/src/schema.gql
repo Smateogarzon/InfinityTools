@@ -4,68 +4,93 @@
 
 type Location {
   tel: String!
-  zipCode: Float!
+  zipCode: Int!
   firtsName: String!
   lastName: String!
   address: String!
   city: String!
   state: String!
-  use: String
 }
 
 type User {
-  _id: String!
-  email: String!
+  email: String
   password: String!
-  rol: Rol
-  gender: String!
-  userlocation: Location
-  suscriber: Boolean!
-  status: String!
-  salesHistory: Float!
-  reviews: Float!
-  image: String
-  shoppingCart: Float!
+  rol: UserRol!
+  gender: UserGender
+  location: Location
+  suscribe: Boolean!
+  status: UserStatus!
+  salesHistory: String!
+  reviews: String!
+  shoppingCart: String!
+  orders: String!
 }
 
-"""Rol de usuario"""
-enum Rol {
-  """Administrador"""
+enum UserRol {
+  SUPER_ADMIN
   ADMIN
-
-  """Usuario"""
   USER
-
-  """Distribuidor"""
   DISTRIBUTOR
+}
+
+enum UserGender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
 }
 
 type Query {
   users: [User!]!
+  user(id: Int!): User!
+  location(id: Int!): Location!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
-  UpdateUserLocation(UpdateUserLocation: CreateUserLocationInput!): User!
+  createUserLocation(create: CreateLocationInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
+  removeLocation(id: Int!): Location!
 }
 
 input CreateUserInput {
-  email: String!
-  password: String!
-  rol: Rol = USER
-  gender: String!
-  suscriber: Boolean!
-  status: String!
-  image: String
+  email: String
+  password: String
+  gender: String
 }
 
-input CreateUserLocationInput {
+input CreateLocationInput {
   tel: String!
-  zipCode: Float!
+  zipCode: Int!
   firtsName: String!
   lastName: String!
   address: String!
   city: String!
   state: String!
-  use: String
+  userId: String!
+}
+
+input UpdateUserInput {
+  email: String
+  password: String
+  gender: String
+  id: Int!
+}
+
+input UpdateLocationInput {
+  tel: String
+  zipCode: Int
+  firtsName: String
+  lastName: String
+  address: String
+  city: String
+  state: String
+  userId: String
+  id: Int!
 }

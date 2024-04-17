@@ -1,42 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserLocationInput, CreateUserInput } from '../dto/users/create-user.input';
-import { User } from '../entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ObjectId } from 'mongodb';
-import { Location } from '../entities/location.entity';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './entities/user.entity';
+import { LocationService } from '../location/location.service';
+import { CreateLocationInput } from '../location/dto/create-location.input';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Location) private locationRepository: Repository<Location>
+    @InjectModel('User') private userModel: Model<User>,
+    private locationService: LocationService
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  create(createUserInput: CreateUserInput) {
+    const user = new this.userModel(createUserInput);
+    return user.save();
   }
 
-  findOne(_id: ObjectId): Promise<User> {
-    return this.userRepository.findOneBy({ _id });
+  async createUserLocation(create: CreateLocationInput) {
+    const createdLocation = await this.locationService.create(create);
+    await this.userModel.findByIdAndUpdate(create.userId, {
+      $set: { location: createdLocation._id },
+    });
+    const user = await this.userModel.findById(create.userId).populate('location');
+    console.log('🚀 ~ UsersService ~ createUserLocation ~ user:', user);
+  }
+  findAll() {
+    return `This action returns all users`;
   }
 
-  createUser(createUserInput: CreateUserInput) {
-    const user = this.userRepository.create(createUserInput);
-    return this.userRepository.save(user);
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
   }
 
-  async UpdateUserLocation(UpdateUserLocation: CreateUserLocationInput) {
-    const { use } = UpdateUserLocation;
-    const user = await this.userRepository.findOneBy({ _id: new ObjectId(use) });
-    if (!user) {
-      throw new Error('User not found');
-    } else {
-      const location = await this.userRepository.update(
-        { _id: new ObjectId(use) },
-        { userlocation: UpdateUserLocation }
-      );
-      return location;
-    }
+  update(id: number, updateUserInput: UpdateUserInput) {
+    console.log('🚀 ~ UsersService ~ update ~ updateUserInput:', updateUserInput);
+    return `This action updates a #${id} user`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} user`;
   }
 }

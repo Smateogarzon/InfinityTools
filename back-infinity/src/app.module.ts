@@ -1,28 +1,25 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MulterMiddleware } from './middleware/multer';
 import { EmailService } from './services/emailSend.service';
 import { NodemailerConfigService } from './config/email.config';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './graphql/users/users.module';
-import typeOrmConfig from './config/typeorm';
+import { LocationModule } from './graphql/location/location.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [typeOrmConfig],
+      envFilePath: '.env.development',
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => config.get('typeorm'),
-    }),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
@@ -40,6 +37,7 @@ import typeOrmConfig from './config/typeorm';
       },
     }),
     UsersModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService, NodemailerConfigService],
