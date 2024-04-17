@@ -26,8 +26,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background: #eee3d6;
+  color: hwb(0 100% 0% / 0.87);
+  background-color: #211e1a;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -35,6 +35,9 @@
   -moz-osx-font-smoothing: grayscale;
   overflow: -moz-scrollbars-vertical;
   overflow-y: scroll;
+  max-width: 1366px;
+  width: 100%;
+  margin: auto;
 }
 
 /* Por alguna razon aparece la barra de overflow en la parte inferior de la pantalla sin esto */
