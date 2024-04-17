@@ -2,12 +2,95 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  _id: String!
-  firstName: String!
+type Location {
+  tel: String!
+  zipCode: Int!
+  firtsName: String!
   lastName: String!
+  address: String!
+  city: String!
+  state: String!
+}
+
+type User {
+  email: String
+  password: String!
+  rol: UserRol!
+  gender: UserGender
+  location: Location
+  suscribe: Boolean!
+  status: UserStatus!
+  salesHistory: String!
+  reviews: String!
+  shoppingCart: String!
+  orders: String!
+}
+
+enum UserRol {
+  SUPER_ADMIN
+  ADMIN
+  USER
+  DISTRIBUTOR
+}
+
+enum UserGender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
 }
 
 type Query {
   users: [User!]!
+  user(id: Int!): User!
+  location(id: Int!): Location!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  createUserLocation(create: CreateLocationInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
+  removeLocation(id: Int!): Location!
+}
+
+input CreateUserInput {
+  email: String
+  password: String
+  gender: String
+}
+
+input CreateLocationInput {
+  tel: String!
+  zipCode: Int!
+  firtsName: String!
+  lastName: String!
+  address: String!
+  city: String!
+  state: String!
+  userId: String!
+}
+
+input UpdateUserInput {
+  email: String
+  password: String
+  gender: String
+  id: Int!
+}
+
+input UpdateLocationInput {
+  tel: String
+  zipCode: Int
+  firtsName: String
+  lastName: String
+  address: String
+  city: String
+  state: String
+  userId: String
+  id: Int!
 }

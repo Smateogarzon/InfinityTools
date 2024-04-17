@@ -1,18 +1,68 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { ObjectId, ObjectIdColumn, Column, Entity } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { UserGender, UserRol, UserStatus } from '../enums/user.enums';
+import { Location, LocationDocument } from '@/graphql/location/entities/location.entity';
 
-@Entity()
+export type UserDocument = HydratedDocument<User>;
+
+@Schema()
 @ObjectType()
 export class User {
-  @ObjectIdColumn()
-  @Field(() => String)
-  _id: ObjectId;
+  @Prop({ required: true })
+  @Field({ nullable: true })
+  email: string;
 
-  @Column()
+  @Prop()
   @Field()
-  firstName: string;
+  password: string;
 
-  @Column()
+  @Prop({ default: UserRol.USER })
+  @Field(() => UserRol, { defaultValue: UserRol.USER })
+  rol: UserRol;
+
+  @Prop({ nullable: true })
+  @Field(() => UserGender, { nullable: true })
+  gender: UserGender;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Location' })
+  @Field(() => Location, { nullable: true })
+  location: LocationDocument;
+
+  @Prop()
   @Field()
-  lastName: string;
+  suscribe: boolean;
+
+  @Prop({ default: UserStatus.ACTIVE })
+  @Field(() => UserStatus, { defaultValue: UserStatus.ACTIVE })
+  status: UserStatus;
+
+  @Prop()
+  @Field()
+  salesHistory: string;
+
+  @Prop()
+  @Field()
+  reviews: string;
+
+  @Prop()
+  @Field()
+  shoppingCart: string;
+
+  @Prop()
+  @Field()
+  orders: string;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
+
+/*
+
+
+  suscribe boolean
+  status boolean
+  salesHistory arraystring
+  reviews object 
+  shoppingCart object
+  orders arraystring
+*/
