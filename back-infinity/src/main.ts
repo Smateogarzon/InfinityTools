@@ -4,12 +4,13 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
+import { MulterMiddleware } from './middleware/multer';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
+    logger: ['error', 'warn', 'debug', 'verbose'],
   });
-
   app.use(morgan('dev'));
   // app.enableCors();
   app.enableCors({

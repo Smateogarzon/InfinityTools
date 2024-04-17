@@ -22,5 +22,5 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["src", "test", "generate-typings.ts"]
+  "include": ["src", "test"]
 }
