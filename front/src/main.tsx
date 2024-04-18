@@ -4,18 +4,28 @@ import App from '@/App';
 import '@/index.css';
 import CustomStore from '@/store/StoreProvider.jsx';
 import { BrowserRouter } from 'react-router-dom';
-import { StyledEngineProvider } from '@mui/styled-engine';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloProvider } from '@apollo/client';
+// import { StyledEngineProvider } from '@mui/styled-engine';
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({ uri: 'https://dev-challenge-o8q3.onrender.com' }),
+  connectToDevTools: true,
+  credentials: 'include',
+});
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <CustomStore>
       <React.StrictMode>
-        <BrowserRouter>
-          <StyledEngineProvider injectFirst>
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            {/* <StyledEngineProvider injectFirst> */}
             <App />
-          </StyledEngineProvider>
-        </BrowserRouter>
+            {/* </StyledEngineProvider> */}
+          </BrowserRouter>
+        </ApolloProvider>
       </React.StrictMode>
     </CustomStore>
   );
