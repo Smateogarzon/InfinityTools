@@ -2,7 +2,7 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MulterMiddleware } from './middleware/multer';
+// import { MulterMiddleware } from './middleware/multer';
 import { EmailService } from './services/emailSend.service';
 import { NodemailerConfigService } from './config/email.config';
 import { JwtModule } from '@nestjs/jwt';
@@ -44,6 +44,7 @@ import { LocationModule } from './graphql/location/location.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(MulterMiddleware).forRoutes('*');
+    console.log('🚀 ~ AppModule ~ configure ~ consumer:', consumer);
+    // consumer.apply(MulterMiddleware).forRoutes('*');
   }
 }
