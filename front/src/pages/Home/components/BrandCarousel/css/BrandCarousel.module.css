@@ -1,0 +1,16 @@
+.slider {
+  animation-name: brand-carousel;
+  animation-duration: 9s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes brand-carousel {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
