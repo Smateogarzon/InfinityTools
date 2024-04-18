@@ -44,7 +44,6 @@ const Carousel: React.FC = () => {
     nextPrevButtonDisabled: { opacity: 0.9 },
     paginationButton: {
       display: 'block',
-      border: 'none',
       textIndent: '-99999px',
       overflow: 'hidden',
       width: '12px',
@@ -52,8 +51,9 @@ const Carousel: React.FC = () => {
       borderRadius: '50%',
       margin: '10px 15px',
       transition: 'opacity 100ms ease-out',
+      backgroundColor: 'transparent',
     },
-    paginationButtonActive: { opacity: 0.5 },
+    paginationButtonActive: { backgroundColor: '#24282d' },
     pageIndicator: {
       display: 'flex',
       justifyContent: 'center',
@@ -84,7 +84,7 @@ const Carousel: React.FC = () => {
         {pages.map((_, i) => (
           <button
             key={i}
-            className='bg-athens-gray-950'
+            className='border-solid border-athens-gray-950 border-[1px]'
             style={{
               ...styles.paginationButton,
               ...(activePageIndex === i ? styles.paginationButtonActive : {}),
