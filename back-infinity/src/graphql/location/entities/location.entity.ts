@@ -1,6 +1,7 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { IsString, IsPostalCode, Length } from 'class-validator';
 
 export type LocationDocument = HydratedDocument<Location>;
 
@@ -9,18 +10,25 @@ export type LocationDocument = HydratedDocument<Location>;
 export class Location {
   @Prop()
   @Field()
+  @IsString()
+  @Length(10, 20)
   tel: string;
 
   @Prop()
-  @Field(() => Int)
-  zipCode: number;
+  @Field(() => String)
+  @IsPostalCode()
+  zipCode: string;
 
   @Prop()
   @Field()
+  @IsString()
+  @Length(2, 30)
   firtsName: string;
 
   @Prop()
   @Field()
+  @IsString()
+  @Length(2, 30)
   lastName: string;
 
   @Prop()
@@ -29,21 +37,13 @@ export class Location {
 
   @Prop()
   @Field()
+  @IsString()
   city: string;
 
   @Prop()
   @Field()
+  @IsString()
   state: string;
 }
 
 export const LocationSchema = SchemaFactory.createForClass(Location);
-/*
-  tel string
-  zipCode int
-  firtsName string
-  lastName string
-  address string
-  city string
-  state string
-  locationUsers array[]
-  */
