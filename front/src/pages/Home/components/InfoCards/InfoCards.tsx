@@ -6,7 +6,7 @@ import { FaBoxArchive } from 'react-icons/fa6';
 
 export default function InfoCards() {
   return (
-    <div className='my-[75px] w-full flex flex-wrap justify-evenly text-center [&>div]:shadow-lg [&>div]:relative [&>*>:last-child]:h-full [&>*>:last-child]:flex [&>*>:last-child]:items-center [&>*>:first-child]:mt-[10px] [&>*>:first-child] [&>*>:first-child]:font-bold [&>*>:first-child]:mb-[5px] [&>*>:first-child]:text-xl *:text-[#000000] *:font-medium *:p-[10px] *:w-[300px] *:h-[300px] *:bg-gradient-to-b *:from-bright-sun-500 *:to-bright-sun-700 *:m-[25px] *:rounded-2xl *:flex *:flex-col *:items-center *:justify-between [&>div>div>*]:w-[75px] [&>div>div>*]:h-[75px] [&>div>div]:mb-auto'>
+    <div className='mt-[75px] pb-[75px] bg-gradient-to-b from-zeus-950 to-[#000000] w-full flex flex-wrap justify-evenly text-center [&>div]:shadow-lg [&>div]:relative [&>*>:last-child]:h-full [&>*>:last-child]:flex [&>*>:last-child]:items-center [&>*>:first-child]:mt-[10px] [&>*>:first-child] [&>*>:first-child]:font-bold [&>*>:first-child]:mb-[5px] [&>*>:first-child]:text-xl *:text-[#000000] *:font-medium *:p-[10px] *:w-[300px] *:h-[300px] *:bg-gradient-to-b *:from-bright-sun-500 *:to-bright-sun-700 *:m-[25px] *:rounded-2xl *:flex *:flex-col *:items-center *:justify-between [&>div>div>*]:w-[75px] [&>div>div>*]:h-[75px] [&>div>div]:mb-auto'>
       <div>
         <p>ENVÍOS A TODO EL PAÍS</p>
         <div>
@@ -41,7 +41,7 @@ export default function InfoCards() {
           <BiSupport />
         </div>
         <p>
-          Estamos a su disposición de Lunes a Viernes de 8:00 AM a 6:00 PM y Sábados de 9 :00 AM a
+          Estamos a su disposición de Lunes a Viernes de 8:00 AM a 6:00 PM y Sábados de 9:00 AM a
           12:30 PM, para resolverle sus inquietudes.
         </p>
       </div>

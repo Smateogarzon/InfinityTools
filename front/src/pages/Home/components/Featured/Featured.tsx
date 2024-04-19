@@ -24,7 +24,7 @@ export default function Featured() {
   ];
 
   return (
-    <div className='my-[50px]'>
+    <div className='my-[50px] border-y-[1px] border-solid border-x-0 border-bright-sun-600 bg-zeus-975 py-5'>
       <h3 className='relative text-center text-4xl text-bright-sun-600 mb-7 italic'>
         CATEGORÍAS DESTACADAS
       </h3>

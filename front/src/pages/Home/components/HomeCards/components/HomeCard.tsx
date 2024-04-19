@@ -10,7 +10,7 @@ interface Data {
 
 const HomeCard = ({ data }: { data: Data }) => {
   return (
-    <div className='h-[450px] w-[225px] bg-athens-gray-100 rounded-xl m-10 flex flex-col overflow-hidden border-solid border-[3px] border-bright-sun-600 shadow-md'>
+    <div className='h-[450px] w-[225px] bg-athens-gray-100 rounded-xl m-10 flex flex-col overflow-hidden border-solid border-[2px] border-bright-sun-600 shadow-md'>
       {/* Card image */}
       <div className='w-full aspect-square'>
         <img className='w-full h-full object-cover aspect-square' src={data.image}></img>
@@ -27,7 +27,7 @@ const HomeCard = ({ data }: { data: Data }) => {
           ${Number(data.price).toLocaleString('es-ES')}
         </span>
 
-        <button className='border-none py-1 px-2 font-semibold text-lg rounded-xl transition-all my-2 bg-bright-sun-600 text-bright-sun-950 hover:bg-opacity-85 active:bg-opacity-75'>
+        <button className='py-1 px-2 text-lg rounded-xl transition-all my-2 bg-[#00000000] text-athens-gray-950 border-solid border-[1px] border-athens-gray-950 hover:border-bright-sun-600 active:border-bright-sun-700 hover:bg-bright-sun-600 hover:text-bright-sun-950 active:bg-opacity-75'>
           Ver más
         </button>
       </div>
