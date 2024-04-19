@@ -50,7 +50,7 @@ const Carousel: React.FC = () => {
       height: '12px',
       borderRadius: '50%',
       margin: '10px 15px',
-      transition: 'opacity 100ms ease-out',
+      transition: 'opacity 200ms ease-out',
       backgroundColor: 'transparent',
     },
     paginationButtonActive: { backgroundColor: '#24282d' },
