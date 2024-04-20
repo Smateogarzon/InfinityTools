@@ -61,7 +61,7 @@ const Carousel: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center relative'>
+    <div className='flex flex-col justify-center items-center relative rounded-b-xl overflow-hidden'>
       <ul
         style={styles.scroll}
         className='overflow-y-hidden overflow-x-hidden w-full sm:w-[90%] md:w-[80%] h-[150px] relative cursor-pointer'

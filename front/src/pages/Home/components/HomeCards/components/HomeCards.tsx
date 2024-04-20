@@ -56,7 +56,7 @@ function HomeCards({ title }: { title: string }) {
 
   return (
     <div className='my-[50px]'>
-      <h4 className='text-2xl text-bright-sun-600 text-center italic'>{title.toUpperCase()}</h4>
+      <h4 className='text-3xl text-bright-sun-600 text-center italic'>{title.toUpperCase()}</h4>
 
       <div className='flex flex-wrap justify-center w-full max-w-[1000px] mx-auto'>
         {arrayOfCards.map((data, i) => {
