@@ -21,18 +21,6 @@ export class Location {
 
   @Prop()
   @Field()
-  @IsString()
-  @Length(2, 30)
-  firtsName: string;
-
-  @Prop()
-  @Field()
-  @IsString()
-  @Length(2, 30)
-  lastName: string;
-
-  @Prop()
-  @Field()
   address: string;
 
   @Prop()

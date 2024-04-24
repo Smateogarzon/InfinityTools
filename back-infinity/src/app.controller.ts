@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { GoogleAuthGuard } from './guards/google.guard';
 
-@Controller()
+@Controller('auth')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() {}
 
-  @Get()
-  async getHello(): Promise<string> {
-    return this.appService.getHello();
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  handleLogin() {
+    return { google: 'login' };
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  handleCallback() {
+    return { google: 'callback' };
   }
 }
