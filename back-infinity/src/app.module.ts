@@ -1,8 +1,7 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { MulterMiddleware } from './middleware/multer';
 import { EmailService } from './services/emailSend.service';
 import { NodemailerConfigService } from './config/email.config';
 import { JwtModule } from '@nestjs/jwt';
@@ -12,6 +11,11 @@ import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './graphql/users/users.module';
 import { LocationModule } from './graphql/location/location.module';
+import { GoogleStrategyConfig } from './config/googleStrategi';
+import { Auth } from './auth.service';
+import { UserSchema } from './graphql/users/entities/user.entity';
+import { SerealizerG } from './config/SerealizerG';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -25,6 +29,7 @@ import { LocationModule } from './graphql/location/location.module';
       signOptions: { expiresIn: '1h' },
       global: true,
     }),
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -38,13 +43,20 @@ import { LocationModule } from './graphql/location/location.module';
     }),
     UsersModule,
     LocationModule,
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    PassportModule.register({ session: true }),
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService, NodemailerConfigService],
+  providers: [
+    AppService,
+    EmailService,
+    NodemailerConfigService,
+    GoogleStrategyConfig,
+    SerealizerG,
+    {
+      provide: 'AUTH_SERVICE',
+      useClass: Auth,
+    },
+  ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    console.log('🚀 ~ AppModule ~ configure ~ consumer:', consumer);
-    // consumer.apply(MulterMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
