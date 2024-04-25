@@ -1,11 +1,15 @@
 import { Auth } from '@/auth.service';
+import { JwtServices } from '@/services/jwt.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
 
 @Injectable()
 export class GoogleStrategyConfig extends PassportStrategy(Strategy, 'google') {
-  constructor(@Inject('AUTH_SERVICE') private readonly authService: Auth) {
+  constructor(
+    @Inject('AUTH_SERVICE') private readonly authService: Auth,
+    private readonly jwtService: JwtServices
+  ) {
     super({
       clientID: process.env.AUTHO_CLIENT_ID,
       clientSecret: process.env.AUTHO_SECRET,
@@ -20,7 +24,12 @@ export class GoogleStrategyConfig extends PassportStrategy(Strategy, 'google') {
       familyName: profile.name.givenName,
       photo: profile.photos[0].value,
     });
-    console.log('🚀 ~ GoogleStrategyConfig ~ validate ~ user:', user);
-    return user || null;
+
+    if (user) {
+      const jwt = await this.jwtService.generateToken(user.id);
+      return { jwt };
+    }
+
+    return null;
   }
 }

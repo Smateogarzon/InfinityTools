@@ -1,62 +1,103 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput, FindUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateLocationInput } from '../location/dto/create-location.input';
-import { Res } from '@nestjs/common';
 import { Response } from 'express';
+import { JwtServices } from '@/services/jwt.service';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly JwtServices: JwtServices
+  ) {}
 
   @Query(() => [User], { name: 'FindAllusers' })
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    try {
+      return await this.usersService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => User, { name: 'FindOneuser' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Args('id', { type: () => String }) id: string) {
+    try {
+      return await this.usersService.findOne(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => [User], { name: 'FindUserQuery' })
-  findUsers(@Args('filter') filter: FindUserInput) {
-    return this.usersService.findUsers(filter);
+  async findUsers(@Args('filter') filter: FindUserInput) {
+    try {
+      return await this.usersService.findUsers(filter);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+  async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+    try {
+      return await this.usersService.create(createUserInput);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => User)
-  createUserLocation(@Args('create') create: CreateLocationInput) {
-    return this.usersService.createUserLocation(create);
+  async createUserLocation(@Args('create') create: CreateLocationInput) {
+    try {
+      return await this.usersService.createUserLocation(create);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
+  async updateUser(
+    @Args('id', { type: () => String }) id: string,
+    @Args('updateUserInput') updateUserInput: UpdateUserInput
+  ) {
+    try {
+      return await this.usersService.update(id, updateUserInput);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
+  removeUser(@Args('id', { type: () => String }) id: string) {
+    try {
+      return this.usersService.remove(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => User, { name: 'LogIn' })
   async logIn(
     @Args('email') email: string,
     @Args('password') password: string,
-    @Res() res: Response
+    @Context('res') res: Response
   ) {
     try {
       const user = await this.usersService.logIn(email, password);
-      res.status(200).json(user);
+      const token = await this.JwtServices.generateToken(user.id);
+      res.cookie('session', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 3600000,
+      });
+      return user;
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      throw error;
     }
   }
 }

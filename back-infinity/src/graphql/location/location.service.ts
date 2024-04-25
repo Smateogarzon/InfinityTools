@@ -8,9 +8,19 @@ import { Location } from './entities/location.entity';
 @Injectable()
 export class LocationService {
   constructor(@InjectModel('Location') private locationModel: Model<Location>) {}
-  create(createLocationInput: CreateLocationInput) {
-    const createdLocation = new this.locationModel(createLocationInput);
-    return createdLocation.save();
+  async create(createLocationInput: CreateLocationInput) {
+    const session = await this.locationModel.startSession();
+    session.startTransaction();
+    try {
+      const createdLocation = new this.locationModel(createLocationInput);
+      session.commitTransaction();
+      return await createdLocation.save();
+    } catch (error) {
+      session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
   }
 
   findAll() {

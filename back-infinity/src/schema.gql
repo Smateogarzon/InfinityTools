@@ -68,14 +68,14 @@ input FindUserInput {
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   createUserLocation(create: CreateLocationInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  updateUser(id: String!, updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
 }
 
 input CreateUserInput {
-  firtsName: String!
+  firtsName: String
   MiddleName: String
   lastName: String
   MiddleLastName: String
@@ -102,8 +102,7 @@ input UpdateUserInput {
   MiddleLastName: String
   email: String
   password: String
-  gender: String
-  id: Int!
+  gender: UserGender
 }
 
 input UpdateLocationInput {
