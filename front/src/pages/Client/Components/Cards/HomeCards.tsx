@@ -1,4 +1,4 @@
-import HomeCard from './HomeCard';
+import HomeCard from '../Card/HomeCard';
 
 interface Data {
   title: string;
