@@ -72,6 +72,10 @@ export default {
         900: '#514a4f',
         950: '#2a2729',
       },
+      Black: {
+        full: '#000000',
+        low: '#1C1914',
+      },
     },
   },
   plugins: [

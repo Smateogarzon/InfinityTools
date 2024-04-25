@@ -1,9 +1,9 @@
 import React, { useEffect, CSSProperties } from 'react';
 import { useSnapCarousel } from 'react-snap-carousel';
 
-import bannerDos from '../../assets/banner2.jpg';
-import bannerTres from '../../assets/banner3.jpg';
-import bannerCuatro from '../../assets/banner4.jpg';
+import bannerDos from '../../../../assets/banner2.jpg';
+import bannerTres from '../../../../assets/banner3.jpg';
+import bannerCuatro from '../../../../assets/banner4.jpg';
 
 const Carousel: React.FC = () => {
   const { scrollRef, snapPointIndexes, pages, goTo, activePageIndex } = useSnapCarousel();
@@ -61,7 +61,7 @@ const Carousel: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center relative rounded-b-xl overflow-hidden'>
+    <div className='flex flex-col justify-center items-center relative h-[300px] overflow-hidden'>
       <ul
         style={styles.scroll}
         className='overflow-y-hidden overflow-x-hidden w-full sm:w-[90%] md:w-[80%] h-[150px] relative cursor-pointer'
@@ -73,7 +73,7 @@ const Carousel: React.FC = () => {
             style={{
               scrollSnapAlign: snapPointIndexes.has(i) ? 'start' : '',
             }}>
-            <img src={e} alt={`Item ${i}`} className='object-cover object-center w-full h-full' />
+            <img src={e} alt={`Item ${i}`} className='object-cover w-full h-full' />
           </li>
         ))}
       </ul>

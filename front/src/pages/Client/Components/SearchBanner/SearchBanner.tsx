@@ -1,6 +1,6 @@
-import banner from '../../assets/banner1.jpg';
-import logo from '../../assets/logo.jpg';
-import SearchBar from '../SearchBar/SearchBar.tsx';
+import banner from '../../../../assets/banner1.jpg';
+import logo from '../../../../assets/logo.jpg';
+import SearchBar from '../SearchBar/SearchBar';
 
 export default function SearchBanner() {
   return (

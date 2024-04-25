@@ -1,37 +1,45 @@
-import NavBar from './pages/Core/components/NavBar/NavBar';
-import AdBanner from './pages/Home/components/AdBanner/AdBanner';
-import Carousel from './pages/Home/components/Carousel/Carousel';
-import Featured from './pages/Home/components/Featured/Featured';
-import HomeCards from './pages/Home/components/HomeCards/components/HomeCards';
-import SearchBanner from './pages/Home/components/SearchBanner/SearchBanner';
-
-import adOne from './pages/Home/assets/banner4.jpg';
-import adTwo from './pages/Home/assets/banner1.jpg';
-import InfoCards from './pages/Home/components/InfoCards/InfoCards';
-import BrandCarousel from './pages/Home/components/BrandCarousel/BrandCarousel';
-import Footer from './pages/Core/components/Footer/Footer';
+import { Route, Routes } from 'react-router-dom';
+import ViewStatistics from './pages/Admin/View/AdminStatistics/ViewStatistics';
+import ViewClient from './pages/Admin/View/AdminClients/ViewClient';
+import ViewClientDetail from './pages/Admin/View/AdminClients/ViewClientDetail';
+import ViewOrders from './pages/Admin/View/AdminOrders/ViewOrders';
+import ViewProducts from './pages/Admin/View/AdminProducts/ViewProducts';
+import ViewNetworks from './pages/Admin/View/AdminNetworks/ViewNetworks';
+import ViewBannersPublics from './pages/Admin/View/AdminBannersPublics/ViewBannersPublics';
+import ViewSeoAndMetadata from './pages/Admin/View/AdminSeoAndMetadata/ViewSeoAndMetadata';
+import ViewMailing from './pages/Admin/View/AdminMailing/ViewMailing';
+import ViewPartners from './pages/Admin/View/AdminPartners/ViewPartners';
+import ViewBanners from './pages/Admin/View/AdminBanners/ViewBanners';
+import NavAdmin from './pages/Admin/Components/NavAdmin/NavAdmin';
+import Home from './pages/Client/View/Home/Home';
 
 function App() {
   return (
-    <>
-      <SearchBanner />
-      <NavBar />
-      <Carousel />
-      <Featured />
-      <HomeCards title='Ofertas de la semana' />
+    <Routes>
+      <Route path='/' element={<Home />} />
 
-      <AdBanner img={adOne} />
-
-      <HomeCards title='Lo más vendido' />
-
-      <AdBanner img={adTwo} />
-
-      <InfoCards />
-
-      <BrandCarousel />
-
-      <Footer />
-    </>
+      <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
+      <Route
+        path='/admin/*'
+        element={
+          <>
+            <NavAdmin />
+            <Routes>
+              <Route path='/statistics' element={<ViewStatistics />} />
+              <Route path='/clients' element={<ViewClient />} />
+              <Route path='/orders' element={<ViewOrders />} />
+              <Route path='/products' element={<ViewProducts />} />
+              <Route path='/networks' element={<ViewNetworks />} />
+              <Route path='/bannersPublics' element={<ViewBannersPublics />} />
+              <Route path='/seoAndMetadata' element={<ViewSeoAndMetadata />} />
+              <Route path='/admin/mailing' element={<ViewMailing />} />
+              <Route path='/partners' element={<ViewPartners />} />
+              <Route path='/banners' element={<ViewBanners />} />
+            </Routes>
+          </>
+        }
+      />
+    </Routes>
   );
 }
 
