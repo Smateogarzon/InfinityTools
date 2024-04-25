@@ -10,7 +10,7 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 @ObjectType()
 export class User {
-  @Prop({ isRequired: true, set: (v: string) => v?.toLowerCase() })
+  @Prop({ isRequired: false, set: (v: string) => v?.toLowerCase() })
   @Field()
   @IsString()
   @Length(2, 30)
@@ -53,7 +53,7 @@ export class User {
   @IsEnum(UserGender)
   gender: UserGender;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Location' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Location', onDelete: 'CASCADE' })
   @Field(() => Location, { nullable: true })
   @IsOptional()
   location: LocationDocument;

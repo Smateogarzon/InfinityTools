@@ -8,24 +8,72 @@ interface IAuth {
   familyName?: string;
   photo?: string;
 }
+interface IAuthFacebook {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  picture?: string;
+}
 
 @Injectable()
 export class Auth {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
   async ValidateUser(createUser: IAuth) {
-    const user = await this.userModel.findOne({ email: createUser.email });
+    const session = await this.userModel.startSession();
+    session.startTransaction();
 
-    if (!user) {
-      const newUser = new this.userModel(createUser);
-      newUser.email = createUser.email;
-      newUser.firtsName = createUser.familyName;
-      newUser.picture = createUser.photo;
-      return newUser.save();
+    try {
+      let user = await this.userModel.findOne({ email: createUser.email }, { session });
+
+      if (!user) {
+        user = new this.userModel(createUser);
+        user.email = createUser.email;
+        user.firtsName = createUser.familyName;
+        user.picture = createUser.photo;
+        await user.save({ session });
+      }
+
+      await session.commitTransaction();
+      return user;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      await session.endSession();
     }
-    return user;
   }
 
   async findOne(id: string) {
-    return await this.userModel.findById(id);
+    try {
+      return await this.userModel.findById(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async ValidateUserFacebook(createUser: IAuthFacebook) {
+    const session = await this.userModel.startSession();
+    session.startTransaction();
+
+    let user = await this.userModel.findOne({ email: createUser.email });
+    try {
+      if (!user) {
+        user = new this.userModel(createUser);
+        user.email = createUser.email;
+        user.firtsName = createUser.firstName;
+        user.lastName = createUser.lastName;
+        user.picture = createUser.picture;
+        await user.save();
+      }
+
+      await session.commitTransaction();
+
+      return user;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      await session.endSession();
+    }
   }
 }

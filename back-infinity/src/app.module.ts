@@ -16,6 +16,8 @@ import { Auth } from './auth.service';
 import { UserSchema } from './graphql/users/entities/user.entity';
 import { SerealizerG } from './config/SerealizerG';
 import { PassportModule } from '@nestjs/passport';
+import { JwtServices } from './services/jwt.service';
+import { FacebookStrategy } from './config/facebookStrategi';
 
 @Module({
   imports: [
@@ -40,6 +42,12 @@ import { PassportModule } from '@nestjs/passport';
       subscriptions: {
         'graphql-ws': true,
       },
+      context: ({ req, res }) => ({ req, res }),
+      playground: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
     }),
     UsersModule,
     LocationModule,
@@ -51,12 +59,14 @@ import { PassportModule } from '@nestjs/passport';
     AppService,
     EmailService,
     NodemailerConfigService,
+    JwtServices,
     GoogleStrategyConfig,
     SerealizerG,
     {
       provide: 'AUTH_SERVICE',
       useClass: Auth,
     },
+    FacebookStrategy,
   ],
 })
 export class AppModule {}

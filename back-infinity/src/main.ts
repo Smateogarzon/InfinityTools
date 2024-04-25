@@ -29,7 +29,6 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  // app.use(cookieParser());
   app.use(
     helmet({
       crossOriginEmbedderPolicy: false,
