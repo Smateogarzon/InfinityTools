@@ -7,7 +7,7 @@ export default function SearchBanner() {
     <div className='h-[125px] flex'>
       <div className='bg-[#000000] h-full w-full md:w-[35%] flex flex-col items-center px-4'>
         <img className='w-[120px] h-[50px] inline-block mt-[10px]' src={logo}></img>
-        <SearchBar className='w-full mt-[10px] ' />
+        <SearchBar className='w-[80%] mt-[15px] ' />
       </div>
 
       <img
