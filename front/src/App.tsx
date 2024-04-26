@@ -12,12 +12,13 @@ import ViewPartners from './pages/Admin/View/AdminPartners/ViewPartners';
 import ViewBanners from './pages/Admin/View/AdminBanners/ViewBanners';
 import NavAdmin from './pages/Admin/Components/NavAdmin/NavAdmin';
 import Home from './pages/Client/View/Home/Home';
+import Login from './pages/Client/View/Login&Register/login';
 
 function App() {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
-
+      <Route path='/login' element={<Login />} />
       <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
       <Route
         path='/admin/*'

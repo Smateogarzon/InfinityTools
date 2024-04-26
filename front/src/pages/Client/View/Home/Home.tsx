@@ -17,8 +17,8 @@ function Home() {
       <Featured />
       <HomeCards title={'Ofertas de la semana'} />
       <AdBanner />
-      <InfoCards />
       <HomeCards title={'Lo más vendido'} />
+      <InfoCards />
       <BrandCarousel />
       <Footer />
     </div>

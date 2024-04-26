@@ -34,7 +34,7 @@ const Carousel: React.FC = () => {
       scrollBehavior: 'smooth',
       scrollSnapType: 'x mandatory',
       width: '100%',
-      height: '250px',
+      height: '100%',
     },
     controls: {
       display: 'flex',
@@ -61,7 +61,7 @@ const Carousel: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center relative h-[300px] overflow-hidden'>
+    <div className='flex flex-col justify-center items-center relative overflow-hidden h-[200px] md:h-[300px] xl:h-[400px] 2xl:h-[500px]'>
       <ul
         style={styles.scroll}
         className='overflow-y-hidden overflow-x-hidden w-full sm:w-[90%] md:w-[80%] h-[150px] relative cursor-pointer'

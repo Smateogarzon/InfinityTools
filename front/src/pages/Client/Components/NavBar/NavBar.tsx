@@ -4,6 +4,7 @@ import { BsTagFill } from 'react-icons/bs';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { BsCartFill } from 'react-icons/bs';
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function NavBar() {
   const navRef = useRef(null);
@@ -23,9 +24,9 @@ export default function NavBar() {
       {sticking && <div className='h-[55px]'></div>}
       <div
         ref={navRef}
-        className={`flex justify-between bg-zeus-975 border-t-2 border-b-2 border-x-0 border-solid border-bright-sun-600 ${sticking ? 'fixed top-0 w-full z-10 max-w-[1366px]' : ' '}`}>
+        className={`flex justify-between bg-zeus-975 border-t-2 border-b-2 border-x-0 border-solid border-bright-sun-600 ${sticking ? 'fixed top-0 w-full z-10 ' : ' '}`}>
         {/* Nav start */}
-        <ul className='flex h-[55px] items-center'>
+        <ul className='flex h-[55px] items-center pl-[2%]'>
           <li className='mx-5 '>
             <a
               href='/'
@@ -53,12 +54,16 @@ export default function NavBar() {
         </ul>
 
         {/* Nav end */}
-        <ul className='flex items-center'>
+        <ul className='flex items-center pr-7'>
           <li className='mx-5'>
             <a
               href='/'
               className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsFillPersonFill className='h-[30px] w-[30px]' />
+              <Link
+                to='/login'
+                className='h-[30px] w-[30px] text-bright-sun-600 text-decoration-none'>
+                <BsFillPersonFill className='h-[30px] w-[30px]' />
+              </Link>
             </a>
           </li>
 

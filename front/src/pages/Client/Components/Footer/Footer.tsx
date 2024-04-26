@@ -6,7 +6,7 @@ import { BsInstagram } from 'react-icons/bs';
 
 export default function Footer() {
   return (
-    <div className='w-full bg-[#000000] flex flex-wrap [&>*]:max-w-[400px] [&>*]:w-full [&>*]:h-[120px] justify-center text-center'>
+    <div className='w-full p-10 bg-[#000000] flex flex-wrap [&>*]:max-w-[400px] [&>*]:w-full [&>*]:h-[120px] justify-center text-center'>
       <div>
         <img width={100} src={logo}></img>
         <p>Infinity Tools</p>
