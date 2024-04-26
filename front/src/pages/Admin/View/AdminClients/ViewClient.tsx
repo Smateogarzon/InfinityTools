@@ -1,6 +1,6 @@
-import CardsClient from './Components/CardsClient/CardsClient';
-import PaginationClient from './Components/PaginationClient/PaginationClient';
-import SearchClient from './Components/SearchClient/SearchClient';
+import CardsClient from './Components/ClientCards/CardsClient';
+import PaginationClient from './Components/ClientPagination/PaginationClient';
+import SearchClient from './Components/ClientSearch/SearchClient';
 
 function ViewClient() {
   return (

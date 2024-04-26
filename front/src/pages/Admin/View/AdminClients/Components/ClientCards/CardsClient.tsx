@@ -1,4 +1,4 @@
-import CardClient from '../CardClient/CardClient';
+import CardClient from '../ClientCard/CardClient';
 
 interface Client {
   id: number;
@@ -6,6 +6,7 @@ interface Client {
   name: string;
   status: boolean;
   date: string;
+  rol: string;
 }
 
 function CardsClient() {
@@ -17,6 +18,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 1',
       status: true,
       date: '16/10/2005',
+      rol: 'Administrador',
     },
     {
       id: 2,
@@ -25,6 +27,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 2',
       status: true,
       date: '12/12/2000',
+      rol: 'Administrador',
     },
     {
       id: 3,
@@ -33,6 +36,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 3',
       status: true,
       date: '19/05/1996',
+      rol: 'Mayorista',
     },
     {
       id: 4,
@@ -41,6 +45,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 4',
       status: false,
       date: '12/12/1993',
+      rol: 'Usuario',
     },
     {
       id: 5,
@@ -48,6 +53,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 5',
       status: true,
       date: '12/10/2001',
+      rol: 'Usuario',
     },
     {
       id: 6,
@@ -55,6 +61,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 6',
       status: true,
       date: '03/02/2003',
+      rol: 'Usuario',
     },
     {
       id: 7,
@@ -62,6 +69,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 7',
       status: true,
       date: '12/12/1990',
+      rol: 'Usuario',
     },
     {
       id: 8,
@@ -69,6 +77,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 8',
       status: false,
       date: '12/11/2000',
+      rol: 'Usuario',
     },
     {
       id: 9,
@@ -76,6 +85,7 @@ function CardsClient() {
       name: 'Nombre Aleatorio 9',
       status: true,
       date: '12/12/2005',
+      rol: 'Mayorista',
     },
   ];
   return (
@@ -87,6 +97,7 @@ function CardsClient() {
           name={client.name}
           status={client.status}
           date={client.date}
+          rol={client.rol}
         />
       ))}
     </div>

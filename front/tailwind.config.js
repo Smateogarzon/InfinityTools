@@ -76,6 +76,7 @@ export default {
         full: '#000000',
         low: '#1C1914',
       },
+      Red: '#FF0000',
     },
   },
   plugins: [
