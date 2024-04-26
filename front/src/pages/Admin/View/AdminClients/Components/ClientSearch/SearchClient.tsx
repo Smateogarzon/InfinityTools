@@ -33,54 +33,44 @@ function SearchClient() {
 
   const handleOptionStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    console.log(e.target.name);
-    setSelectedOptionStatus(selectedValue);
-    addFilter(e.target.value);
-    disableOption(e.target, selectedValue);
+    if (!appliedFilters.includes(selectedValue)) {
+      setSelectedOptionStatus(selectedValue);
+      addFilter(selectedValue);
+      disableOption(e.target, selectedValue);
+    }
   };
   const handleOptionRegister = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    setSelectOptionRegister(selectedValue);
-    addFilter(e.target.value);
-    disableOption(e.target, selectedValue);
-
-    if (selectedValue === 'Ascendente' || selectedValue === 'Descendente') {
-      setSelectOptionRegister('');
+    if (!appliedFilters.includes(selectedValue)) {
+      setSelectOptionRegister(selectedValue);
+      addFilter(selectedValue);
+      disableOption(e.target, selectedValue);
     }
   };
   const handleOptionRol = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-
-    setSelectOptionRol(selectedValue);
-    addFilter(e.target.value);
-    disableOption(e.target, selectedValue);
-
-    if (selectedValue === 'Admin' || selectedValue === 'Mayorista' || selectedValue === 'Usuario') {
-      setSelectOptionRol('');
+    if (!appliedFilters.includes(selectedValue)) {
+      setSelectOptionRol(selectedValue);
+      addFilter(selectedValue);
+      disableOption(e.target, selectedValue);
     }
   };
+
   const handleOptionGender = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    setSelectOptionGender(selectedValue);
-    addFilter(e.target.value);
-    disableOption(e.target, selectedValue);
-
-    if (selectedValue === 'Hombre' || selectedValue === 'Mujer') {
-      setSelectOptionGender('');
+    if (!appliedFilters.includes(selectedValue)) {
+      setSelectOptionGender(selectedValue);
+      addFilter(selectedValue);
+      disableOption(e.target, selectedValue);
     }
   };
+
   const handleOptionCity = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    setSelectOptionCity(selectedValue);
-    addFilter(e.target.value);
-    disableOption(e.target, selectedValue);
-
-    if (
-      selectedValue === 'Ciudad 1' ||
-      selectedValue === 'Ciudad 2' ||
-      selectedValue === 'Ciudad 3'
-    ) {
-      setSelectOptionCity('');
+    if (!appliedFilters.includes(selectedValue)) {
+      setSelectOptionCity(selectedValue);
+      addFilter(selectedValue);
+      disableOption(e.target, selectedValue);
     }
   };
 
@@ -89,17 +79,25 @@ function SearchClient() {
   };
 
   const removeFilter = (index: number) => {
-    const updatedFilters = [...appliedFilters];
-    updatedFilters.splice(index, 1);
+    // const removedFilter = appliedFilters[index];
+    const updatedFilters = appliedFilters.filter((_, i) => i !== index);
     setAppliedFilters(updatedFilters);
+
+    // Re-enable all options in all selects
+    const selects = document.querySelectorAll('select');
+    selects.forEach((select) => {
+      const options = select.options;
+      for (let i = 0; i < options.length; i++) {
+        options[i].disabled = false; // Enable all options
+      }
+    });
   };
 
   const disableOption = (select: HTMLSelectElement, selectedValue: string) => {
     const options = select.options;
     for (let i = 0; i < options.length; i++) {
-      if (options[i].value === selectedValue) {
+      if (options[i].value !== selectedValue) {
         options[i].disabled = true;
-        break;
       }
     }
   };
@@ -147,15 +145,11 @@ function SearchClient() {
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectedOptionStatus}
               onChange={handleOptionStatus}>
-              <option value='' disabled>
+              <option value='' disabled hidden>
                 Estado
               </option>
-              <option value='Activo' disabled={selectedOptionStatus !== ''}>
-                Activo
-              </option>
-              <option value='Suspendido' disabled={selectedOptionStatus !== ''}>
-                Suspendido
-              </option>
+              <option value='Activo'>Activo</option>
+              <option value='Suspendido'>Suspendido</option>
             </select>
           </div>
           <div>
@@ -164,7 +158,7 @@ function SearchClient() {
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionRegister}
               onChange={handleOptionRegister}>
-              <option value='' disabled>
+              <option value='' disabled hidden>
                 Registro
               </option>
               <option value='Ascendente'>Ascendente</option>
@@ -177,7 +171,7 @@ function SearchClient() {
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionRol}
               onChange={handleOptionRol}>
-              <option value='' disabled>
+              <option value='' disabled hidden>
                 Rol
               </option>
               <option value='Admin'>Administrador</option>
@@ -191,7 +185,7 @@ function SearchClient() {
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionGender}
               onChange={handleOptionGender}>
-              <option value='' disabled>
+              <option value='' disabled hidden>
                 Genero
               </option>
               <option value='Hombre'>Hombre</option>
@@ -205,7 +199,9 @@ function SearchClient() {
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionCity}
               onChange={handleOptionCity}>
-              <option value='Ciudad'>Ciudad</option>
+              <option value='Ciudad' disabled hidden>
+                Ciudad
+              </option>
               <option value='Ciudad 1'>Ciudad 1</option>
               <option value='Ciudad 2'>Ciudad 2</option>
               <option value='Ciudad 3'>Ciudad 3</option>
