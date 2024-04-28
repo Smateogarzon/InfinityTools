@@ -56,15 +56,11 @@ export default function NavBar() {
         {/* Nav end */}
         <ul className='flex items-center pr-7'>
           <li className='mx-5'>
-            <a
-              href='/'
+            <Link
+              to='/login'
               className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <Link
-                to='/login'
-                className='h-[30px] w-[30px] text-bright-sun-600 text-decoration-none'>
-                <BsFillPersonFill className='h-[30px] w-[30px]' />
-              </Link>
-            </a>
+              <BsFillPersonFill className='h-[30px] w-[30px]' />
+            </Link>
           </li>
 
           <li className='mx-5'>

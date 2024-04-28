@@ -4,14 +4,19 @@ export default {
   important: '#root',
   theme: {
     screens: {
-      xsm: '320px',
+      xsm: '325px',
+      xss: '380px',
+      xs: '480px',
       sm: '640px',
       md: '768px',
       lg: '1024px',
       xl: '1280px',
       '2xl': '1536px',
     },
-
+    backgroundImage: {
+      login:
+        "url('https://st.depositphotos.com/1008660/5028/i/450/depositphotos_50281265-stock-photo-worker-cutting-metal-with-grinder.jpg')",
+    },
     fontFamily: {
       sans: ['system-ui', 'sans-serif'],
       chelsea: ['Chelsea-Market', 'cursive'],
@@ -29,7 +34,7 @@ export default {
         700: '#b75506',
         800: '#94410c',
         900: '#7a370d',
-        950: '#461b02',
+        950: '#ff6b0040',
       },
       zeus: {
         50: '#f5f5f1',
