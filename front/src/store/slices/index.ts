@@ -1,3 +1,4 @@
-import exampleReducer from './exampleSlice';
+import authSlic from './auth.slice';
+import filtersUserAdmin from './filterUserAdmin.slice';
 
-export { exampleReducer };
+export { authSlic, filtersUserAdmin };

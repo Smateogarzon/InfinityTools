@@ -56,18 +56,9 @@ export class UsersService {
       }
 
       if (createUserInput.password) {
-        console.log(
-          '🚀 ~ UsersService ~ create ~ createUserInput.password:',
-          createUserInput.password
-        );
-
         const password = await bcrypt.hash(createUserInput.password, 11);
-
-        console.log('🚀 ~ UsersService ~ create ~ password:', password);
         createUserInput.password = password;
       }
-      //carga de imagen de perfil
-
       const user = new this.userModel(createUserInput);
       await user.save();
       await session.commitTransaction();

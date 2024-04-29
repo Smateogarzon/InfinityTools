@@ -3,13 +3,26 @@ import { BsListUl } from 'react-icons/bs';
 import { BsTagFill } from 'react-icons/bs';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { BsCartFill } from 'react-icons/bs';
-import { useRef, useState } from 'react';
+import { FiLogOut } from 'react-icons/fi';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { logOut } from '../../../../store/thukns/auth.thuks';
 
 export default function NavBar() {
+  const dispach = useAppDispatch();
+  const { rol } = useAppSelector((state) => state.auth);
   const navRef = useRef(null);
   const [sticking, setSticking] = useState<boolean>(false);
+  const [showLogout, setShowLogout] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (rol !== '') {
+      setShowLogout(true);
+    } else {
+      setShowLogout(false);
+    }
+  }, [rol]);
   window.onscroll = function () {
     stickToTop();
   };
@@ -19,6 +32,9 @@ export default function NavBar() {
     setSticking(window.scrollY >= stickyPos);
   }
 
+  const logout = async () => {
+    await dispach(logOut());
+  };
   return (
     <>
       {sticking && <div className='h-[55px]'></div>}
@@ -69,6 +85,14 @@ export default function NavBar() {
               className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
               <BsCartFill className='h-[25px] w-[25px]' />
             </a>
+          </li>
+          <li>
+            {showLogout && (
+              <FiLogOut
+                onClick={logout}
+                className='h-[25px] w-[25px] hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'
+              />
+            )}
           </li>
         </ul>
       </div>

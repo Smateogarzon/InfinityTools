@@ -25,17 +25,22 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     profile: Profile,
     done: (err: any, user: any, info?: any) => void
   ): Promise<any> {
-    const { name, emails, photos } = profile;
-    const user = {
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      picture: photos[0].value,
-    };
+    try {
+      console.log(profile);
+      const { name, emails, photos } = profile;
+      const user = {
+        email: emails[0].value,
+        firstName: name.givenName,
+        lastName: name.familyName,
+        picture: photos[0].value,
+      };
 
-    const payload = await this.authService.ValidateUserFacebook(user);
-    const token = await this.jwtService.generateToken(payload.id);
+      const payload = await this.authService.ValidateUserFacebook(user);
+      const token = await this.jwtService.generateToken(payload.id);
 
-    done(null, token);
+      done(null, token);
+    } catch (error) {
+      throw new Error('Error authenticating with Facebook');
+    }
   }
 }

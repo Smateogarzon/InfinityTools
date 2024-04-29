@@ -19,17 +19,21 @@ export class GoogleStrategyConfig extends PassportStrategy(Strategy, 'google') {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const user = await this.authService.ValidateUser({
-      email: profile.emails[0].value,
-      familyName: profile.name.givenName,
-      photo: profile.photos[0].value,
-    });
+    try {
+      const user = await this.authService.ValidateUser({
+        email: profile.emails[0].value,
+        familyName: profile.name.givenName,
+        photo: profile.photos[0].value,
+      });
 
-    if (user) {
-      const jwt = await this.jwtService.generateToken(user.id);
-      return { jwt };
+      if (user) {
+        const jwt = await this.jwtService.generateToken(user.id);
+        return { jwt };
+      }
+
+      return null;
+    } catch (error) {
+      throw error;
     }
-
-    return null;
   }
 }

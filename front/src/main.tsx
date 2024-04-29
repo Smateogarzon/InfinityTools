@@ -9,7 +9,7 @@ import { ApolloClient, HttpLink, InMemoryCache, ApolloProvider } from '@apollo/c
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: new HttpLink({ uri: 'https://dev-challenge-o8q3.onrender.com' }),
+  link: new HttpLink({ uri: 'https://localhost:3000/api/graphql' }),
   connectToDevTools: true,
   credentials: 'include',
 });

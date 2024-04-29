@@ -15,18 +15,10 @@ async function bootstrap() {
   app.use(morgan('dev'));
   // app.enableCors();
   app.enableCors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: [
-      'Content-Type-application/json',
-      'Authorization',
-      'Origin',
-      'X-Requested-With',
-      'Accept',
-    ],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+    methods: 'GET,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   });
 
   app.use(
@@ -69,6 +61,6 @@ async function bootstrap() {
   app.use(passport.session());
   await app.listen(3000);
 
-  console.log('http://localhost:3000');
+  console.log(`http://${process.env.HOST}`);
 }
 bootstrap();

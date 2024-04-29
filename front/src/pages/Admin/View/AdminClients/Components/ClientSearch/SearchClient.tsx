@@ -1,27 +1,17 @@
 import { FaSearch } from 'react-icons/fa';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import ClientAddWholesale from '../ClientAddWholesale/ClientAddWholesale';
-// import { useSearchParams } from 'react-router-dom';
-// import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../../../store';
+import { reoading } from '../../../../../../store/slices/filterUserAdmin.slice';
 
 function SearchClient() {
-  // let [searchParams, setSearchParams] = useSearchParams();
-  // useEffect(() => {
-  //   const formData = new FormData();
-  //   formData.append('hola', 'yesfdgfd');
-  //   formData.append('adios', '5');
-  //   setSearchParams((prev) => {
-  //     for (const [key, value] of formData.entries()) {
-  //       prev.set(key, value.toString()) ;
-  //     }
-  //     return prev;
-  //   });
-  //   const keys = Array.from(searchParams.keys());
-  //   const keysString = keys.join(', ');
-  //   console.log('Query parameter keys:', keysString);
-  // }, []);
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const { reloading } = useAppSelector((state) => state.filtersUserAdmin);
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string>('');
   const defaultOption = '';
   const [selectedOptionStatus, setSelectedOptionStatus] = useState<string>(defaultOption);
@@ -30,11 +20,30 @@ function SearchClient() {
   const [selectOptionGender, setSelectOptionGender] = useState<string>(defaultOption);
   const [selectOptionCity, setSelectOptionCity] = useState<string>(defaultOption);
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
+  const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const formDataFilters = new FormData();
+    Object.entries(searchFilters).forEach(([key, value]) => {
+      formDataFilters.append(key, value);
+    });
+    setSearchParams((prev) => {
+      for (const [key, value] of formDataFilters.entries()) {
+        prev.set(key, value.toString());
+      }
+      return prev;
+    });
+
+    if (!reloading) {
+      dispatch(reoading());
+      navigate(`?${searchParams.toString()}`);
+    }
+  }, [searchFilters, searchParams, reloading, dispatch, navigate, setSearchParams]);
 
   const handleOptionStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     if (!appliedFilters.includes(selectedValue)) {
       setSelectedOptionStatus(selectedValue);
+      setSearchFilters({ ...searchFilters, status: selectedValue });
       addFilter(selectedValue);
       disableOption(e.target, selectedValue);
     }
@@ -43,6 +52,7 @@ function SearchClient() {
     const selectedValue = e.target.value;
     if (!appliedFilters.includes(selectedValue)) {
       setSelectOptionRegister(selectedValue);
+      setSearchFilters({ ...searchFilters, register: selectedValue });
       addFilter(selectedValue);
       disableOption(e.target, selectedValue);
     }
@@ -51,6 +61,7 @@ function SearchClient() {
     const selectedValue = e.target.value;
     if (!appliedFilters.includes(selectedValue)) {
       setSelectOptionRol(selectedValue);
+      setSearchFilters({ ...searchFilters, rol: selectedValue });
       addFilter(selectedValue);
       disableOption(e.target, selectedValue);
     }
@@ -60,6 +71,7 @@ function SearchClient() {
     const selectedValue = e.target.value;
     if (!appliedFilters.includes(selectedValue)) {
       setSelectOptionGender(selectedValue);
+      setSearchFilters({ ...searchFilters, gender: selectedValue });
       addFilter(selectedValue);
       disableOption(e.target, selectedValue);
     }
@@ -69,6 +81,7 @@ function SearchClient() {
     const selectedValue = e.target.value;
     if (!appliedFilters.includes(selectedValue)) {
       setSelectOptionCity(selectedValue);
+      setSearchFilters({ ...searchFilters, city: selectedValue });
       addFilter(selectedValue);
       disableOption(e.target, selectedValue);
     }
@@ -76,11 +89,23 @@ function SearchClient() {
 
   const addFilter = (filterName: string) => {
     setAppliedFilters([...appliedFilters, filterName]);
+    if (reloading) {
+      dispatch(reoading());
+    }
   };
 
   const removeFilter = (index: number) => {
     // const removedFilter = appliedFilters[index];
     const updatedFilters = appliedFilters.filter((_, i) => i !== index);
+    for (const key in searchFilters) {
+      if (searchFilters[key] === appliedFilters[index]) {
+        delete searchFilters[key];
+        setSearchParams((prev) => {
+          prev.delete(key);
+          return prev;
+        });
+      }
+    }
     setAppliedFilters(updatedFilters);
 
     // Re-enable all options in all selects
@@ -91,6 +116,7 @@ function SearchClient() {
         options[i].disabled = false; // Enable all options
       }
     });
+    window.location.href = `?${searchParams.toString()}`;
   };
 
   const disableOption = (select: HTMLSelectElement, selectedValue: string) => {

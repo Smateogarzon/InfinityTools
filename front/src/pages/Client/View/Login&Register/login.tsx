@@ -8,6 +8,8 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 import styled from './login.module.css';
 import { TextField, ThemeProvider, createTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../../../store';
+import { facebookLogin, googleLogin } from '../../../../store/slices/auth.slice';
 
 export default function Login() {
   const theme = createTheme({
@@ -17,6 +19,8 @@ export default function Login() {
       },
     },
   });
+
+  const dispatch = useAppDispatch();
   const [stateDistributor, setStateDistributor] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +35,16 @@ export default function Login() {
       console.log('login');
     }
   };
-
+  const loginWithGoogle = async () => {
+    try {
+      dispatch(googleLogin());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const loginWithFacebook = () => {
+    dispatch(facebookLogin());
+  };
   return (
     <ThemeProvider theme={theme}>
       <div className='flex items-center justify-center h-[100vh]  w-[100vw] relative '>
@@ -69,8 +82,11 @@ export default function Login() {
             <>
               <h3 className='text-center'>Iniciar Sesión con Facebook o Google</h3>
               <div className='flex gap-8'>
-                <FaFacebookSquare className='text-5xl text-[#3b5998] brightness-[150%] hover:cursor-pointer' />
-                <FcGoogle className='text-5xl hover:cursor-pointer' />
+                <FaFacebookSquare
+                  className='text-5xl text-[#3b5998] brightness-[150%] hover:cursor-pointer'
+                  onClick={loginWithFacebook}
+                />
+                <FcGoogle className='text-5xl hover:cursor-pointer' onClick={loginWithGoogle} />
               </div>
             </>
           )}

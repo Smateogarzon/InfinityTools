@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import ViewStatistics from './pages/Admin/View/AdminStatistics/ViewStatistics';
 import ViewClient from './pages/Admin/View/AdminClients/ViewClient';
 import ViewClientDetail from './pages/Admin/View/AdminClients/ViewClientDetail';
@@ -13,8 +13,24 @@ import ViewBanners from './pages/Admin/View/AdminBanners/ViewBanners';
 import NavAdmin from './pages/Admin/Components/NavAdmin/NavAdmin';
 import Home from './pages/Client/View/Home/Home';
 import Login from './pages/Client/View/Login&Register/login';
+import { useDispatch } from 'react-redux';
+import { getFacebookAccess, getGoogleAccess } from '@/store/slices/auth.slice';
+import { useEffect } from 'react';
 
 function App() {
+  const dispatch = useDispatch();
+  const query = useLocation().search;
+
+  useEffect(() => {
+    (() => {
+      if (query === '?auth=google') {
+        return dispatch(getGoogleAccess());
+      } else if (query === '?auth=facebook') {
+        return dispatch(getFacebookAccess());
+      }
+    })();
+  }, [dispatch, query]);
+
   return (
     <Routes>
       <Route path='/' element={<Home />} />

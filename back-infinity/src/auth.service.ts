@@ -23,18 +23,21 @@ export class Auth {
     session.startTransaction();
 
     try {
-      let user = await this.userModel.findOne({ email: createUser.email }, { session });
+      let user = await this.userModel.findOne({ email: createUser.email });
 
       if (!user) {
         user = new this.userModel(createUser);
         user.email = createUser.email;
         user.firtsName = createUser.familyName;
         user.picture = createUser.photo;
-        await user.save({ session });
+        await user.save();
       }
-
-      await session.commitTransaction();
-      return user;
+      if (user.rol === 'USER') {
+        await session.commitTransaction();
+        return user;
+      } else {
+        throw new Error('logueate por inicio de sesion mayorista');
+      }
     } catch (error) {
       await session.abortTransaction();
       throw error;
