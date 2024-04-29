@@ -1,7 +1,7 @@
-import { Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from './guards/google.guard';
 import { Request, Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import { FacebookAuthGuard } from './guards/facebook.guard';
 
 @Controller('auth')
 export class AppController {
@@ -14,38 +14,52 @@ export class AppController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   handleCallback(@Req() req: Request, @Res() res: Response) {
-    const user = req.user;
-    res.cookie('session', user, {
-      httpOnly: true,
-      maxAge: 3600000,
-      sameSite: 'none',
-      secure: true,
-    });
-    res.sendStatus(200);
+    try {
+      const user = req.user;
+      res.cookie('session', user, {
+        httpOnly: true,
+        maxAge: 3600000,
+        sameSite: 'none',
+        secure: true,
+      });
+      res.redirect(`${process.env.FRONTEND_URL}/?auth=google`);
+    } catch (error) {
+      res.status(404).send('Not Found');
+    }
   }
 
   @Get('/facebook')
-  @UseGuards(AuthGuard('facebook'))
+  @UseGuards(FacebookAuthGuard)
   async facebookLogin(): Promise<any> {
     return HttpStatus.OK;
   }
 
   @Get('/facebook/redirect')
-  @UseGuards(AuthGuard('facebook'))
+  @UseGuards(FacebookAuthGuard)
   async facebookLoginRedirect(@Req() req: Request, @Res() res: Response): Promise<any> {
-    const user = req.user;
-    res.cookie('session', user, {
-      httpOnly: true,
-      maxAge: 3600000,
-      sameSite: 'none',
-      secure: true,
-    });
-    res.sendStatus(200);
+    try {
+      const user = req.user;
+      res.cookie('session', user, {
+        httpOnly: true,
+        maxAge: 3600000,
+        sameSite: 'none',
+        secure: true,
+      });
+      res.redirect(`${process.env.FRONTEND_URL}/?auth=facebook`);
+    } catch (error) {
+      if (req.query.error === 'access_denied') {
+        return res.status(200).send('You denied Facebook access.');
+      }
+    }
   }
 
-  @Get('/logout')
-  async logOut(@Res() res: Response) {
-    res.clearCookie('session');
-    res.status(200).json({ access: false });
+  @Post('/logout')
+  async logOut(@Req() req: Request, @Res() res: Response) {
+    try {
+      res.clearCookie('session', { httpOnly: true, maxAge: -1 });
+      res.status(200).json({ message: 'Successfully logged out' });
+    } catch (error) {
+      res.status(500).send('Internal Server Error');
+    }
   }
 }

@@ -2,16 +2,18 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 
 import storage from 'redux-persist/lib/storage';
-import { exampleReducer } from './slices';
+import authSlic from './slices/auth.slice';
+import filtersUserAdmin from './slices/filterUserAdmin.slice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [],
+  whitelist: ['auth', 'filtersUserAdmin'],
 };
 
 const combinedReducers = combineReducers({
-  reducer: exampleReducer,
+  auth: authSlic,
+  filtersUserAdmin: filtersUserAdmin,
 });
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);
