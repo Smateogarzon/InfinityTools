@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '@/App';
 import '@/index.css';
@@ -18,15 +17,13 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <CustomStore>
-      <React.StrictMode>
-        <ApolloProvider client={client}>
-          <BrowserRouter>
-            {/* <StyledEngineProvider injectFirst> */}
-            <App />
-            {/* </StyledEngineProvider> */}
-          </BrowserRouter>
-        </ApolloProvider>
-      </React.StrictMode>
+      <ApolloProvider client={client}>
+        <BrowserRouter>
+          {/* <StyledEngineProvider injectFirst> */}
+          <App />
+          {/* </StyledEngineProvider> */}
+        </BrowserRouter>
+      </ApolloProvider>
     </CustomStore>
   );
 } else {

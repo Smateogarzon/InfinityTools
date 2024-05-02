@@ -8,7 +8,7 @@ import filtersUserAdmin from './slices/filterUserAdmin.slice';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'filtersUserAdmin'],
+  whitelist: ['auth'],
 };
 
 const combinedReducers = combineReducers({

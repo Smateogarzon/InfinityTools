@@ -1,17 +1,13 @@
 import { FaSearch } from 'react-icons/fa';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import ClientAddWholesale from '../ClientAddWholesale/ClientAddWholesale';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../../../../store';
-import { reoading } from '../../../../../../store/slices/filterUserAdmin.slice';
 
 function SearchClient() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
-  const { reloading } = useAppSelector((state) => state.filtersUserAdmin);
   const navigate = useNavigate();
+
   const [selectedOption, setSelectedOption] = useState<string>('');
   const defaultOption = '';
   const [selectedOptionStatus, setSelectedOptionStatus] = useState<string>(defaultOption);
@@ -19,25 +15,72 @@ function SearchClient() {
   const [selectOptionRol, setSelectOptionRol] = useState<string>(defaultOption);
   const [selectOptionGender, setSelectOptionGender] = useState<string>(defaultOption);
   const [selectOptionCity, setSelectOptionCity] = useState<string>(defaultOption);
-  const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
+  const [appliedFilters, setAppliedFilters] = useState<string[]>(['']);
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
-  useEffect(() => {
-    const formDataFilters = new FormData();
-    Object.entries(searchFilters).forEach(([key, value]) => {
-      formDataFilters.append(key, value);
-    });
-    setSearchParams((prev) => {
-      for (const [key, value] of formDataFilters.entries()) {
-        prev.set(key, value.toString());
-      }
-      return prev;
-    });
+  const params = useLocation();
 
-    if (!reloading) {
-      dispatch(reoading());
-      navigate(`?${searchParams.toString()}`);
+  const handleOptionFilter = useCallback(() => {
+    if (Object.keys(searchFilters).length === 0) {
+      const newUrl = new URLSearchParams(location.search);
+      const startSearch: Record<string, string> = {};
+      if (Object.keys(searchFilters).length === 0) {
+        for (const [key, value] of newUrl.entries()) {
+          startSearch[key] = decodeURIComponent(decodeURIComponent(value));
+        }
+      }
+      setSearchFilters(startSearch);
+    } else {
+      const currentUrl = new URLSearchParams(location.search);
+      const keySearch = Object.keys(searchFilters);
+      const values: string[] = [];
+      /* eslint-disable */
+      for (const [key, _] of currentUrl.entries()) {
+        /* eslint-enable */
+        values.push(key);
+      }
+      let deleteKey = '';
+      for (const key of keySearch) {
+        if (!values.includes(key)) {
+          enableSelect(key);
+          deleteKey = key;
+        }
+      }
+      delete searchFilters[deleteKey];
+      setSearchFilters(searchFilters);
     }
-  }, [searchFilters, searchParams, reloading, dispatch, navigate, setSearchParams]);
+  }, [searchFilters, setSearchFilters]);
+
+  useEffect(() => {
+    const newUrl = new URLSearchParams(location.search);
+    if (location.search === '') {
+      setAppliedFilters([]);
+      setSearchFilters({});
+      enableOptions();
+    }
+    const values: string[] = [];
+    /* eslint-disable */
+    for (const [_, value] of newUrl.entries()) {
+      /* eslint-enable */
+      if (decodeURIComponent(decodeURIComponent(value)) !== 'undefined') {
+        values.push(decodeURIComponent(decodeURIComponent(value)));
+      }
+    }
+    const filteredValues = values.filter((value) => value !== 'undefined');
+
+    setAppliedFilters(filteredValues);
+    handleOptionFilter();
+  }, [params, handleOptionFilter]);
+
+  useEffect(() => {
+    if (Object.keys(searchFilters).length > 0) {
+      const newUrl = new URLSearchParams();
+      for (const [key, value] of Object.entries(searchFilters)) {
+        newUrl.append(key, encodeURIComponent(value));
+      }
+
+      navigate(`?${newUrl.toString()}`);
+    }
+  }, [searchFilters, navigate]);
 
   const handleOptionStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
@@ -89,36 +132,41 @@ function SearchClient() {
 
   const addFilter = (filterName: string) => {
     setAppliedFilters([...appliedFilters, filterName]);
-    if (reloading) {
-      dispatch(reoading());
-    }
   };
 
   const removeFilter = (index: number) => {
-    // const removedFilter = appliedFilters[index];
     const updatedFilters = appliedFilters.filter((_, i) => i !== index);
+    const searchFiltersTemp: Record<string, string> = {};
     for (const key in searchFilters) {
-      if (searchFilters[key] === appliedFilters[index]) {
-        delete searchFilters[key];
-        setSearchParams((prev) => {
-          prev.delete(key);
-          return prev;
-        });
+      if (searchFilters[key] !== appliedFilters[index]) {
+        searchFiltersTemp[key] = decodeURIComponent(decodeURIComponent(searchFilters[key]));
+      } else {
+        enableSelect(key);
       }
     }
-    setAppliedFilters(updatedFilters);
 
-    // Re-enable all options in all selects
+    setSearchFilters(searchFiltersTemp);
+    setAppliedFilters(updatedFilters);
+  };
+
+  const enableOptions = () => {
     const selects = document.querySelectorAll('select');
     selects.forEach((select) => {
       const options = select.options;
       for (let i = 0; i < options.length; i++) {
-        options[i].disabled = false; // Enable all options
+        options[i].disabled = false;
       }
     });
-    window.location.href = `?${searchParams.toString()}`;
   };
-
+  const enableSelect = (name: string) => {
+    const select = document.querySelector(`select[name="${name}"]`);
+    if (select) {
+      const options = select.querySelectorAll('option');
+      options.forEach((option) => {
+        option.disabled = false;
+      });
+    }
+  };
   const disableOption = (select: HTMLSelectElement, selectedValue: string) => {
     const options = select.options;
     for (let i = 0; i < options.length; i++) {
@@ -137,7 +185,7 @@ function SearchClient() {
       setSelectOptionRol(defaultOption);
       setSelectOptionGender(defaultOption);
       setSelectOptionCity(defaultOption);
-
+      setSearchFilters({});
       const selects = document.querySelectorAll('select');
       selects.forEach((select) => {
         const options = select.options;
@@ -145,6 +193,7 @@ function SearchClient() {
           options[i].disabled = false;
         }
       });
+      navigate('/admin/clients');
     }
   };
 
@@ -167,7 +216,7 @@ function SearchClient() {
           </div>
           <div>
             <select
-              name='Estado'
+              name='status'
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectedOptionStatus}
               onChange={handleOptionStatus}>
@@ -180,7 +229,7 @@ function SearchClient() {
           </div>
           <div>
             <select
-              name='Registro'
+              name='register'
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionRegister}
               onChange={handleOptionRegister}>
@@ -193,7 +242,7 @@ function SearchClient() {
           </div>
           <div>
             <select
-              name='Rol'
+              name='rol'
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionRol}
               onChange={handleOptionRol}>
@@ -207,7 +256,7 @@ function SearchClient() {
           </div>
           <div>
             <select
-              name='Genero'
+              name='gender'
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionGender}
               onChange={handleOptionGender}>
@@ -221,7 +270,7 @@ function SearchClient() {
 
           <div>
             <select
-              name='City'
+              name='city'
               className='cursor-pointer bg-transparent rounded-md p-2'
               value={selectOptionCity}
               onChange={handleOptionCity}>
@@ -236,7 +285,7 @@ function SearchClient() {
           <ClientAddWholesale />
         </div>
       </div>
-      <div className='flex justify-center mt-3'>
+      <div className='flex justify-center mt-3' id='appli'>
         {appliedFilters.map((filter, index) => (
           <div
             key={index}
