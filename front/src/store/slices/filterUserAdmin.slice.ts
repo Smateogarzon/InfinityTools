@@ -8,8 +8,8 @@ const filtersUserAdmin = createSlice({
   name: 'filterUserAdmin',
   initialState,
   reducers: {
-    reoading: (state) => {
-      state.reloading = !state.reloading;
+    reoading: (state, action) => {
+      state.reloading = action.payload;
     },
   },
 });
