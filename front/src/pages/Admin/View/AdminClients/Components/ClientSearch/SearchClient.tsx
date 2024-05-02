@@ -69,7 +69,7 @@ function SearchClient() {
 
     setAppliedFilters(filteredValues);
     handleOptionFilter();
-  }, [params, handleOptionFilter]);
+  }, [params]);
 
   useEffect(() => {
     if (Object.keys(searchFilters).length > 0) {
