@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import PreviewClientDetail from './Components/ClientDetailPreview/PreviewClientDetail';
 import InfoClientDetail from './Components/ClientDetailInfo/InfoClientDetail';
 import ClientDetailSuspend from './Components/ClientDetailSuspend/ClientDetailSuspend';
@@ -6,12 +5,12 @@ import ClientDetailDelete from './Components/ClientDetailDelete/ClientDetailDele
 
 function ViewClientDetail() {
   return (
-    <Link to='/admin/client/detail/${id}'>
+    <>
       <PreviewClientDetail />
       <InfoClientDetail />
       <ClientDetailSuspend />
       <ClientDetailDelete />
-    </Link>
+    </>
   );
 }
 
