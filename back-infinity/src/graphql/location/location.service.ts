@@ -23,8 +23,12 @@ export class LocationService {
     }
   }
 
-  findAll() {
-    return `This action returns all location`;
+  async findAll() {
+    try {
+      return await this.locationModel.find();
+    } catch (error) {
+      throw error;
+    }
   }
 
   findOne(id: number) {

@@ -9,12 +9,6 @@ export class CreateLocationInput {
   zipCode: number;
 
   @Field()
-  firtsName: string;
-
-  @Field()
-  lastName: string;
-
-  @Field()
   address: string;
 
   @Field()
@@ -23,6 +17,6 @@ export class CreateLocationInput {
   @Field()
   state: string;
 
-  @Field()
+  @Field({ nullable: true })
   userId!: string;
 }

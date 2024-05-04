@@ -10,8 +10,11 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 @ObjectType()
 export class User {
+  @Field(() => String)
+  _id: string;
+
   @Prop({ isRequired: false, set: (v: string) => v?.toLowerCase() })
-  @Field()
+  @Field({ nullable: true })
   @IsString()
   @Length(2, 30)
   firtsName: string;
@@ -23,7 +26,7 @@ export class User {
   MiddleName: string;
 
   @Prop({ required: false, set: (v: string) => v?.toLowerCase() })
-  @Field()
+  @Field({ nullable: true })
   @IsString()
   @Length(2, 30)
   lastName: string;
@@ -58,8 +61,8 @@ export class User {
   @IsOptional()
   location: LocationDocument;
 
-  @Prop()
-  @Field()
+  @Prop({ default: false })
+  @Field({ nullable: true })
   suscribe: boolean;
 
   @Prop({ default: UserStatus.ACTIVE })
@@ -90,17 +93,10 @@ export class User {
   @Prop({ default: new Date() })
   @Field(() => Date)
   date: Date;
+
+  @Prop()
+  @Field({ nullable: true })
+  completeName: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-/*
-
-
-  suscribe boolean
-  status boolean
-  salesHistory arraystring
-  reviews object 
-  shoppingCart object
-  orders arraystring
-*/

@@ -18,6 +18,7 @@ import { SerealizerG } from './config/SerealizerG';
 import { PassportModule } from '@nestjs/passport';
 import { JwtServices } from './services/jwt.service';
 import { FacebookStrategy } from './config/facebookStrategi';
+import { ProductsModule } from './graphql/products/products.module';
 
 @Module({
   imports: [
@@ -36,9 +37,6 @@ import { FacebookStrategy } from './config/facebookStrategi';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       path: 'api/graphql',
-      // buildSchemaOptions: {
-      //   fieldMiddleware: [loggerMiddleware],
-      // },
       subscriptions: {
         'graphql-ws': true,
       },
@@ -51,6 +49,7 @@ import { FacebookStrategy } from './config/facebookStrategi';
     }),
     UsersModule,
     LocationModule,
+    ProductsModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     PassportModule.register({ session: true }),
   ],

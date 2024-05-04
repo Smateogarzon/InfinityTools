@@ -61,6 +61,6 @@ async function bootstrap() {
   app.use(passport.session());
   await app.listen(3000);
 
-  console.log(`http://${process.env.HOST}`);
+  console.log(`${process.env.HOST}`);
 }
 bootstrap();

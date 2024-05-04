@@ -13,7 +13,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     super({
       clientID: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,
-      callbackURL: 'http://localhost:3000/auth/facebook/redirect',
+      callbackURL: `${process.env.HOST}/auth/facebook/redirect`,
       scope: 'email',
       profileFields: ['emails', 'name', 'picture'],
     });
@@ -26,7 +26,6 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     done: (err: any, user: any, info?: any) => void
   ): Promise<any> {
     try {
-      console.log(profile);
       const { name, emails, photos } = profile;
       const user = {
         email: emails[0].value,
