@@ -12,7 +12,6 @@ export enum UserGender {
 }
 
 export enum UserRol {
-  SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   USER = 'USER',
   DISTRIBUTOR = 'DISTRIBUTOR',

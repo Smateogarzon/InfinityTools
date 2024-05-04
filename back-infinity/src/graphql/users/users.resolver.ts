@@ -35,7 +35,8 @@ export class UsersResolver {
   @Query(() => [User], { name: 'FindUserQuery' })
   async findUsers(@Args('filter') filter: FindUserInput) {
     try {
-      return await this.usersService.findUsers(filter);
+      const user = await this.usersService.findUsers(filter);
+      return user;
     } catch (error) {
       throw error;
     }

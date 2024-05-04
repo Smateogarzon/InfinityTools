@@ -8,9 +8,13 @@ import { UpdateLocationInput } from './dto/update-location.input';
 export class LocationResolver {
   constructor(private readonly locationService: LocationService) {}
 
-  @Query(() => [Location], { name: 'location' })
-  findAll() {
-    return this.locationService.findAll();
+  @Query(() => [Location], { name: 'AllLocation' })
+  async findAll() {
+    try {
+      return await this.locationService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => Location, { name: 'location' })

@@ -8,6 +8,9 @@ export type LocationDocument = HydratedDocument<Location>;
 @Schema()
 @ObjectType()
 export class Location {
+  @Field(() => String)
+  _id: string;
+
   @Prop()
   @Field()
   @IsString()

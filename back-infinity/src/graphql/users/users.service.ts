@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { User } from './entities/user.entity';
 import { LocationService } from '../location/location.service';
 import { CreateLocationInput } from '../location/dto/create-location.input';
+import { IQuery } from './enums/interfaces';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +18,8 @@ export class UsersService {
 
   async findAll() {
     try {
-      return await this.userModel.find().populate('location');
+      const users = await this.userModel.find().populate('location');
+      return users;
     } catch (error) {
       throw error;
     }
@@ -37,8 +39,35 @@ export class UsersService {
 
   async findUsers(filter: FindUserInput) {
     try {
-      const useres = await this.userModel.find({ email: filter.name });
-      if (!useres) throw new Error('Usuario no encontrado');
+      let query: IQuery = {};
+      if (filter.name) {
+        query.completeName = { $regex: filter.name.trim(), $options: 'i' };
+      }
+      if (filter.status) {
+        query.status = filter.status;
+      }
+      if (filter.rol) {
+        query.rol = filter.rol;
+      }
+      if (filter.gender) {
+        query.gender = filter.gender;
+      }
+      if (filter.city) {
+        const useres = await this.userModel.find(query).populate('location');
+        const filterCity = useres.filter(
+          (user) => user.location?.city && user.location?.city === filter.city
+        );
+        return filterCity;
+      }
+      if (filter.register) {
+        const dateOrder =
+          filter.register === 'Ascendente'
+            ? await this.userModel.find(query).populate('location').sort({ date: 1 })
+            : await this.userModel.find(query).populate('location').sort({ date: -1 });
+        return dateOrder;
+      }
+
+      const useres = await this.userModel.find(query).populate('location');
       return useres;
     } catch (error) {
       throw error;
@@ -59,7 +88,11 @@ export class UsersService {
         const password = await bcrypt.hash(createUserInput.password, 11);
         createUserInput.password = password;
       }
+      if (!createUserInput.picture) {
+        createUserInput.picture = 'https://storage.googleapis.com/pictures_infinity/perfil.png';
+      }
       const user = new this.userModel(createUserInput);
+      user.completeName = `${createUserInput.firtsName} ${createUserInput.MiddleName || ''} ${createUserInput.lastName || ''} ${createUserInput.MiddleLastName || ''}`;
       await user.save();
       await session.commitTransaction();
       return user;

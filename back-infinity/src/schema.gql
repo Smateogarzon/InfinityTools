@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Location {
+  _id: String!
   tel: String!
   zipCode: String!
   address: String!
@@ -11,16 +12,17 @@ type Location {
 }
 
 type User {
-  firtsName: String!
+  _id: String!
+  firtsName: String
   MiddleName: String
-  lastName: String!
+  lastName: String
   MiddleLastName: String
   email: String
   password: String
   rol: UserRol!
   gender: UserGender
   location: Location
-  suscribe: Boolean!
+  suscribe: Boolean
   status: UserStatus!
   picture: String
   salesHistory: String!
@@ -28,10 +30,10 @@ type User {
   shoppingCart: String!
   orders: String!
   date: DateTime!
+  completeName: String
 }
 
 enum UserRol {
-  SUPER_ADMIN
   ADMIN
   USER
   DISTRIBUTOR
@@ -53,16 +55,39 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Product {
+  name: String!
+  description: String!
+  purchasePrice: Float!
+  sellingPrice: Float!
+  referencePrice: Float!
+  distributorPrice: Float!
+  referencePriceDistributor: Float!
+  category: [String!]!
+  picture: String!
+  stock: Int!
+  brand: String!
+  shoppingCart: [String!]!
+  reviews: [String!]!
+  salesNumber: Int!
+}
+
 type Query {
   FindAllusers: [User!]!
   FindOneuser(id: String!): User!
   FindUserQuery(filter: FindUserInput!): [User!]!
   LogIn(email: String!, password: String!): User!
+  AllLocation: [Location!]!
   location(id: Int!): Location!
 }
 
 input FindUserInput {
   name: String
+  status: UserStatus
+  register: String
+  rol: UserRol
+  gender: UserGender
+  city: String
 }
 
 type Mutation {
@@ -72,6 +97,7 @@ type Mutation {
   removeUser(id: String!): User!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
+  createProduct(createProductInput: CreateProductInput!): Product!
 }
 
 input CreateUserInput {
@@ -81,18 +107,20 @@ input CreateUserInput {
   MiddleLastName: String
   email: String!
   password: String
-  gender: String
+  gender: UserGender
+  suscribe: Boolean
+  picture: String
+  rol: UserRol
+  status: UserStatus
 }
 
 input CreateLocationInput {
   tel: String!
   zipCode: Int!
-  firtsName: String!
-  lastName: String!
   address: String!
   city: String!
   state: String!
-  userId: String!
+  userId: String
 }
 
 input UpdateUserInput {
@@ -103,16 +131,32 @@ input UpdateUserInput {
   email: String
   password: String
   gender: UserGender
+  suscribe: Boolean
+  picture: String
+  rol: UserRol
+  status: UserStatus
 }
 
 input UpdateLocationInput {
   tel: String
   zipCode: Int
-  firtsName: String
-  lastName: String
   address: String
   city: String
   state: String
   userId: String
   id: Int!
+}
+
+input CreateProductInput {
+  name: String!
+  description: String!
+  purchasePrice: Float
+  sellingPrice: Float
+  referencePrice: Float
+  distributorPrice: Float
+  referencePriceDistributor: Float
+  category: [String!]
+  picture: String
+  stock: Int!
+  brand: String
 }
