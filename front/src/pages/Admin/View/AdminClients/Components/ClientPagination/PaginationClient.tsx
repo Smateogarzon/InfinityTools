@@ -101,7 +101,6 @@ function PaginationClient({
       }
     }
     setNumPag(selectedPage);
-    console.log('🚀 ~ useEffect ~ selectedPage:', selectedPage, total);
   }, [selectedPage]);
   return (
     <div className='flex flex-wrap justify-center ml-[225px]  gap-3 mt-5'>

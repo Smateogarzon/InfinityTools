@@ -18,6 +18,7 @@ import { getFacebookAccess, getGoogleAccess } from '@/store/slices/auth.slice';
 import { useEffect } from 'react';
 
 function App() {
+  console.log(import.meta.env.VITE_BACKEND_URL);
   const dispatch = useDispatch();
   const query = useLocation().search;
 
