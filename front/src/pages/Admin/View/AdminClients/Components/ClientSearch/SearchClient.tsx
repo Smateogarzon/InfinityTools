@@ -15,6 +15,7 @@ function SearchClient({
 }) {
   const navigate = useNavigate();
   const { data } = useQuery(getAllLocations);
+
   const [selectedOption, setSelectedOption] = useState<string>('');
   const defaultOption = '';
   const [searchValue, setSearchValue] = useState<string>('');
@@ -26,9 +27,18 @@ function SearchClient({
   const [appliedFilters, setAppliedFilters] = useState<string[]>(['']);
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
   const [cargado, setCargado] = useState(false);
+  const [cities, setCities] = useState<string[]>([]);
   const params = useLocation();
 
   // Bloque de código que se ejecuta solo en la carga inicial
+  useEffect(() => {
+    const setCity = new Set();
+    data?.AllLocation?.map((location: UserLocation) => {
+      setCity.add(location.city);
+    });
+    const cityArray = Array.from(setCity) as string[];
+    setCities(cityArray);
+  }, [data?.AllLocation]);
   if (!cargado) {
     if (params.search !== '') {
       const newUrl = new URLSearchParams(location.search);
@@ -37,7 +47,8 @@ function SearchClient({
         startSearch[key] = decodeURIComponent(decodeURIComponent(value));
       }
       setSearchFilters(startSearch);
-      setCargado(true); // Establece cargado a true para que este bloque no se ejecute nuevamente
+      setCargado(true);
+      // Establece cargado a true para que este bloque no se ejecute nuevamente
     }
   }
 
@@ -350,10 +361,10 @@ function SearchClient({
               <option value='Ciudad' disabled hidden>
                 Ciudad
               </option>
-              {data?.AllLocation &&
-                data?.AllLocation.map((city: UserLocation) => (
-                  <option key={city._id} value={city.city}>
-                    {`${city.city?.charAt(0).toUpperCase()}${city.city?.substring(1)}`}
+              {cities.length > 0 &&
+                cities.map((city: string) => (
+                  <option key={city} value={city}>
+                    {`${city?.charAt(0).toUpperCase()}${city.substring(1)}`}
                   </option>
                 ))}
             </select>

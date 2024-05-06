@@ -3,9 +3,12 @@ import { UserInfoAllFragment, UserInfoFragment } from '../../../../../fragments/
 
 export const getAllClients = gql`
   ${UserInfoAllFragment}
-  query FindAllusers {
-    FindAllusers {
-      ...UserAllInfo
+  query FindAllusers($numPage: Int!) {
+    FindAllusers(numPage: $numPage) {
+      users {
+        ...UserAllInfo
+      }
+      total
     }
   }
 `;
@@ -30,9 +33,12 @@ export const getAllLocations = gql`
 
 export const getAllFilters = gql`
   ${UserInfoAllFragment}
-  query FindUserQuery($filter: FindUserInput!) {
-    FindUserQuery(filter: $filter) {
-      ...UserAllInfo
+  query FindUserQuery($filter: FindUserInput!, $numPage: Int!) {
+    FindUserQuery(filter: $filter, numPage: $numPage) {
+      users {
+        ...UserAllInfo
+      }
+      total
     }
   }
 `;

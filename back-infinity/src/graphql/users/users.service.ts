@@ -16,10 +16,17 @@ export class UsersService {
     private locationService: LocationService
   ) {}
 
-  async findAll() {
+  async findAll(numPage: number) {
     try {
-      const users = await this.userModel.find().populate('location');
-      return users;
+      const configPage: number = 2;
+      const currentPage = (numPage - 1) * configPage;
+      const totalUsers = Math.ceil((await this.userModel.find().countDocuments()) / configPage);
+      const users = await this.userModel
+        .find()
+        .populate('location')
+        .skip(currentPage)
+        .limit(configPage);
+      return [users, totalUsers];
     } catch (error) {
       throw error;
     }
@@ -37,8 +44,10 @@ export class UsersService {
     }
   }
 
-  async findUsers(filter: FindUserInput) {
+  async findUsers(filter: FindUserInput, numPage: number) {
     try {
+      const configPage: number = 2;
+      const currentPage = (numPage - 1) * configPage;
       let query: IQuery = {};
       if (filter.name) {
         query.completeName = { $regex: filter.name.trim(), $options: 'i' };
@@ -52,23 +61,42 @@ export class UsersService {
       if (filter.gender) {
         query.gender = filter.gender;
       }
-      if (filter.city) {
-        const useres = await this.userModel.find(query).populate('location');
-        const filterCity = useres.filter(
-          (user) => user.location?.city && user.location?.city === filter.city
-        );
-        return filterCity;
-      }
-      if (filter.register) {
-        const dateOrder =
-          filter.register === 'Ascendente'
-            ? await this.userModel.find(query).populate('location').sort({ date: 1 })
-            : await this.userModel.find(query).populate('location').sort({ date: -1 });
-        return dateOrder;
-      }
+      if (filter.register || filter.city) {
+        let queryBuilder = this.userModel.find(query).populate('location');
 
-      const useres = await this.userModel.find(query).populate('location');
-      return useres;
+        if (filter.register && !filter.city) {
+          const dateOrder = await queryBuilder
+            .skip(currentPage)
+            .limit(configPage)
+            .sort({
+              date: filter.register === 'Ascendente' ? 1 : -1,
+            });
+          const countQuery = this.userModel.find(query);
+          const total = Math.ceil((await countQuery.countDocuments()) / configPage);
+          return [dateOrder, total];
+        }
+        if (!filter.register && filter.city) {
+          const users = await queryBuilder;
+          const filterCity = users.filter((user) => user.location?.city === filter.city);
+          const total = Math.ceil(filterCity.length / configPage);
+          return [filterCity.slice(currentPage, configPage), total];
+        }
+        if (filter.register && filter.city) {
+          const users = await queryBuilder.sort({
+            date: filter.register === 'Ascendente' ? 1 : -1,
+          });
+          const filterCity = users.filter((user) => user.location?.city === filter.city);
+          const total = Math.ceil(filterCity.length / configPage);
+          return [filterCity.slice(currentPage, configPage), total];
+        }
+      }
+      const total = Math.ceil((await this.userModel.find(query).countDocuments()) / configPage);
+      const useres = await this.userModel
+        .find(query)
+        .populate('location')
+        .skip(currentPage)
+        .limit(configPage);
+      return [useres, total];
     } catch (error) {
       throw error;
     }

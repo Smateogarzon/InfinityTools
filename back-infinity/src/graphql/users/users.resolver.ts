@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context, Int } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput, FindUserInput } from './dto/create-user.input';
@@ -6,6 +6,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { CreateLocationInput } from '../location/dto/create-location.input';
 import { Response } from 'express';
 import { JwtServices } from '@/services/jwt.service';
+import { PaginationUser } from './entities/pagination.user';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,10 +15,11 @@ export class UsersResolver {
     private readonly JwtServices: JwtServices
   ) {}
 
-  @Query(() => [User], { name: 'FindAllusers' })
-  async findAll() {
+  @Query(() => PaginationUser, { name: 'FindAllusers' })
+  async findAll(@Args('numPage', { type: () => Int }) numPage: number) {
     try {
-      return await this.usersService.findAll();
+      const [users, totalUsers] = await this.usersService.findAll(numPage);
+      return { users, total: totalUsers };
     } catch (error) {
       throw error;
     }
@@ -32,11 +34,14 @@ export class UsersResolver {
     }
   }
 
-  @Query(() => [User], { name: 'FindUserQuery' })
-  async findUsers(@Args('filter') filter: FindUserInput) {
+  @Query(() => PaginationUser, { name: 'FindUserQuery' })
+  async findUsers(
+    @Args('filter') filter: FindUserInput,
+    @Args('numPage', { type: () => Int }) numPage: number
+  ) {
     try {
-      const user = await this.usersService.findUsers(filter);
-      return user;
+      const [user, total] = await this.usersService.findUsers(filter, numPage);
+      return { users: user, total };
     } catch (error) {
       throw error;
     }

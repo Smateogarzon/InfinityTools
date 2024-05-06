@@ -55,6 +55,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type PaginationUser {
+  users: [User!]
+  total: Int
+}
+
 type Product {
   name: String!
   description: String!
@@ -73,9 +78,9 @@ type Product {
 }
 
 type Query {
-  FindAllusers: [User!]!
+  FindAllusers(numPage: Int!): PaginationUser!
   FindOneuser(id: String!): User!
-  FindUserQuery(filter: FindUserInput!): [User!]!
+  FindUserQuery(filter: FindUserInput!, numPage: Int!): PaginationUser!
   LogIn(email: String!, password: String!): User!
   AllLocation: [Location!]!
   location(id: Int!): Location!

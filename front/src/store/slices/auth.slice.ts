@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { logOut } from '../thukns/auth.thuks';
+const back = import.meta.env.VITE_BACKEND_URL;
 
 const initialState = {
   rol: '',
@@ -12,7 +13,7 @@ const authSlic = createSlice({
   initialState,
   reducers: {
     googleLogin: (state) => {
-      const url = `http://localhost:3000/auth/google/login`;
+      const url = `${back}/auth/google/login`;
       window.location.href = url;
       state.status = 'loading';
     },
@@ -21,7 +22,7 @@ const authSlic = createSlice({
       state.rol = 'user';
     },
     facebookLogin: (state) => {
-      const url = `http://localhost:3000/auth/facebook`;
+      const url = `${back}/auth/facebook`;
       window.location.href = url;
       state.status = 'loading';
     },
