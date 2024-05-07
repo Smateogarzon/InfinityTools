@@ -1,6 +1,6 @@
 import { BsFillHouseDoorFill, BsListUl, BsTagFill } from 'react-icons/bs';
 
-function SpanPhone({ setShowMenu }: any) {
+function SpanPhone({ setShowMenu, setShowCategory }: any) {
   return (
     <>
       <div className='absolute z-9 top-[0vh] right-[-94vw] w-[100vw] h-[100vh] bg-zeus-975'></div>
@@ -16,13 +16,14 @@ function SpanPhone({ setShowMenu }: any) {
               <span className='translate-y-[1px]'>Inicio</span>
             </a>
           </li>
-          <li className='[&>a]:text-3xl'>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsListUl className='mr-2' onClick={() => setShowMenu(false)} />
-              <span className='translate-y-[1px]'>Categorías</span>
-            </a>
+          <li
+            onClick={() => {
+              setShowMenu(false);
+              setShowCategory(true);
+            }}
+            className='text-3xl hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
+            <BsListUl className='mr-2' />
+            <span className='translate-y-[1px]'>Categorías</span>
           </li>
           <li className='[&>a]:text-2xl xsm:[&>a]:text-3xl'>
             <a

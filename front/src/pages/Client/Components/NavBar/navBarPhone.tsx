@@ -4,9 +4,11 @@ import { FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import SpanPhone from './spanPhone';
 import { useState } from 'react';
+import Categories from './categories';
 
 function NavBarPhone({ navRef, showLogout, logout, sticking }: any) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showCategory, setShowCategory] = useState(false);
   return (
     <div className='navBarPhone'>
       <div
@@ -15,16 +17,18 @@ function NavBarPhone({ navRef, showLogout, logout, sticking }: any) {
         {/* Nav start */}
         <div className='flex items-center ml-6 relative'>
           {showMenu ? (
-            <SpanPhone setShowMenu={setShowMenu} />
+            <SpanPhone setShowMenu={setShowMenu} setShowCategory={setShowCategory} />
           ) : (
             <RxHamburgerMenu
               onClick={() => {
                 setShowMenu(true);
+                setShowCategory(false);
                 window.scrollTo(0, 150);
               }}
               className=' hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 text-2xl'
             />
           )}
+          {showCategory && <Categories setShowCategory={setShowCategory} />}
         </div>
         {/* Nav end */}
         <ul className='flex items-center pr-7'>
