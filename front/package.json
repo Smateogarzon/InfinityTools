@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.10.1",
     "@emotion/styled": "^11.11.5",
+    "@midudev/tailwind-animations": "^0.0.7",
     "@mui/material": "^5.15.15",
     "@reduxjs/toolkit": "^2.2.3",
     "@tabler/icons-react": "^3.2.0",

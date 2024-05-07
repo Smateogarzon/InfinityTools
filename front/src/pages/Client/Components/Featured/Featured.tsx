@@ -29,13 +29,13 @@ export default function Featured() {
         CATEGORÍAS DESTACADAS
       </h3>
 
-      <ul className='flex max-w-[600px] w-full justify-around mx-auto'>
+      <ul className='flex max-w-[700px] w-full justify-around flex-wrap mx-auto gap-3'>
         {featured.map((item, i) => {
           return (
             <li
               key={i}
               className='flex flex-col items-center drop-shadow-lg hover:cursor-pointer [&>div>img]:hover:p-1 [&>span]:hover:text-bright-sun-500 [&>div]:hover:border-bright-sun-500 [&>div]:hover:shadow-[0_0_15px_-5px_#f9a207]'>
-              <div className='transition-all hover:transition-all rounded-full w-[100px] h-[100px] overflow-hidden border-[6px] border-solid border-bright-sun-600'>
+              <div className='transition-all hover:transition-all rounded-full  overflow-hidden border-[6px] border-solid border-bright-sun-600 w-[135px] h-[135px] xsm:w-[150px] xsm:h-[150px] '>
                 <img
                   className='w-full h-full object-cover bg-[#ffffff] p-3 transition-all hover:transition-all'
                   src={item.image}

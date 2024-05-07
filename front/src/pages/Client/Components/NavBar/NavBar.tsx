@@ -1,21 +1,21 @@
-import { BsFillHouseDoorFill } from 'react-icons/bs';
-import { BsListUl } from 'react-icons/bs';
-import { BsTagFill } from 'react-icons/bs';
-import { BsFillPersonFill } from 'react-icons/bs';
-import { BsCartFill } from 'react-icons/bs';
-import { FiLogOut } from 'react-icons/fi';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { logOut } from '../../../../store/thukns/auth.thuks';
+import NavBarDesktop from './navBarDesktop';
+import NavBarPhone from './navBarPhone';
 
 export default function NavBar() {
+  const Navigate = useNavigate();
   const dispach = useAppDispatch();
   const { rol } = useAppSelector((state) => state.auth);
   const navRef = useRef(null);
   const [sticking, setSticking] = useState<boolean>(false);
   const [showLogout, setShowLogout] = useState<boolean>(false);
-
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [width]);
   useEffect(() => {
     if (rol !== '') {
       setShowLogout(true);
@@ -34,68 +34,21 @@ export default function NavBar() {
 
   const logout = async () => {
     await dispach(logOut());
+    Navigate('/');
   };
   return (
     <>
       {sticking && <div className='h-[55px]'></div>}
-      <div
-        ref={navRef}
-        className={`flex justify-between bg-zeus-975 border-t-2 border-b-2 border-x-0 border-solid border-bright-sun-600 ${sticking ? 'fixed top-0 w-full z-10 ' : ' '}`}>
-        {/* Nav start */}
-        <ul className='flex h-[55px] items-center pl-[2%]'>
-          <li className='mx-5 '>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsFillHouseDoorFill className='mr-2' />
-              <span className='translate-y-[1px]'>Inicio</span>
-            </a>
-          </li>
-          <li className='mx-5'>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsListUl className='mr-2' />
-              <span className='translate-y-[1px]'>Categorías</span>
-            </a>
-          </li>
-          <li className='mx-5'>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsTagFill className='mr-2' />
-              <span className='translate-y-[1px]'>Ofertas del día</span>
-            </a>
-          </li>
-        </ul>
-
-        {/* Nav end */}
-        <ul className='flex items-center pr-7'>
-          <li className='mx-5'>
-            <Link
-              to='/login'
-              className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsFillPersonFill className='h-[30px] w-[30px]' />
-            </Link>
-          </li>
-
-          <li className='mx-5'>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsCartFill className='h-[25px] w-[25px]' />
-            </a>
-          </li>
-          <li>
-            {showLogout && (
-              <FiLogOut
-                onClick={logout}
-                className='h-[25px] w-[25px] hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'
-              />
-            )}
-          </li>
-        </ul>
-      </div>
+      {width > 600 ? (
+        <NavBarDesktop
+          navRef={navRef}
+          showLogout={showLogout}
+          logout={logout}
+          sticking={sticking}
+        />
+      ) : (
+        <NavBarPhone navRef={navRef} showLogout={showLogout} logout={logout} sticking={sticking} />
+      )}
     </>
   );
 }

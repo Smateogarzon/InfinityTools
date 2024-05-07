@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import HomeCard from '../Card/HomeCard';
+import HomeCardsMovile from './HomeCardsMovile';
 
 interface Data {
   title: string;
@@ -9,6 +11,11 @@ interface Data {
 }
 
 function HomeCards({ title }: { title: string }) {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [window.innerWidth]);
+
   const arrayOfCards: Array<Data> = [
     {
       brand: 'Bosch Herramientas',
@@ -58,9 +65,13 @@ function HomeCards({ title }: { title: string }) {
     <div className='my-[50px]'>
       <h4 className='text-3xl text-bright-sun-600 text-center italic'>{title.toUpperCase()}</h4>
 
-      <div className='flex flex-wrap justify-center w-full max-w-[1000px] mx-auto'>
+      <div className='flex flex-wrap justify-center w-full gap-3 smm: max-w-[1000px] mx-auto'>
         {arrayOfCards.map((data, i) => {
-          return <HomeCard key={i} data={data} />;
+          return width > 599 ? (
+            <HomeCard key={i} data={data} />
+          ) : (
+            <HomeCardsMovile key={i} data={data} />
+          );
         })}
       </div>
     </div>

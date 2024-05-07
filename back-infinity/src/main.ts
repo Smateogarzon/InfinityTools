@@ -15,7 +15,7 @@ async function bootstrap() {
   app.use(morgan('dev'));
   // app.enableCors();
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://infinity-tools.vercel.app'],
     credentials: true,
     methods: 'GET,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],

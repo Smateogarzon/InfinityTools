@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import animations from '@midudev/tailwind-animations';
 export default {
   content: ['./src/**/*.{ts,tsx}'],
   important: '#root',
@@ -7,8 +8,9 @@ export default {
       xsm: '325px',
       xss: '380px',
       xs: '480px',
+      smm: '599px',
       sm: '640px',
-      md: '768px',
+      md: '769px',
       lg: '1024px',
       xl: '1280px',
       '2xl': '1536px',
@@ -47,8 +49,8 @@ export default {
         700: '#5f5949',
         800: '#524c41',
         900: '#48433b',
-        950: '#211e1a', // BGs
-        975: '#1C1914',
+        950: '#1C1914', // BGs
+        975: '#1C191470',
       },
 
       'athens-gray': {
@@ -79,6 +81,7 @@ export default {
       },
       Black: {
         full: '#000000',
+        high: '#222222',
         low: '#1C1914',
       },
       Red: '#FF0000',
@@ -112,6 +115,7 @@ export default {
       };
       addUtilities(newUtilities, ['responsive', 'hover']);
     },
+    animations,
   ],
   corePlugins: {
     preflight: false,

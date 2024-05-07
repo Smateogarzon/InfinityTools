@@ -3,20 +3,24 @@ import { BsCreditCard2BackFill } from 'react-icons/bs';
 import { FaWallet } from 'react-icons/fa6';
 import { BiSupport } from 'react-icons/bi';
 import { FaBoxArchive } from 'react-icons/fa6';
+import style from './InfoCards.module.css';
 
 export default function InfoCards() {
   return (
-    <div className='mt-[75px] pb-[75px] bg-gradient-to-b from-zeus-950 to-[#000000] w-full flex flex-wrap justify-evenly text-center [&>div]:shadow-lg [&>div]:relative [&>*>:last-child]:h-full [&>*>:last-child]:flex [&>*>:last-child]:items-center [&>*>:first-child]:mt-[10px] [&>*>:first-child] [&>*>:first-child]:font-bold [&>*>:first-child]:mb-[5px] [&>*>:first-child]:text-xl *:text-[#000000] *:font-medium *:p-[10px] *:w-[300px] *:h-[300px] *:bg-gradient-to-b *:from-bright-sun-500 *:to-bright-sun-700 *:m-[25px] *:rounded-2xl *:flex *:flex-col *:items-center *:justify-between [&>div>div>*]:w-[75px] [&>div>div>*]:h-[75px] [&>div>div]:mb-auto'>
-      <div>
+    <div
+      className='mt-[75px] pb-[75px] flex flex-wrap justify-center items-center w-full  gap-10
+      [&>div]:flex [&>div]:flex-col [&>div]:justify-around [&>div]:w-[325px] [&>div]:h-[250px] [&>div]:text-center [&>div]:rounded-xl [&>div]:p-3 [&>div]:text-balance
+      [&>div>p]:text-balance 
+      [&>div>div]:text-5xl '>
+      <div className={style.cardsInfo}>
         <p>ENVÍOS A TODO EL PAÍS</p>
         <div>
           <FaTruckFast />
         </div>
-
         <p>Los costos de envío dependen de la zona a la que se dirige</p>
       </div>
 
-      <div>
+      <div className={style.cardsInfo}>
         <p>COMPRA A CRÉDITO</p>
         <div>
           <BsCreditCard2BackFill />
@@ -24,7 +28,7 @@ export default function InfoCards() {
         <p>Tenemos sistema de crédito automático por compras superiores a $50.000</p>
       </div>
 
-      <div>
+      <div className={style.cardsInfo}>
         <p>MÉTODOS DE PAGO CONFIABLES</p>
         <div>
           <FaWallet />
@@ -35,7 +39,7 @@ export default function InfoCards() {
         </p>
       </div>
 
-      <div>
+      <div className={style.cardsInfo}>
         <p>SOPORTE</p>
         <div>
           <BiSupport />
@@ -46,7 +50,7 @@ export default function InfoCards() {
         </p>
       </div>
 
-      <div>
+      <div className={style.cardsInfo}>
         <p>DEVOLUCIONES</p>
         <div>
           <FaBoxArchive />
