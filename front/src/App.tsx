@@ -36,6 +36,7 @@ function App() {
       <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
       <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
+
       <Route
         path='/admin/*'
         element={

@@ -23,6 +23,7 @@ export default {
       sans: ['system-ui', 'sans-serif'],
       chelsea: ['Chelsea-Market', 'cursive'],
     },
+
     // https://coolors.co/eee3d6-c55d38-568a3f-394b38
     colors: {
       'bright-sun': {

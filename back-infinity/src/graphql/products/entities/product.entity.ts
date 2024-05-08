@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, mongo } from 'mongoose';
 import { IsString, IsNumber, IsPositive, IsArray, IsUrl } from 'class-validator';
+import { Category } from '@/graphql/category/entities/category.entity';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -48,11 +49,15 @@ export class Product {
   @IsPositive()
   referencePriceDistributor: number;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
+  @Field(() => Category)
+  category: Category;
+
   @Prop()
   @Field(() => [String])
   @IsString({ each: true })
   @IsArray()
-  category: string[];
+  subcategory: string[];
 
   @Prop()
   @Field()

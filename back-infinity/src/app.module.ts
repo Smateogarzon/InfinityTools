@@ -19,6 +19,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtServices } from './services/jwt.service';
 import { FacebookStrategy } from './config/facebookStrategi';
 import { ProductsModule } from './graphql/products/products.module';
+import { BrandsModule } from './graphql/brands/brands.module';
+import { CategoryModule } from './graphql/category/category.module';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { ProductsModule } from './graphql/products/products.module';
     UsersModule,
     LocationModule,
     ProductsModule,
+    BrandsModule,
+    CategoryModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     PassportModule.register({ session: true }),
   ],

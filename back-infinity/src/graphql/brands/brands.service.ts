@@ -1,26 +1,48 @@
 import { Injectable } from '@nestjs/common';
-// import { CreateBrandInput } from './dto/create-brand.input';
-// import { UpdateBrandInput } from './dto/update-brand.input';
+import { CreateBrandInput } from './dto/create-brand.input';
+import { UpdateBrandInput } from './dto/update-brand.input';
+import { InjectModel } from '@nestjs/mongoose';
+import { Brand } from './entities/brand.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class BrandsService {
-  // create(createBrandInput: CreateBrandInput) {
-  //   return 'This action adds a new brand';
-  // }
+  constructor(@InjectModel('Brand') private brandModel: Model<Brand>) {}
 
-  findAll() {
-    return `This action returns all brands`;
+  async findAll() {
+    try {
+      return await this.brandModel.find();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async create(createBrandInput: CreateBrandInput) {
+    const searchBrand = await this.brandModel.findOne({
+      name: createBrandInput.name,
+    });
+    if (searchBrand) {
+      throw new Error('La marca ya existe');
+    }
+    const brand = new this.brandModel(createBrandInput);
+    brand.name = createBrandInput.name.toLowerCase();
+    return brand.save();
   }
 
-  // update(id: number, updateBrandInput: UpdateBrandInput) {
-  //   return `This action updates a #${id} brand`;
-  // }
+  async update(id: string, updateBrandInput: UpdateBrandInput) {
+    try {
+      const brand = await this.brandModel.findOneAndUpdate({ _id: id }, updateBrandInput);
+      return brand;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: string) {
+    try {
+      return await this.brandModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw error;
+    }
   }
 }
