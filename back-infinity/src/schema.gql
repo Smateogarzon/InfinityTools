@@ -60,6 +60,12 @@ type PaginationUser {
   total: Int
 }
 
+type Category {
+  name: String!
+  subcategory: [String!]!
+  products: [String!]
+}
+
 type Product {
   name: String!
   description: String!
@@ -68,13 +74,19 @@ type Product {
   referencePrice: Float!
   distributorPrice: Float!
   referencePriceDistributor: Float!
-  category: [String!]!
+  category: Category!
+  subcategory: [String!]!
   picture: String!
   stock: Int!
   brand: String!
   shoppingCart: [String!]!
   reviews: [String!]!
   salesNumber: Int!
+}
+
+type Brand {
+  name: String!
+  products: [String!]
 }
 
 type Query {
@@ -84,6 +96,7 @@ type Query {
   LogIn(email: String!, password: String!): User!
   AllLocation: [Location!]!
   location(id: Int!): Location!
+  brands: [Brand!]!
 }
 
 input FindUserInput {
@@ -103,6 +116,13 @@ type Mutation {
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
   createProduct(createProductInput: CreateProductInput!): Product!
+  createBrand(CreateBrandInput: CreateBrandInput!): Brand!
+  updateBrand(id: String!, updateBrandInput: UpdateBrandInput!): Brand!
+  deleteBrand(id: String!): Brand!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(id: String!, updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: String!): Category!
+  createSubCategory(createCategoryInput: CreateCategoryInput!, id: String!): Category!
 }
 
 input CreateUserInput {
@@ -164,4 +184,20 @@ input CreateProductInput {
   picture: String
   stock: Int!
   brand: String
+}
+
+input CreateBrandInput {
+  name: String!
+}
+
+input UpdateBrandInput {
+  name: String!
+}
+
+input CreateCategoryInput {
+  name: String
+}
+
+input UpdateCategoryInput {
+  name: String
 }

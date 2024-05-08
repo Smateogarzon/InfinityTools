@@ -14,6 +14,10 @@ export class Category {
   name: string;
 
   @Prop()
+  @Field(() => [String])
+  subcategory: String[];
+
+  @Prop()
   @Field(() => [String], { nullable: true })
   @IsString({ each: true })
   @IsOptional()
