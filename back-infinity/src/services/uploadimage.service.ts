@@ -1,28 +1,38 @@
 import { Storage } from '@google-cloud/storage';
-import path from 'path';
+import * as fs from 'fs';
 
 export default async function main(
   fileBuffer,
-  destFileName = 'filaesasas',
+  destFileName,
   generationMatchPrecondition = 0
-) {
-  const storage = new Storage({
-    keyFilename: path.join(__dirname, '../../infinity-420816-ac9896629570.json'),
-    projectId: process.env.project_id,
-  });
+): Promise<string> {
+  try {
+    const storage = new Storage({
+      keyFilename: process.env.CREDENTIALS,
+    });
+    const temporaryFilePath = `./src/utils/${fileBuffer.filename}`;
 
-  const PictureInfinity = storage.bucket('pictures_infinity');
-  async function uploadFile() {
+    const readStream = fileBuffer.createReadStream();
+
+    await new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(temporaryFilePath);
+      readStream.pipe(writeStream);
+      writeStream.on('error', reject);
+      writeStream.on('finish', resolve);
+    });
+    const PictureInfinity = storage.bucket('pictures_infinity');
+
     const options = {
       destination: destFileName,
-      contentType: 'image/svg+xml',
+      contentType: 'image/png',
       preconditionOpts: { ifGenerationMatch: generationMatchPrecondition },
       public: true,
     };
 
-    const [file] = await PictureInfinity.upload(fileBuffer, options);
+    const [file] = await PictureInfinity.upload(temporaryFilePath, options);
+    await fs.promises.unlink(temporaryFilePath);
     return file.publicUrl();
+  } catch (error) {
+    return error;
   }
-
-  uploadFile().catch(console.error);
 }

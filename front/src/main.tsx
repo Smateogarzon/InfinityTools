@@ -3,13 +3,19 @@ import App from '@/App';
 import '@/index.css';
 import CustomStore from '@/store/StoreProvider.jsx';
 import { BrowserRouter } from 'react-router-dom';
-import { ApolloClient, HttpLink, InMemoryCache, ApolloProvider } from '@apollo/client';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { StyledEngineProvider } from '@mui/styled-engine';
 const back = import.meta.env.VITE_BACKEND_URL;
-
+const httpLink = createUploadLink({
+  uri: `${back}/api/graphql`,
+  headers: {
+    'Apollo-Require-Preflight': 'true',
+  },
+});
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: new HttpLink({ uri: `${back}/api/graphql` }),
+  link: httpLink,
   connectToDevTools: true,
   credentials: 'include',
 });

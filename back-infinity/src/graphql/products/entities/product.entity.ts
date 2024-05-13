@@ -1,8 +1,9 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, mongo } from 'mongoose';
-import { IsString, IsNumber, IsPositive, IsArray, IsUrl } from 'class-validator';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { IsString, IsNumber, IsPositive, IsArray, IsUrl, IsBoolean } from 'class-validator';
 import { Category } from '@/graphql/category/entities/category.entity';
+import { Subcategory } from '@/graphql/category/entities/subcategory.entity';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -53,33 +54,19 @@ export class Product {
   @Field(() => Category)
   category: Category;
 
-  @Prop()
-  @Field(() => [String])
-  @IsString({ each: true })
-  @IsArray()
-  subcategory: string[];
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' })
+  @Field(() => Subcategory)
+  subcategory: Subcategory;
 
   @Prop()
-  @Field()
+  @Field(() => String)
   @IsUrl()
   picture: string;
-
-  @Prop()
-  @Field(() => Int)
-  @IsNumber({ allowNaN: false, allowInfinity: false })
-  @IsPositive()
-  stock: number;
 
   @Prop()
   @Field()
   @IsString()
   brand: string;
-
-  @Prop()
-  @Field(() => [String])
-  @IsString({ each: true })
-  @IsArray()
-  shoppingCart: string[];
 
   @Prop()
   @Field(() => [String])
@@ -92,6 +79,11 @@ export class Product {
   @IsNumber({ allowNaN: false, allowInfinity: false })
   @IsPositive()
   salesNumber: number;
+
+  @Prop({ default: true })
+  @Field(() => Boolean)
+  @IsBoolean()
+  status: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

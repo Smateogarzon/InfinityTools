@@ -6,6 +6,7 @@ import * as morgan from 'morgan';
 import helmet from 'helmet';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -18,7 +19,14 @@ async function bootstrap() {
     origin: ['http://localhost:5173', 'https://infinity-tools.vercel.app'],
     credentials: true,
     methods: 'GET,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'apollo-require-preflight',
+    ],
   });
 
   app.use(
@@ -59,6 +67,7 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 5 }));
   await app.listen(3000);
 
   console.log(`${process.env.HOST}`);
