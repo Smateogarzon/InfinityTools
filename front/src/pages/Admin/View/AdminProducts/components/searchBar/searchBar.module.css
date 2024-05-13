@@ -1,0 +1,7 @@
+.searchBar {
+  width: 85%;
+  position: relative;
+}
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

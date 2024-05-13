@@ -28,7 +28,7 @@ export default {
     colors: {
       'bright-sun': {
         50: '#fffbeb',
-        100: '#fff5c6',
+        100: '#DA6C0A',
         200: '#ffe988',
         300: '#ffd43c', // Accent
         400: '#ffc420',

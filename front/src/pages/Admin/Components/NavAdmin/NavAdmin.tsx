@@ -10,7 +10,7 @@ function NavAdmin() {
 
   return (
     <nav
-      className='fixed overflow-y-scroll bg-zeus-975 text-white py-3 w-[225px] h-screen'
+      className='fixed overflow-y-scroll bg-zeus-975 text-white w-[225px] h-screen'
       style={{ scrollbarWidth: 'none' }}>
       <ul className='w-[225px]'>
         <li>

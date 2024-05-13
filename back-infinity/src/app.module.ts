@@ -48,6 +48,7 @@ import { CategoryModule } from './graphql/category/category.module';
           'request.credentials': 'include',
         },
       },
+      csrfPrevention: true,
     }),
     UsersModule,
     LocationModule,
