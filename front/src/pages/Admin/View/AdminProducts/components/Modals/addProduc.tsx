@@ -1,9 +1,31 @@
-import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
-import { createProduct } from '../../graphql/querys';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { createProduct, getAllCategories, getBrands, getSubCategories } from '../../graphql/querys';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import styled from './addProduct.module.css';
 import { IoMdClose } from 'react-icons/io';
+import { ICategories, ICreateProductInput } from '../../interface';
+import { Bounce, toast } from 'react-toastify';
+const initialProductState: ICreateProductInput = {
+  name: '',
+  description: '',
+  purchasePrice: 0,
+  sellingPrice: 0,
+  referencePrice: 0,
+  category: '',
+  subcategory: '',
+  brand: '',
+};
+const initialErrors = {
+  name: '',
+  description: '',
+  purchasePrice: '',
+  sellingPrice: '',
+  referencePrice: '',
+  category: '',
+  subcategory: '',
+  brand: '',
+};
 
 function AddProduct({
   setClose,
@@ -12,10 +34,33 @@ function AddProduct({
   setClose: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectModal: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [addProduct, response] = useMutation(createProduct);
-  console.log('🚀 ~ response:', response);
+  const allCategories = useQuery(getAllCategories);
+  const [gSubcategories, responseSub] = useLazyQuery(getSubCategories);
+  const allBrands = useQuery(getBrands);
+  const [addProduct] = useMutation(createProduct);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [arrayFiles, setArrayFiles] = useState<File[]>([]);
+  const [infoProduct, setInfoProduct] = useState<ICreateProductInput>(initialProductState);
+  const [errors, setErrors] = useState(initialErrors);
+
+  useEffect(() => {
+    allCategories.refetch();
+    allBrands.refetch();
+  }, [allBrands, allCategories]);
+
+  const notifyCategory = (e: Error) =>
+    toast.warn(`${e}`.substring(12), {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setSelectedFile(e.target.files[0]);
@@ -31,8 +76,68 @@ function AddProduct({
       addProduct({ variables: { image: selectedFile, arrayFiles: arrayFiles } });
     }
   };
+
+  const handleSubCategory = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    try {
+      const { value } = e.target;
+      await gSubcategories({
+        variables: {
+          id: value,
+        },
+        fetchPolicy: 'no-cache',
+      });
+    } catch (error) {
+      notifyCategory(error as Error);
+    }
+  };
+
+  const validateProduct = (updatedProduct: ICreateProductInput) => {
+    const newErrors = { ...initialErrors };
+
+    if (updatedProduct.name && updatedProduct.name.length < 3) {
+      newErrors.name = 'El nombre es demasiado corto';
+    }
+
+    if (updatedProduct.description && updatedProduct.description.length < 500) {
+      newErrors.description = 'La descripción es demasiado corta';
+    }
+
+    if (updatedProduct.purchasePrice !== undefined && updatedProduct.purchasePrice < 1) {
+      newErrors.purchasePrice = 'El precio de compra tiene que ser mayor que 0';
+    }
+
+    if (
+      updatedProduct.sellingPrice !== undefined &&
+      updatedProduct.purchasePrice !== undefined &&
+      updatedProduct.sellingPrice <= updatedProduct.purchasePrice
+    ) {
+      newErrors.sellingPrice = 'El precio de venta tiene que ser mayor que el precio de compra';
+    }
+
+    if (
+      updatedProduct.referencePrice !== undefined &&
+      updatedProduct.sellingPrice !== undefined &&
+      updatedProduct.referencePrice <= updatedProduct.sellingPrice
+    ) {
+      newErrors.referencePrice =
+        'El precio de referencia tiene que ser mayor que el precio de venta';
+    }
+
+    setErrors(newErrors);
+  };
+
+  const handleProduct = (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    const updatedProduct = { ...infoProduct, [name]: value };
+
+    setInfoProduct(updatedProduct);
+    validateProduct(updatedProduct);
+  };
+
   return (
-    <div className='flex  flex-col absolute z-10 top-[25%] left-[30%] max-h-[500px]  w-[40%] bg-[#000000] p-5 rounded-xl'>
+    <div className='flex  flex-col absolute z-11 top-[25%] left-[30%] max-h-[500px]  w-[40%] bg-[#000000] p-5 rounded-xl'>
       <IoMdClose
         className='cursor-pointer absolute right-[5%] top-[5%] text-bright-sun-600 text-3xl'
         onClick={() => {
@@ -43,11 +148,12 @@ function AddProduct({
       <div className='flex flex-col justify-center items-center'>
         <h1 className='text-bright-sun-600'>Añadir producto</h1>
       </div>
-      <form onSubmit={handleSubmit} className={styled.containerForm}>
+      <form onSubmit={handleSubmit} className={styled.containerForm} id='form' name='form'>
         <div>
           <input
             type='file'
             id='imageInput'
+            name='image'
             accept='image/*'
             onChange={handleFileChange}
             className='hidden'
@@ -58,7 +164,7 @@ function AddProduct({
             className='inline-block bg-bright-sun-100 hover:bg-bright-sun-800 text-white font-bold py-2 px-4 rounded cursor-pointer'>
             Subir imagen
           </label>
-          <div id='imagePreview' className='flex justify-center py-4'>
+          <div id='imagePreview' className='flex justify-center flex-col items-center py-4'>
             {selectedFile ? (
               <img
                 src={URL.createObjectURL(selectedFile)}
@@ -68,12 +174,18 @@ function AddProduct({
             ) : (
               <IoMdAddCircleOutline className='w-[100px] h-[100px]' />
             )}
+            {!selectedFile && (
+              <>
+                <p className='text-[#ff0000]'>No hay imagen seleccionada</p>
+              </>
+            )}
           </div>
         </div>
         <div>
           <input
             type='file'
             id='imageInputs'
+            name='images'
             accept='image/*'
             onChange={handleArrayFileChange}
             className='hidden'
@@ -101,51 +213,118 @@ function AddProduct({
                 <IoMdAddCircleOutline className='w-[100px] h-[100px] ' />
               )}
             </div>
+            {arrayFiles.length <= 3 && <p className='text-[#ff0000]'>Deben ser 3 imagenes o mas</p>}
           </div>
         </div>
         <div className='flex flex-col'>
           <label htmlFor='name'>Nombre del producto:</label>
           <input
+            onChange={(e) => handleProduct(e)}
             type='text'
             placeholder='Nombre'
             id='name'
+            name='name'
             className='h-[30px] text-[#fff] bg-Black-low rounded-md border-solid border-1'
           />
+          {errors.name && <p className='text-[#ff0000]'>{errors.name}</p>}
         </div>
         <div className='flex flex-col'>
           <label htmlFor='description'>Descripción:</label>
           <textarea
+            onChange={(e) => handleProduct(e)}
             placeholder='Descripción'
             id='description'
+            name='description'
             className='h-[100px] p-2 box-border  text-[#fff] bg-Black-low rounded-md border-solid border-1'
           />
+          {errors.description && <p className='text-[#ff0000]'>{errors.description}</p>}
         </div>
         <div className='flex flex-col'>
           <label htmlFor='purchasePrice'>Precio de compra:</label>
           <input
-            type='text'
+            onChange={(e) => handleProduct(e)}
+            type='number'
             placeholder='Precio de compra'
             id='purchasePrice'
+            name='purchasePrice'
             className='h-[30px] text-[#fff] bg-Black-low rounded-md border-solid border-1'
           />
+          {errors.purchasePrice && <p className='text-[#ff0000]'>{errors.purchasePrice}</p>}
         </div>
         <div className='flex flex-col'>
           <label htmlFor='salePrice'>Precio de venta:</label>
           <input
-            type='text'
+            onChange={(e) => handleProduct(e)}
+            type='number'
             placeholder='Precio de venta'
             id='salePrice'
+            name='sellingPrice'
             className='h-[30px] text-[#fff] bg-Black-low rounded-md border-solid border-1'
           />
+          {errors.sellingPrice && <p className='text-[#ff0000]'>{errors.sellingPrice}</p>}
         </div>
         <div className='flex flex-col'>
           <label htmlFor='referencePrice'>Precio de referencia:</label>
           <input
-            type='text'
+            onChange={(e) => handleProduct(e)}
+            type='number'
+            name='referencePrice'
             placeholder='Precio con descuento'
-            id='referencePrice'
+            id='referencePrices'
             className='h-[30px] text-[#fff] bg-Black-low rounded-md border-solid border-1'
           />
+          {errors.referencePrice && <p className='text-[#ff0000]'>{errors.referencePrice}</p>}
+        </div>
+        <div className='flex flex-col gap-1'>
+          <label htmlFor='categories'>Selecciona una categoria:</label>
+          <select
+            name='categories'
+            onChange={(e) => handleSubCategory(e)}
+            id='categories'
+            defaultValue={''}
+            className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
+            <option value='' disabled>
+              Categorias
+            </option>
+            {allCategories?.data &&
+              allCategories.data?.allCategories.map((category: ICategories) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+          <label htmlFor='subCategories'>Seleccione una subcategoria</label>
+          <select
+            name='subCategories'
+            id='subCategories'
+            defaultValue={''}
+            className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
+            <option value='' disabled>
+              Subcategorias
+            </option>
+            {responseSub?.data &&
+              responseSub.data?.allSubcategories.map((sub: ICategories) => (
+                <option key={sub._id} value={sub._id}>
+                  {sub.name}
+                </option>
+              ))}
+          </select>
+          <label htmlFor='marca'>Seleccione una Marca:</label>
+          <select
+            name='brands'
+            id='brands'
+            defaultValue={''}
+            className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
+            <option value='' disabled>
+              Marcas
+            </option>
+            {allBrands?.data &&
+              allBrands.data?.brands.map((brand: ICategories) => (
+                <option key={brand._id} value={brand._id}>
+                  {brand.name}
+                </option>
+              ))}
+          </select>
         </div>
         <div className='flex justify-center mt-3'>
           <button

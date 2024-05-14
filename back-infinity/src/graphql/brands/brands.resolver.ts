@@ -18,8 +18,9 @@ export class BrandsResolver {
   }
 
   @Mutation(() => Brand)
-  async createBrand(@Args('CreateBrandInput') createBrandInput: CreateBrandInput) {
+  async createBrand(@Args('createBrandInput') createBrandInput: CreateBrandInput) {
     try {
+      console.log('🚀 ~ BrandsResolver ~ createBrand ~ createBrandInput:', createBrandInput);
       return this.brandsService.create(createBrandInput);
     } catch (error) {
       return error;

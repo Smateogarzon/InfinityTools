@@ -13,8 +13,12 @@ export class CategoryService {
     @InjectModel('Subcategory') private subcategoryModel: Model<Subcategory>
   ) {}
 
-  findAll() {
-    return `This action returns all category`;
+  async findAllCategories() {
+    try {
+      return await this.categoryModel.find();
+    } catch (error) {
+      return error;
+    }
   }
 
   findOne(id: number) {
@@ -24,7 +28,7 @@ export class CategoryService {
   async create(createCategoryInput: CreateCategoryInput) {
     try {
       const searchCategory = await this.categoryModel.findOne({
-        name: createCategoryInput.name,
+        name: createCategoryInput.name.toLowerCase(),
       });
       if (searchCategory) {
         throw new Error('La categoria ya existe');
@@ -44,8 +48,12 @@ export class CategoryService {
     } catch (error) {}
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    try {
+      return await this.categoryModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createSubCategory(createCategoryInput: CreateCategoryInput, categoryId: string) {
@@ -61,6 +69,28 @@ export class CategoryService {
       } else {
         throw new Error('La subcategoría ya existe en esta categoría');
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findAllSubCategories(categoryId: string) {
+    try {
+      return await this.subcategoryModel.find({ category: categoryId });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async removeSubCategory(id: string, categoryId: string) {
+    try {
+      const findCategory = await this.categoryModel.findOne({ _id: categoryId });
+
+      if (findCategory.subcategory.includes(id)) {
+        findCategory.subcategory.splice(findCategory.subcategory.indexOf(id), 1);
+        await findCategory.save();
+      }
+      return await this.subcategoryModel.findByIdAndDelete(id);
     } catch (error) {
       throw error;
     }

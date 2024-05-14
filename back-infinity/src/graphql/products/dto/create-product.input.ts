@@ -1,5 +1,5 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
-import { IsArray, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsNumber, IsPositive } from 'class-validator';
 
 @InputType()
 export class CreateProductInput {
@@ -24,23 +24,11 @@ export class CreateProductInput {
   @IsPositive()
   referencePrice: number;
 
-  @Field(() => Float, { nullable: true })
-  @IsNumber({ allowNaN: false, allowInfinity: false })
-  @IsPositive()
-  distributorPrice: number;
-
-  @Field(() => Float, { nullable: true })
-  @IsNumber({ allowNaN: false, allowInfinity: false })
-  @IsPositive()
-  referencePriceDistributor: number;
-
-  @Field(() => [String], { nullable: true })
-  @IsString({ each: true })
-  @IsArray()
-  category: string[];
-
   @Field(() => String, { nullable: true })
-  picture: string;
+  category: string;
+
+  @Field(() => String)
+  subcategory: string;
 
   @Field({ nullable: true })
   brand: string;

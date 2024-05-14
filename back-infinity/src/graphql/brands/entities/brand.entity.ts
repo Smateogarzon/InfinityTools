@@ -8,6 +8,8 @@ export type BrandDocument = HydratedDocument<Brand>;
 @Schema()
 @ObjectType()
 export class Brand {
+  @Field(() => String)
+  _id: string;
   @Prop()
   @IsString()
   @Field()

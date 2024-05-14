@@ -11,7 +11,7 @@ function ViewProducts() {
   const [addCategory, setAddCategory] = useState(false);
   const [selectMoldal, setSelectModal] = useState('');
   return (
-    <div className='flex flex-col items-center justify-center ml-[225px] mt-5 h-[90vh] relative'>
+    <div className='flex flex-col items-center justify-center ml-[225px] mt-5  relative'>
       <DropdownSearchBar />
       <Filters
         setAddProduct={setAddProduct}

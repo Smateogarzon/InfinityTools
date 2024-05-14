@@ -64,6 +64,10 @@ export class Product {
   picture: string;
 
   @Prop()
+  @Field(() => [String])
+  extraPicture: string[];
+
+  @Prop()
   @Field()
   @IsString()
   brand: string;
