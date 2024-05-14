@@ -4,6 +4,7 @@ import { CategoryResolver } from './category.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategorySchema } from './entities/category.entity';
 import { SubcategorySchema } from './entities/subcategory.entity';
+import { SubCategoryResolver } from './subCategory.resolver';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { SubcategorySchema } from './entities/subcategory.entity';
       { name: 'Subcategory', schema: SubcategorySchema },
     ]),
   ],
-  providers: [CategoryResolver, CategoryService],
+  providers: [CategoryResolver, CategoryService, SubCategoryResolver],
 })
 export class CategoryModule {}

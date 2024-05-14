@@ -7,6 +7,8 @@ export type SubCategoryDocument = HydratedDocument<Subcategory>;
 @Schema()
 @ObjectType()
 export class Subcategory {
+  @Field(() => String)
+  _id: string;
   @Prop()
   @Field()
   @IsString()
@@ -14,7 +16,7 @@ export class Subcategory {
 
   @Prop()
   @Field(() => String)
-  category: String;
+  category: string;
 }
 
 export const SubcategorySchema = SchemaFactory.createForClass(Subcategory);

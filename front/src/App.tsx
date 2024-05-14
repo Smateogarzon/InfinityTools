@@ -16,6 +16,7 @@ import Login from './pages/Client/View/Login&Register/login';
 import { useDispatch } from 'react-redux';
 import { getFacebookAccess, getGoogleAccess } from '@/store/slices/auth.slice';
 import { useEffect } from 'react';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,32 +33,46 @@ function App() {
   }, [dispatch, query]);
 
   return (
-    <Routes>
-      <Route path='/' element={<Home />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
-
-      <Route
-        path='/admin/*'
-        element={
-          <>
-            <NavAdmin />
-            <Routes>
-              <Route path='/statistics' element={<ViewStatistics />} />
-              <Route path='/clients' element={<ViewClient />} />
-              <Route path='/orders' element={<ViewOrders />} />
-              <Route path='/products' element={<ViewProducts />} />
-              <Route path='/networks' element={<ViewNetworks />} />
-              <Route path='/bannersPublics' element={<ViewBannersPublics />} />
-              <Route path='/seoAndMetadata' element={<ViewSeoAndMetadata />} />
-              <Route path='/admin/mailing' element={<ViewMailing />} />
-              <Route path='/partners' element={<ViewPartners />} />
-              <Route path='/banners' element={<ViewBanners />} />
-            </Routes>
-          </>
-        }
+    <>
+      <ToastContainer
+        position='top-center'
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='dark'
+        transition={Bounce}
       />
-    </Routes>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
+
+        <Route
+          path='/admin/*'
+          element={
+            <>
+              <NavAdmin />
+              <Routes>
+                <Route path='/statistics' element={<ViewStatistics />} />
+                <Route path='/clients' element={<ViewClient />} />
+                <Route path='/orders' element={<ViewOrders />} />
+                <Route path='/products' element={<ViewProducts />} />
+                <Route path='/networks' element={<ViewNetworks />} />
+                <Route path='/bannersPublics' element={<ViewBannersPublics />} />
+                <Route path='/seoAndMetadata' element={<ViewSeoAndMetadata />} />
+                <Route path='/admin/mailing' element={<ViewMailing />} />
+                <Route path='/partners' element={<ViewPartners />} />
+                <Route path='/banners' element={<ViewBanners />} />
+              </Routes>
+            </>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

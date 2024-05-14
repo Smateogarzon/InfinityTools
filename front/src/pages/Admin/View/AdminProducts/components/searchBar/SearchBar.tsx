@@ -9,6 +9,7 @@ function DropdownSearchBar() {
   return (
     <div className={style.searchBar}>
       <input
+        autoComplete='on'
         className='w-full h-[45px] bg-zeus-800 rounded-2xl border-2 border-bright-sun-700 text-zeus-50 px-4 focus:outline-none'
         type='search'
         id='busqueda'

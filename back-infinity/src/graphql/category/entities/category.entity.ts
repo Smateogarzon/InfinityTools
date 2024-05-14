@@ -8,6 +8,9 @@ export type CategoryDocument = HydratedDocument<Category>;
 @Schema()
 @ObjectType()
 export class Category {
+  @Field()
+  _id: string;
+
   @Prop()
   @Field()
   @IsString()
@@ -15,7 +18,7 @@ export class Category {
 
   @Prop()
   @Field(() => [String])
-  subcategory: String[];
+  subcategory: string[];
 
   @Prop()
   @Field(() => [String], { nullable: true })

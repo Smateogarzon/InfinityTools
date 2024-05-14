@@ -61,12 +61,14 @@ type PaginationUser {
 }
 
 type Category {
+  _id: String!
   name: String!
   subcategory: [String!]!
   products: [String!]
 }
 
 type Subcategory {
+  _id: String!
   name: String!
   category: String!
 }
@@ -82,6 +84,7 @@ type Product {
   category: Category!
   subcategory: Subcategory!
   picture: String!
+  extraPicture: [String!]!
   brand: String!
   reviews: [String!]!
   salesNumber: Int!
@@ -89,6 +92,7 @@ type Product {
 }
 
 type Brand {
+  _id: String!
   name: String!
   products: [String!]
 }
@@ -101,6 +105,8 @@ type Query {
   AllLocation: [Location!]!
   location(id: Int!): Location!
   brands: [Brand!]!
+  allCategories: [Category!]!
+  allSubcategories(id: String!): [Subcategory!]!
 }
 
 input FindUserInput {
@@ -119,14 +125,15 @@ type Mutation {
   removeUser(id: String!): User!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
-  createProduct(image: Upload!, arrayFiles: [Upload!]!): Product!
-  createBrand(CreateBrandInput: CreateBrandInput!): Brand!
+  createProduct(image: Upload!, arrayFiles: [Upload!]!, createProductInput: CreateProductInput!): Product!
+  createBrand(createBrandInput: CreateBrandInput!): Brand!
   updateBrand(id: String!, updateBrandInput: UpdateBrandInput!): Brand!
   deleteBrand(id: String!): Brand!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(id: String!, updateCategoryInput: UpdateCategoryInput!): Category!
   removeCategory(id: String!): Category!
   createSubCategory(createCategoryInput: CreateCategoryInput!, id: String!): Category!
+  clearSubcategory(id: String!, categoryId: String!): Subcategory!
 }
 
 input CreateUserInput {
@@ -178,6 +185,17 @@ input UpdateLocationInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input CreateProductInput {
+  name: String
+  description: String
+  purchasePrice: Float
+  sellingPrice: Float
+  referencePrice: Float
+  category: String
+  subcategory: String!
+  brand: String
+}
 
 input CreateBrandInput {
   name: String!

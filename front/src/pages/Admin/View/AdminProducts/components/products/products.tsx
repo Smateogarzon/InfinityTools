@@ -6,7 +6,7 @@ import { MdEdit } from 'react-icons/md';
 function Products() {
   const [status, setStatus] = useState(true);
   return (
-    <div className='w-[85%] flex justify-center mt-3 h-[100%]'>
+    <div className='w-[85%] flex justify-center mt-3 min-h-[500px] max-h-[650px]'>
       <div className={styled.table}>
         <table className='w-[100%] text-center'>
           <thead>
@@ -29,6 +29,8 @@ function Products() {
                   <div className='flex justify-center w-[85px]'>
                     <input
                       type='checkbox'
+                      id='checkbox'
+                      name='checkbox'
                       className={styled.checkboxRound}
                       onClick={() => setStatus(!status)}
                     />
@@ -38,20 +40,6 @@ function Products() {
                   <MdDeleteForever />
                 </div>
               </td>
-            </tr>
-            <tr>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
-            </tr>
-            <tr>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
-              <td>hola</td>
             </tr>
           </tbody>
         </table>
