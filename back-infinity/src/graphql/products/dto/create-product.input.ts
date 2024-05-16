@@ -3,10 +3,10 @@ import { IsNumber, IsPositive } from 'class-validator';
 
 @InputType()
 export class CreateProductInput {
-  @Field({ nullable: true })
+  @Field()
   name: string;
 
-  @Field({ nullable: true })
+  @Field()
   description: string;
 
   @Field(() => Float, { nullable: true })
@@ -27,7 +27,7 @@ export class CreateProductInput {
   @Field(() => String, { nullable: true })
   category: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   subcategory: string;
 
   @Field({ nullable: true })

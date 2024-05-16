@@ -1,8 +1,8 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
-// import { CreateProductInput } from './dto/create-product.input';
-// import { UpdateProductInput } from './dto/update-product.input';
+import { CreateProductInput } from './dto/create-product.input';
+import { UpdateProductInput } from './dto/update-product.input';
 // import { Req } from '@nestjs/common';
 import * as Upload from 'graphql-upload/Upload.js';
 import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
@@ -11,21 +11,49 @@ import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Query(() => [Product], { name: 'allProducts' })
+  async findAll() {
+    try {
+      return await this.productsService.findAll();
+    } catch (error) {
+      return error;
+    }
+  }
   @Mutation(() => Product, { name: 'createProduct' })
   async createProduct(
     @Args({ name: 'image', type: () => GraphQLUpload }) image: Upload,
-    @Args({ name: 'arrayFiles', type: () => [GraphQLUpload] }) arrayFiles: Upload[]
-    // @Args('createProductInput') createProductInput: CreateProductInput
+    @Args({ name: 'arrayFiles', type: () => [GraphQLUpload] }) arrayFiles: Upload[],
+    @Args('createProductInput') createProductInput: CreateProductInput
   ) {
     try {
+      const files = [];
       arrayFiles.forEach(async (file) => {
-        console.log('file', await file);
+        const buffer = await file;
+        files.push(buffer);
       });
-      console.log('arrayFiles', image);
-      // const file = await image;
-      // return this.productsService.create(file);
+      const file = await image;
+      return this.productsService.create(file, createProductInput, files);
     } catch (error) {
       throw error;
+    }
+  }
+  @Mutation(() => Product, { name: 'updateProductStatus' })
+  async updateProductStatus(
+    @Args('updateProductStatusInput') updateProductStatusInput: UpdateProductInput
+  ) {
+    try {
+      return await this.productsService.updateProductStatus(updateProductStatusInput);
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @Mutation(() => Product, { name: 'deleteProduct' })
+  async remove(@Args('id') id: string) {
+    try {
+      return await this.productsService.remove(id);
+    } catch (error) {
+      return error;
     }
   }
 }

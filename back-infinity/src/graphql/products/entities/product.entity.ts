@@ -10,6 +10,9 @@ export type ProductDocument = HydratedDocument<Product>;
 @Schema()
 @ObjectType()
 export class Product {
+  @Field(() => String)
+  _id: string;
+
   @Prop()
   @Field()
   @IsString()
@@ -33,8 +36,8 @@ export class Product {
   sellingPrice: number;
 
   @Prop()
-  @Field(() => Float)
-  @IsNumber({ allowNaN: false, allowInfinity: false })
+  @Field(() => Float, { nullable: true })
+  @IsNumber({ allowInfinity: false })
   @IsPositive()
   referencePrice: number;
 
@@ -50,12 +53,22 @@ export class Product {
   @IsPositive()
   referencePriceDistributor: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
-  @Field(() => Category)
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId || null,
+    ref: 'Category',
+    default: null,
+    nullable: true,
+  })
+  @Field(() => Category, { nullable: true })
   category: Category;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' })
-  @Field(() => Subcategory)
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId || null,
+    ref: 'Subcategory',
+    default: null,
+    nullable: true,
+  })
+  @Field(() => Subcategory, { nullable: true })
   subcategory: Subcategory;
 
   @Prop()

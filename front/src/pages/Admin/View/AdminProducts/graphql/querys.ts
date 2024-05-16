@@ -1,8 +1,43 @@
 import gql from 'graphql-tag';
 
+export const getProducts = gql`
+  query allProducts {
+    allProducts {
+      _id
+      name
+      picture
+      sellingPrice
+      referencePrice
+      category {
+        name
+      }
+      status
+    }
+  }
+`;
+
 export const createProduct = gql`
-  mutation createProduct($image: Upload!, $arrayFiles: [Upload!]!) {
-    createProduct(image: $image, arrayFiles: $arrayFiles) {
+  mutation createProduct(
+    $image: Upload!
+    $arrayFiles: [Upload!]!
+    $createProductInput: CreateProductInput!
+  ) {
+    createProduct(image: $image, arrayFiles: $arrayFiles, createProductInput: $createProductInput) {
+      name
+    }
+  }
+`;
+
+export const updateStatus = gql`
+  mutation updateProductStatus($updateProductStatusInput: UpdateProductInput!) {
+    updateProductStatus(updateProductStatusInput: $updateProductStatusInput) {
+      status
+    }
+  }
+`;
+export const delProduct = gql`
+  mutation deleteProduct($id: String!) {
+    deleteProduct(id: $id) {
       name
     }
   }
