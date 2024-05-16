@@ -1,6 +1,6 @@
 export interface ICategories {
-  _id: string;
-  name: string;
+  _id?: string;
+  name?: string;
   subcategory?: string[];
   products?: string[];
 }
@@ -14,4 +14,14 @@ export interface ICreateProductInput {
   category?: string;
   subcategory?: string;
   brand?: string;
+}
+
+export interface IAllProducts {
+  _id: string;
+  name: string;
+  picture: string;
+  sellingPrice: number;
+  referencePrice: number;
+  category: ICategories;
+  status: boolean;
 }

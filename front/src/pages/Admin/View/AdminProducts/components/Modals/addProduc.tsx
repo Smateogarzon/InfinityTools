@@ -11,12 +11,23 @@ const initialProductState: ICreateProductInput = {
   description: '',
   purchasePrice: 0,
   sellingPrice: 0,
-  referencePrice: 0,
+  referencePrice: undefined,
   category: '',
   subcategory: '',
   brand: '',
 };
-const initialErrors = {
+type Errors = {
+  name: string;
+  description: string;
+  purchasePrice: string;
+  sellingPrice: string;
+  referencePrice: string | undefined;
+  category: string;
+  subcategory: string;
+  brand: string;
+};
+
+const initialErrors: Errors = {
   name: '',
   description: '',
   purchasePrice: '',
@@ -26,7 +37,7 @@ const initialErrors = {
   subcategory: '',
   brand: '',
 };
-
+type ErrorKeys = keyof Errors;
 function AddProduct({
   setClose,
   setSelectModal,
@@ -41,7 +52,7 @@ function AddProduct({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [arrayFiles, setArrayFiles] = useState<File[]>([]);
   const [infoProduct, setInfoProduct] = useState<ICreateProductInput>(initialProductState);
-  const [errors, setErrors] = useState(initialErrors);
+  const [errors, setErrors] = useState<Errors>(initialErrors);
 
   useEffect(() => {
     allCategories.refetch();
@@ -61,6 +72,18 @@ function AddProduct({
       transition: Bounce,
     });
 
+  const notifySubmit = (e: Error) =>
+    toast.warn(`${e}`, {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setSelectedFile(e.target.files[0]);
@@ -68,13 +91,6 @@ function AddProduct({
   const handleArrayFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setArrayFiles([...arrayFiles, e.target.files[0]]);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedFile || arrayFiles.length > 0) {
-      addProduct({ variables: { image: selectedFile, arrayFiles: arrayFiles } });
-    }
   };
 
   const handleSubCategory = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -127,13 +143,49 @@ function AddProduct({
   };
 
   const handleProduct = (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    const updatedProduct = { ...infoProduct, [name]: value };
+    if (name === 'referencePrice' || name === 'sellingPrice' || name === 'purchasePrice') {
+      const mvalues = Number(value);
+      const updatedProduct = { ...infoProduct, [name]: mvalues };
 
-    setInfoProduct(updatedProduct);
-    validateProduct(updatedProduct);
+      setInfoProduct(updatedProduct);
+      validateProduct(updatedProduct);
+    } else {
+      const updatedProduct = { ...infoProduct, [name]: value };
+
+      setInfoProduct(updatedProduct);
+      validateProduct(updatedProduct);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      (Object.keys(errors) as ErrorKeys[]).forEach((key) => {
+        if (errors[key] !== '') {
+          throw new Error('Algunos campos tienen errores');
+        }
+      });
+      if (!selectedFile || arrayFiles.length < 3) {
+        throw new Error('Algunos campos tienen errores');
+      }
+      await addProduct({
+        variables: { image: selectedFile, arrayFiles: arrayFiles, createProductInput: infoProduct },
+      });
+      setInfoProduct(initialProductState);
+      setErrors(initialErrors);
+      setSelectedFile(null);
+      setArrayFiles([]);
+      setSelectModal('');
+      setClose(false);
+    } catch (error) {
+      notifySubmit(error as Error);
+    }
   };
 
   return (
@@ -213,7 +265,7 @@ function AddProduct({
                 <IoMdAddCircleOutline className='w-[100px] h-[100px] ' />
               )}
             </div>
-            {arrayFiles.length <= 3 && <p className='text-[#ff0000]'>Deben ser 3 imagenes o mas</p>}
+            {arrayFiles.length < 3 && <p className='text-[#ff0000]'>Deben ser 3 imagenes o mas</p>}
           </div>
         </div>
         <div className='flex flex-col'>
@@ -278,8 +330,11 @@ function AddProduct({
         <div className='flex flex-col gap-1'>
           <label htmlFor='categories'>Selecciona una categoria:</label>
           <select
-            name='categories'
-            onChange={(e) => handleSubCategory(e)}
+            name='category'
+            onChange={(e) => {
+              handleSubCategory(e);
+              handleProduct(e);
+            }}
             id='categories'
             defaultValue={''}
             className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
@@ -295,8 +350,10 @@ function AddProduct({
           </select>
           <label htmlFor='subCategories'>Seleccione una subcategoria</label>
           <select
-            name='subCategories'
+            name='subcategory'
             id='subCategories'
+            onChange={(e) => handleProduct(e)}
+            disabled={infoProduct.category !== '' ? false : true}
             defaultValue={''}
             className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
             <option value='' disabled>
@@ -311,8 +368,9 @@ function AddProduct({
           </select>
           <label htmlFor='marca'>Seleccione una Marca:</label>
           <select
-            name='brands'
+            name='brand'
             id='brands'
+            onChange={(e) => handleProduct(e)}
             defaultValue={''}
             className='h-[35px]   bg-Black-low text-[#fff] cursor-pointer rounded-md'>
             <option value='' disabled>

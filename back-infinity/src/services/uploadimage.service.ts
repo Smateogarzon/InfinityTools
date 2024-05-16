@@ -36,3 +36,19 @@ export default async function main(
     return error;
   }
 }
+
+export async function verifyImage(imageUrl: string) {
+  try {
+    const storage = new Storage({
+      keyFilename: process.env.CREDENTIALS,
+    });
+    const PictureInfinity = storage.bucket('pictures_infinity');
+    const [exists] = await PictureInfinity.file(imageUrl).exists();
+    if (exists) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return error;
+  }
+}

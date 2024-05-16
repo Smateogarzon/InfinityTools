@@ -71,6 +71,7 @@ function AddCategorys({
         },
       });
       setNameCategory('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);
@@ -101,6 +102,7 @@ function AddCategorys({
       });
       allCategories.refetch();
       setSelectDeleteCategory('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);
@@ -115,6 +117,7 @@ function AddCategorys({
         },
       });
       setNameSubCategory('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);
@@ -139,6 +142,7 @@ function AddCategorys({
         fetchPolicy: 'no-cache',
       });
       setSelectSubCategory('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);
@@ -153,6 +157,7 @@ function AddCategorys({
         },
       });
       setSelectBrand('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);
@@ -166,6 +171,7 @@ function AddCategorys({
         },
       });
       setNameBrand('');
+      setSelectModal('');
       setClose(false);
     } catch (error) {
       notifyCategory(error as Error);

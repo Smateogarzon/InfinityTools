@@ -74,15 +74,16 @@ type Subcategory {
 }
 
 type Product {
+  _id: String!
   name: String!
   description: String!
   purchasePrice: Float!
   sellingPrice: Float!
-  referencePrice: Float!
+  referencePrice: Float
   distributorPrice: Float!
   referencePriceDistributor: Float!
-  category: Category!
-  subcategory: Subcategory!
+  category: Category
+  subcategory: Subcategory
   picture: String!
   extraPicture: [String!]!
   brand: String!
@@ -104,6 +105,7 @@ type Query {
   LogIn(email: String!, password: String!): User!
   AllLocation: [Location!]!
   location(id: Int!): Location!
+  allProducts: [Product!]!
   brands: [Brand!]!
   allCategories: [Category!]!
   allSubcategories(id: String!): [Subcategory!]!
@@ -126,6 +128,8 @@ type Mutation {
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
   createProduct(image: Upload!, arrayFiles: [Upload!]!, createProductInput: CreateProductInput!): Product!
+  updateProductStatus(updateProductStatusInput: UpdateProductInput!): Product!
+  deleteProduct(id: String!): Product!
   createBrand(createBrandInput: CreateBrandInput!): Brand!
   updateBrand(id: String!, updateBrandInput: UpdateBrandInput!): Brand!
   deleteBrand(id: String!): Brand!
@@ -187,14 +191,27 @@ input UpdateLocationInput {
 scalar Upload
 
 input CreateProductInput {
+  name: String!
+  description: String!
+  purchasePrice: Float
+  sellingPrice: Float
+  referencePrice: Float
+  category: String
+  subcategory: String
+  brand: String
+}
+
+input UpdateProductInput {
   name: String
   description: String
   purchasePrice: Float
   sellingPrice: Float
   referencePrice: Float
   category: String
-  subcategory: String!
+  subcategory: String
   brand: String
+  _id: String!
+  status: Boolean
 }
 
 input CreateBrandInput {
