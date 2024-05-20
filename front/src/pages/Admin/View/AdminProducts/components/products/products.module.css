@@ -33,3 +33,8 @@
 .checkboxRound:checked {
   background-color: #f57b00e9;
 }
+
+.modal {
+  background-color: #ff95008f; /* Example background color */
+  border-radius: 10px; /* Example border radius */
+}

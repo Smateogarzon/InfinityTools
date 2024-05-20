@@ -9,9 +9,11 @@ import {
 import { FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import Categories from './categories';
-
-function NavBarDesktop({ navRef, showLogout, logout, sticking }: any) {
+/* eslint-disable */
+function NavBarDesktop({ navRef, showLogout, logout, sticking, data, loading, error }: any) {
+  /* eslint-enable */
   const [showCategory, setShowCategory] = useState(false);
+
   return (
     <div
       ref={navRef}
@@ -20,12 +22,12 @@ function NavBarDesktop({ navRef, showLogout, logout, sticking }: any) {
       <div className='flex relative'>
         <ul className='flex h-[55px] items-center pl-[2%]'>
           <li className='mx-5 '>
-            <a
-              href='/'
+            <Link
+              to='/'
               className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
               <BsFillHouseDoorFill className='mr-2' />
               <span className='translate-y-[1px]'>Inicio</span>
-            </a>
+            </Link>
           </li>
           <li
             onClick={() => setShowCategory(!showCategory)}
@@ -42,7 +44,14 @@ function NavBarDesktop({ navRef, showLogout, logout, sticking }: any) {
             </a>
           </li>
         </ul>
-        {showCategory && <Categories setShowCategory={setShowCategory} />}
+        {showCategory && (
+          <Categories
+            setShowCategory={setShowCategory}
+            data={data}
+            loading={loading}
+            error={error}
+          />
+        )}
       </div>
       {/* Nav end */}
       <ul className='flex items-center pr-7'>

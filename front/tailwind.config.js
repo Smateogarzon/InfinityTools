@@ -5,8 +5,8 @@ export default {
   important: '#root',
   theme: {
     screens: {
-      xsm: '325px',
-      xss: '380px',
+      xsm: '356px',
+      xss: '395px',
       xs: '480px',
       smm: '599px',
       sm: '640px',

@@ -15,7 +15,47 @@ export const getProducts = gql`
     }
   }
 `;
+export const getProductById = gql`
+  query FindOneproduct($id: String!) {
+    FindOneproduct(id: $id) {
+      _id
+      name
+      description
+      purchasePrice
+      sellingPrice
+      referencePrice
+      category {
+        _id
+        name
+      }
+      subcategory {
+        _id
+        name
+      }
+      picture
+      extraPicture
+      brand {
+        _id
+        name
+      }
+      reviews
+      salesNumber
+      status
+    }
+  }
+`;
 
+export const updateProduct = gql`
+  mutation updateProduct(
+    $image: Upload
+    $arrayFiles: [Upload]
+    $updateProductInput: UpdateProductInput
+  ) {
+    updateProduct(image: $image, arrayFiles: $arrayFiles, updateProductInput: $updateProduct) {
+      name
+    }
+  }
+`;
 export const createProduct = gql`
   mutation createProduct(
     $image: Upload!

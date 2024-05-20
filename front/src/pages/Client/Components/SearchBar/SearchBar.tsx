@@ -10,6 +10,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
       <div className='relative flex w-[75%] h-[30px] justify-center'>
         <input
           type='text'
+          name='search'
+          id='search'
           aria-label='buscar'
           className={`bg-athens-gray-50 border-[2px] border-none outline-none hover:bg-athens-gray-200 text-athens-gray-950 p-2 text-lg transition-all rounded-md w-full h-[30px] outline-2 focus:transition-all focus:outline-bright-sun-600 outline-solid outline-[#00000000] ${className}`}
         />

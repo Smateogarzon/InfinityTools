@@ -4,15 +4,43 @@ import { MdEdit } from 'react-icons/md';
 import { IAllProducts } from '../../interface';
 import animationData from '../../../../../../assets/Animation - 1714697021815.json';
 import Lottie from 'lottie-react';
-import { useMutation, useQuery } from '@apollo/client';
-import { delProduct, getProducts, updateStatus } from '../../graphql/querys';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { delProduct, getProductById, getProducts, updateStatus } from '../../graphql/querys';
 import { Bounce, toast } from 'react-toastify';
+import EditProductModal from '../Modals/editProduct';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
+import { useState } from 'react';
 function Products() {
+  const [oneProduct, responseP] = useLazyQuery(getProductById);
+
+  const [modalDelete, setModalDelete] = useState(false);
+  const [editProductModal, setEditProductModal] = useState(false);
+  const [DeleteProduct, setDeleteProduct] = useState<string[]>([]);
+
   const response = useQuery(getProducts);
   const [newStatus] = useMutation(updateStatus);
   const [clearProduct] = useMutation(delProduct);
   const notifyCategory = (e: Error) =>
     toast.warn(`${e}`.substring(12), {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
+  const notify = () =>
+    toast.warn('Un producto inactivo no puede ser eliminado ni editado', {
       position: 'top-center',
       autoClose: 4000,
       hideProgressBar: false,
@@ -47,6 +75,20 @@ function Products() {
         },
       });
       response.refetch();
+      setModalDelete(false);
+      setDeleteProduct([]);
+    } catch (error) {
+      notifyCategory(error as Error);
+    }
+  };
+  const handleUpdateProduct = async (_id: string) => {
+    try {
+      setEditProductModal(true);
+      await oneProduct({
+        variables: {
+          id: _id,
+        },
+      });
     } catch (error) {
       notifyCategory(error as Error);
     }
@@ -92,7 +134,7 @@ function Products() {
                     <td>
                       {product.referencePrice === null ? 'Sin descuento' : product.referencePrice}
                     </td>
-                    <td>{product.category.name}</td>
+                    <td>{product?.category?.name}</td>
                     <td className='w-[300px]'>
                       <div className='flex justify-center gap-x-[25px]'>
                         <div className='flex justify-center w-[85px] gap-1'>
@@ -106,10 +148,26 @@ function Products() {
                           />
                           <p>{product.status ? 'Activo' : 'Inactivo'}</p>
                         </div>
-                        <MdEdit className='cursor-pointer w-[20px] h-[20px] hover:text-[#3ff63c]' />
+                        <MdEdit
+                          className='cursor-pointer w-[20px] h-[20px] hover:text-[#3ff63c]'
+                          onClick={() => {
+                            if (product.status) {
+                              handleUpdateProduct(product._id);
+                            } else {
+                              notify();
+                            }
+                          }}
+                        />
                         <MdDeleteForever
                           className='cursor-pointer w-[20px] h-[20px] hover:text-Red'
-                          onClick={() => handleDeleteProduct(product._id)}
+                          onClick={() => {
+                            if (product.status) {
+                              setDeleteProduct([product._id, product.name]);
+                              setModalDelete(true);
+                            } else {
+                              notify();
+                            }
+                          }}
                         />
                       </div>
                     </td>
@@ -121,6 +179,42 @@ function Products() {
           <p>Hubo un error intente nuevamente</p>
         )}
       </div>
+      <Dialog
+        open={modalDelete}
+        onClose={() => {
+          setModalDelete(false);
+          setDeleteProduct([]);
+        }}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+        className={styled.modal}
+        sx={{
+          '& .MuiDialog-paper': { backgroundColor: '#cfcfcf', borderRadius: '10px' }, // Apply styles using sx prop
+          '& .MuiDialogTitle-root': { backgroundColor: '#ff9500b5', color: '#000' },
+          '& .MuiDialogContent-root': { padding: '20px' },
+        }}>
+        <DialogTitle className={styled.modalTitle} id='modal-modal-title'>
+          Advertencia
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ fontWeight: 'bold', color: '#333' }}>
+            {`¿Desea eliminar el producto ...${DeleteProduct[1]}...?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setModalDelete(false);
+              setDeleteProduct([]);
+            }}>
+            Cancel
+          </Button>
+          <Button variant='contained' onClick={() => handleDeleteProduct(DeleteProduct[0])}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {editProductModal && <EditProductModal data={responseP} setClose={setEditProductModal} />}
     </div>
   );
 }

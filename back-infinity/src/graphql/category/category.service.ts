@@ -21,6 +21,35 @@ export class CategoryService {
     }
   }
 
+  async findRender() {
+    try {
+      const response = [];
+      const category = await this.categoryModel.find();
+
+      for (const element of category) {
+        const newSubcategoryNames = await Promise.all(
+          element.subcategory.map(async (subcategory) => {
+            try {
+              const sub = await this.subcategoryModel.findById(subcategory);
+              return sub.name;
+            } catch (error) {
+              return error;
+            }
+          })
+        );
+        const categoryObject = {
+          name: element.name,
+          subcategoryNames: newSubcategoryNames,
+        };
+
+        response.push(categoryObject);
+      }
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} category`;
   }

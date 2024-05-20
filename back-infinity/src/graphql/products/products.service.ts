@@ -4,7 +4,8 @@ import { UpdateProductInput } from './dto/update-product.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './entities/product.entity';
-import main, { verifyImage } from '@/services/uploadimage.service';
+import uploadImage, { verifyImage } from '@/services/uploadimage.service';
+import deleteImageFromGCS from '@/services/deleteImage.service';
 
 @Injectable()
 export class ProductsService {
@@ -38,7 +39,10 @@ export class ProductsService {
             }
           }
           for (let i = 0; i < arrayFiles.length; i++) {
-            const image = await main(arrayFiles[i], arrayFiles[i].filename.replace(/\.[^.]*$/, ''));
+            const image = await uploadImage(
+              arrayFiles[i],
+              arrayFiles[i].filename.replace(/\.[^.]*$/, '')
+            );
 
             images.push(image);
           }
@@ -46,7 +50,7 @@ export class ProductsService {
           throw new Error('La imagen secundaria no pudo ser cargada');
         }
 
-        image = await main(file, file.filename.replace(/\.[^.]*$/, ''));
+        image = await uploadImage(file, file.filename.replace(/\.[^.]*$/, ''));
       } else {
         throw new Error('La imagen principal no pudo ser cargada');
       }
@@ -80,8 +84,16 @@ export class ProductsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    try {
+      return await this.productModel
+        .findById(id)
+        .populate('category')
+        .populate('subcategory')
+        .populate('brand');
+    } catch (error) {
+      return error;
+    }
   }
 
   async updateProductStatus(updateProductInput: UpdateProductInput) {
@@ -93,9 +105,28 @@ export class ProductsService {
       return error;
     }
   }
-
+  async update(file: any, updateProduct: UpdateProductInput, files: any) {
+    console.log('🚀 ~ ProductsService ~ update ~ files:', files);
+    console.log('🚀 ~ ProductsService ~ update ~ file:', file);
+    try {
+      console.log(updateProduct);
+    } catch (error) {
+      return error;
+    }
+  }
   async remove(id: string) {
     try {
+      const product = await this.productModel.findById(id);
+      const deleteImage = deleteImageFromGCS(product.picture);
+      if (!deleteImage) {
+        throw new Error('la imagen principal no pudo ser eliminada');
+      }
+      product.extraPicture.forEach(async (image) => {
+        const deleteImage = deleteImageFromGCS(image);
+        if (!deleteImage) {
+          throw new Error('la imagen secundaria no pudo ser eliminada');
+        }
+      });
       return await this.productModel.findByIdAndDelete(id);
     } catch (error) {
       return error;
