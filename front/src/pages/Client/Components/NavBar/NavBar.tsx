@@ -4,8 +4,9 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { logOut } from '../../../../store/thukns/auth.thuks';
 import NavBarDesktop from './navBarDesktop';
 import NavBarPhone from './navBarPhone';
-
-export default function NavBar() {
+/* eslint-disable */
+export default function NavBar({ data, loading, error }: any) {
+  /* eslint-enable */
   const Navigate = useNavigate();
   const dispach = useAppDispatch();
   const { rol } = useAppSelector((state) => state.auth);
@@ -41,13 +42,24 @@ export default function NavBar() {
       {sticking && <div className='h-[55px]'></div>}
       {width > 600 ? (
         <NavBarDesktop
+          data={data}
+          loading={loading}
+          error={error}
           navRef={navRef}
           showLogout={showLogout}
           logout={logout}
           sticking={sticking}
         />
       ) : (
-        <NavBarPhone navRef={navRef} showLogout={showLogout} logout={logout} sticking={sticking} />
+        <NavBarPhone
+          data={data}
+          loading={loading}
+          error={error}
+          navRef={navRef}
+          showLogout={showLogout}
+          logout={logout}
+          sticking={sticking}
+        />
       )}
     </>
   );

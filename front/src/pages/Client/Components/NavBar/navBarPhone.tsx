@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 import SpanPhone from './spanPhone';
 import { useState } from 'react';
 import Categories from './categories';
-
-function NavBarPhone({ navRef, showLogout, logout, sticking }: any) {
+/* eslint-disable */
+function NavBarPhone({ navRef, showLogout, logout, sticking, data, loading, error }: any) {
+  /* eslint-enable */
   const [showMenu, setShowMenu] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   return (
@@ -28,7 +29,14 @@ function NavBarPhone({ navRef, showLogout, logout, sticking }: any) {
               className=' hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 text-2xl'
             />
           )}
-          {showCategory && <Categories setShowCategory={setShowCategory} />}
+          {showCategory && (
+            <Categories
+              data={data}
+              loading={loading}
+              error={error}
+              setShowCategory={setShowCategory}
+            />
+          )}
         </div>
         {/* Nav end */}
         <ul className='flex items-center pr-7'>

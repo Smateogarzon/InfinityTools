@@ -174,6 +174,11 @@ function AddProduct({
       if (!selectedFile || arrayFiles.length < 3) {
         throw new Error('Algunos campos tienen errores');
       }
+      arrayFiles.forEach((file) => {
+        if (file.size > 1000000) {
+          throw new Error(`El archivo ${file.name} es demasiado grande`);
+        }
+      });
       await addProduct({
         variables: { image: selectedFile, arrayFiles: arrayFiles, createProductInput: infoProduct },
       });

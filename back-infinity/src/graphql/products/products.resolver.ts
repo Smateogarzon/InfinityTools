@@ -19,6 +19,15 @@ export class ProductsResolver {
       return error;
     }
   }
+
+  @Query(() => Product, { name: 'FindOneproduct' })
+  async findOne(@Args('id') id: string) {
+    try {
+      return await this.productsService.findOne(id);
+    } catch (error) {
+      return error;
+    }
+  }
   @Mutation(() => Product, { name: 'createProduct' })
   async createProduct(
     @Args({ name: 'image', type: () => GraphQLUpload }) image: Upload,
@@ -35,6 +44,24 @@ export class ProductsResolver {
       return this.productsService.create(file, createProductInput, files);
     } catch (error) {
       throw error;
+    }
+  }
+  @Mutation(() => Product, { name: 'updateProduct' })
+  async update(
+    @Args({ name: 'image', type: () => GraphQLUpload }) image: Upload,
+    @Args({ name: 'arrayFiles', type: () => [GraphQLUpload] }) arrayFiles: Upload[],
+    @Args('updateProductInput') updateProductInput: UpdateProductInput
+  ) {
+    try {
+      const files = [];
+      arrayFiles.forEach(async (file) => {
+        const buffer = await file;
+        files.push(buffer);
+      });
+      const file = await image;
+      return this.productsService.update(file, updateProductInput, files);
+    } catch (error) {
+      return error;
     }
   }
   @Mutation(() => Product, { name: 'updateProductStatus' })

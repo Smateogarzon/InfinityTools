@@ -1,7 +1,7 @@
 import { Storage } from '@google-cloud/storage';
 import * as fs from 'fs';
 
-export default async function main(
+export default async function uploadImage(
   fileBuffer,
   destFileName,
   generationMatchPrecondition = 0

@@ -4,6 +4,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { IsString, IsNumber, IsPositive, IsArray, IsUrl, IsBoolean } from 'class-validator';
 import { Category } from '@/graphql/category/entities/category.entity';
 import { Subcategory } from '@/graphql/category/entities/subcategory.entity';
+import { Brand } from '@/graphql/brands/entities/brand.entity';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -80,10 +81,15 @@ export class Product {
   @Field(() => [String])
   extraPicture: string[];
 
-  @Prop()
-  @Field()
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId || null,
+    ref: 'Brand',
+    default: null,
+    nullable: true,
+  })
+  @Field(() => Brand, { nullable: true })
   @IsString()
-  brand: string;
+  brand: Brand;
 
   @Prop()
   @Field(() => [String])
@@ -92,7 +98,7 @@ export class Product {
   reviews: string[];
 
   @Prop()
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @IsNumber({ allowNaN: false, allowInfinity: false })
   @IsPositive()
   salesNumber: number;

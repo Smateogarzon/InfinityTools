@@ -17,6 +17,8 @@ import { useDispatch } from 'react-redux';
 import { getFacebookAccess, getGoogleAccess } from '@/store/slices/auth.slice';
 import { useEffect } from 'react';
 import { Bounce, ToastContainer } from 'react-toastify';
+import SelectCategory from './pages/Client/View/categorySelecter/selecCategory';
+import Footer from './pages/Client/Components/Footer/Footer';
 
 function App() {
   const dispatch = useDispatch();
@@ -47,10 +49,20 @@ function App() {
         transition={Bounce}
       />
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route
+          path='/*'
+          element={
+            <>
+              <Home />
+              <Routes>
+                <Route path='/category/:name/:subcategory' element={<SelectCategory />} />
+              </Routes>
+              <Footer />
+            </>
+          }
+        />
         <Route path='/login' element={<Login />} />
         <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
-
         <Route
           path='/admin/*'
           element={
