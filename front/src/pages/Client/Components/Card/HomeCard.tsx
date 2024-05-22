@@ -17,8 +17,8 @@ const HomeCard = ({ data }: { data: Data }) => {
       </div>
 
       {/* Card info */}
-      <div className='text-athens-gray-950 p-2 flex flex-col items-center text-center'>
-        <p className='font-semibold'>{data.title.toUpperCase()}</p>
+      <div className='bg-Black-full p-2 flex flex-col items-center text-center'>
+        <p className='font-semibold text-bright-sun-50'>{data.title.toUpperCase()}</p>
         <span className='line-clamp-1'>{data.brand}</span>
 
         <Rating name='read-only' value={data.rating} size='small' readOnly />
@@ -27,7 +27,7 @@ const HomeCard = ({ data }: { data: Data }) => {
           ${Number(data.price).toLocaleString('es-ES')}
         </span>
 
-        <button className='py-1 px-2 text-lg rounded-xl transition-all my-2 bg-[#00000000] text-athens-gray-950 border-solid border-[1px] border-athens-gray-950 hover:border-bright-sun-600 active:border-bright-sun-700 hover:bg-bright-sun-600 hover:text-bright-sun-950 active:bg-opacity-75'>
+        <button className='py-1 px-2 text-lg rounded-xl transition-all my-2 bg-[#00000000] text-zeus-50 border-solid border-[1px] border-x-zeus-50 hover:border-bright-sun-600 active:border-bright-sun-700 hover:bg-bright-sun-600 hover:text-Black-full hover:font-semibold active:bg-opacity-75'>
           Ver más
         </button>
       </div>

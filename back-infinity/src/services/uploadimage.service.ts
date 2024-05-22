@@ -11,6 +11,10 @@ export default async function uploadImage(
       keyFilename: process.env.CREDENTIALS,
     });
     const temporaryFilePath = `./src/utils/${fileBuffer.filename}`;
+    const dir = './src/utils';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
     const readStream = fileBuffer.createReadStream();
 
@@ -20,6 +24,11 @@ export default async function uploadImage(
       writeStream.on('error', reject);
       writeStream.on('finish', resolve);
     });
+
+    // Verificar si el archivo fue creado correctamente
+    if (!fs.existsSync(temporaryFilePath)) {
+      throw new Error(`El archivo temporal no fue creado: ${temporaryFilePath}`);
+    }
     const PictureInfinity = storage.bucket('pictures_infinity');
 
     const options = {

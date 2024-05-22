@@ -48,10 +48,16 @@ export const getProductById = gql`
 export const updateProduct = gql`
   mutation updateProduct(
     $image: Upload
-    $arrayFiles: [Upload]
-    $updateProductInput: UpdateProductInput
+    $arrayFiles: [Upload!]
+    $updateProductInput: UpdateProductInput!
+    $filesCompare: [String!]
   ) {
-    updateProduct(image: $image, arrayFiles: $arrayFiles, updateProductInput: $updateProduct) {
+    updateProduct(
+      image: $image
+      arrayFiles: $arrayFiles
+      updateProductInput: $updateProductInput
+      filesCompare: $filesCompare
+    ) {
       name
     }
   }

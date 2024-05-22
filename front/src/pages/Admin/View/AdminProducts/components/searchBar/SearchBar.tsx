@@ -1,10 +1,15 @@
-import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import style from './searchBar.module.css';
-function DropdownSearchBar() {
-  const [name, setName] = useState('');
+import { IFilterAdminProducts } from '../../interface';
+function DropdownSearchBar({
+  filter,
+  setFilter,
+}: {
+  filter: IFilterAdminProducts;
+  setFilter: React.Dispatch<React.SetStateAction<IFilterAdminProducts>>;
+}) {
   const handleChageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+    setFilter({ ...filter, name: e.target.value });
   };
   return (
     <div className={style.searchBar}>
@@ -15,7 +20,7 @@ function DropdownSearchBar() {
         id='busqueda'
         onChange={handleChageInput}
         placeholder='Busqueda de productos...'
-        value={name}
+        value={filter.name}
         name='name'
       />
       <FaSearch className='absolute right-[3%] top-[23%] text-bright-sun-600 text-2xl' />

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsString } from 'class-validator';
+import { IsArray, IsString } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 
 export type SubCategoryDocument = HydratedDocument<Subcategory>;
@@ -17,6 +17,11 @@ export class Subcategory {
   @Prop()
   @Field(() => String)
   category: string;
+
+  @Prop()
+  @Field(() => [String])
+  @IsArray()
+  products: string[];
 }
 
 export const SubcategorySchema = SchemaFactory.createForClass(Subcategory);

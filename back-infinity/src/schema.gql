@@ -71,6 +71,7 @@ type Subcategory {
   _id: String!
   name: String!
   category: String!
+  products: [String!]!
 }
 
 type Brand {
@@ -135,7 +136,7 @@ type Mutation {
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
   createProduct(image: Upload!, arrayFiles: [Upload!]!, createProductInput: CreateProductInput!): Product!
-  updateProduct(image: Upload!, arrayFiles: [Upload!]!, updateProductInput: UpdateProductInput!): Product!
+  updateProduct(image: Upload, filesCompare: [String!], arrayFiles: [Upload!], updateProductInput: UpdateProductInput!): Product!
   updateProductStatus(updateProductStatusInput: UpdateProductInput!): Product!
   deleteProduct(id: String!): Product!
   createBrand(createBrandInput: CreateBrandInput!): Brand!
@@ -210,8 +211,8 @@ input CreateProductInput {
 }
 
 input UpdateProductInput {
-  name: String
-  description: String
+  name: String!
+  description: String!
   purchasePrice: Float
   sellingPrice: Float
   referencePrice: Float
