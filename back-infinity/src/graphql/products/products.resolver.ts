@@ -35,11 +35,7 @@ export class ProductsResolver {
     @Args('createProductInput') createProductInput: CreateProductInput
   ) {
     try {
-      const files = [];
-      arrayFiles.forEach(async (file) => {
-        const buffer = await file;
-        files.push(buffer);
-      });
+      const files = await Promise.all(arrayFiles.map(async (file) => await file));
       const file = await image;
       return this.productsService.create(file, createProductInput, files);
     } catch (error) {
@@ -48,18 +44,22 @@ export class ProductsResolver {
   }
   @Mutation(() => Product, { name: 'updateProduct' })
   async update(
-    @Args({ name: 'image', type: () => GraphQLUpload }) image: Upload,
-    @Args({ name: 'arrayFiles', type: () => [GraphQLUpload] }) arrayFiles: Upload[],
+    @Args({ name: 'image', type: () => GraphQLUpload, nullable: true }) image: Upload,
+    @Args({ name: 'filesCompare', type: () => [String], nullable: true }) filesCompare: string[],
+    @Args({ name: 'arrayFiles', type: () => [GraphQLUpload], nullable: true })
+    arrayFiles: Upload[],
     @Args('updateProductInput') updateProductInput: UpdateProductInput
   ) {
     try {
-      const files = [];
-      arrayFiles.forEach(async (file) => {
-        const buffer = await file;
-        files.push(buffer);
-      });
-      const file = await image;
-      return this.productsService.update(file, updateProductInput, files);
+      let file = null;
+      if (image !== null) {
+        file = await image;
+      }
+      let files = null;
+      if (arrayFiles !== undefined && arrayFiles.length > 0) {
+        files = await Promise.all(arrayFiles.map(async (file) => await file));
+      }
+      return this.productsService.update(file, filesCompare, updateProductInput, files);
     } catch (error) {
       return error;
     }

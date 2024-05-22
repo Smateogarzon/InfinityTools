@@ -51,7 +51,9 @@ function Products() {
       theme: 'dark',
       transition: Bounce,
     });
-
+  const refetching = () => {
+    response.refetch();
+  };
   const changeStatus = async (_id: string, status: boolean) => {
     try {
       await newStatus({
@@ -214,7 +216,9 @@ function Products() {
           </Button>
         </DialogActions>
       </Dialog>
-      {editProductModal && <EditProductModal data={responseP} setClose={setEditProductModal} />}
+      {editProductModal && (
+        <EditProductModal data={responseP} setClose={setEditProductModal} refetching={refetching} />
+      )}
     </div>
   );
 }

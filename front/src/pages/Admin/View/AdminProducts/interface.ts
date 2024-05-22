@@ -6,6 +6,7 @@ export interface ICategories {
 }
 
 export interface ICreateProductInput {
+  _id?: string;
   name: string;
   description: string;
   purchasePrice: number;
@@ -24,4 +25,13 @@ export interface IAllProducts {
   referencePrice: number;
   category: ICategories;
   status: boolean;
+}
+
+export interface IFilterAdminProducts {
+  sellingPrice?: string;
+  category?: string;
+  brand?: string;
+  salesNumber?: string;
+  name?: string;
+  [key: string]: string | undefined;
 }

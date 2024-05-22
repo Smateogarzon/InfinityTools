@@ -174,13 +174,21 @@ function AddProduct({
       if (!selectedFile || arrayFiles.length < 3) {
         throw new Error('Algunos campos tienen errores');
       }
-      arrayFiles.forEach((file) => {
+      if (selectedFile.size > 1000000) {
+        throw new Error(`El archivo ${selectedFile.name} es demasiado grande`);
+      }
+      const sendArrayFiles = arrayFiles.filter((file) => file !== undefined);
+      sendArrayFiles.forEach((file) => {
         if (file.size > 1000000) {
           throw new Error(`El archivo ${file.name} es demasiado grande`);
         }
       });
       await addProduct({
-        variables: { image: selectedFile, arrayFiles: arrayFiles, createProductInput: infoProduct },
+        variables: {
+          image: selectedFile,
+          arrayFiles: sendArrayFiles,
+          createProductInput: infoProduct,
+        },
       });
       setInfoProduct(initialProductState);
       setErrors(initialErrors);
@@ -258,12 +266,14 @@ function AddProduct({
               {arrayFiles.length > 0 ? (
                 arrayFiles.map((file, index) => (
                   <div key={index} id='imagePreview'>
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt='Image Preview'
-                      className='w-[100px] h-[100px] cursor-pointer hover:opacity-[0.7]'
-                      onClick={() => setArrayFiles(arrayFiles.filter((_, i) => i !== index))}
-                    />
+                    {file instanceof File && (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt='Image Preview'
+                        className='w-[100px] h-[100px] cursor-pointer hover:opacity-[0.7]'
+                        onClick={() => setArrayFiles(arrayFiles.filter((_, i) => i !== index))}
+                      />
+                    )}
                   </div>
                 ))
               ) : (
