@@ -1,5 +1,10 @@
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { IFilterAdminProducts } from '../../interface';
+import { useAppDispatch, useAppSelector } from '../../../../../../store';
+import { filterProducts } from '../../../../../../store/slices/filterUserAdmin.slice';
+interface IProduct {
+  [key: string]: any; // eslint-disable-line
+}
 
 function AppliedFilters({
   filter,
@@ -8,7 +13,12 @@ function AppliedFilters({
   filter: IFilterAdminProducts;
   setFilter: React.Dispatch<React.SetStateAction<IFilterAdminProducts>>;
 }) {
-  const filteredObject = Object.keys(filter)
+  const { ArrayProducts } = useAppSelector((state) => state.filtersUserAdmin) as {
+    ArrayProducts: IProduct;
+  };
+  const Dispatch = useAppDispatch();
+
+  const filteredObject = Object.keys(ArrayProducts)
     .filter((key) => key !== 'name')
     .reduce((obj, key) => {
       obj[key] = filter[key];
@@ -20,8 +30,11 @@ function AppliedFilters({
     const selectVal = document.getElementById(`aplied-${index}`);
     const valueP = selectVal?.textContent;
     for (const key in filter) {
+      const deleteFil = { ...ArrayProducts };
       if (filter[key] === valueP) {
         setFilter({ ...filter, [key]: '' });
+        delete deleteFil[key];
+        Dispatch(filterProducts(deleteFil));
       }
     }
   };

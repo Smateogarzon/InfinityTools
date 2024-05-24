@@ -3,7 +3,9 @@ import { ICategories, IFilterAdminProducts } from '../../interface';
 import { useEffect, useState } from 'react';
 import { getAllCategories, getBrands } from '../../graphql/querys';
 import { useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../../../../store';
+import { filterProducts } from '../../../../../../store/slices/filterUserAdmin.slice';
 const initialState: IFilterAdminProducts = {
   sellingPrice: '',
   category: '',
@@ -12,6 +14,9 @@ const initialState: IFilterAdminProducts = {
   name: '',
 };
 
+interface IProduct {
+  [key: string]: any; // eslint-disable-line
+}
 function Filters({
   setAddProduct,
   addProduct,
@@ -19,8 +24,8 @@ function Filters({
   addCategory,
   setSelectModal,
   selectMoldal,
-  setFilter,
   filter,
+  setFilter,
 }: {
   setAddProduct: React.Dispatch<React.SetStateAction<boolean>>;
   addProduct: boolean;
@@ -28,14 +33,18 @@ function Filters({
   addCategory: boolean;
   setSelectModal: React.Dispatch<React.SetStateAction<string>>;
   selectMoldal: string;
-  setFilter: React.Dispatch<React.SetStateAction<IFilterAdminProducts>>;
   filter: IFilterAdminProducts;
+  setFilter: React.Dispatch<React.SetStateAction<IFilterAdminProducts>>;
 }) {
+  const { ArrayProducts } = useAppSelector((state) => state.filtersUserAdmin) as {
+    ArrayProducts: IProduct;
+  };
   const allCategories = useQuery(getAllCategories);
   const allBrands = useQuery(getBrands);
   const navigate = useNavigate();
+  const params = useLocation();
+  const Dispatch = useAppDispatch();
   const [initialLoad, setInitialLoad] = useState(false);
-  const [navFilter, setNavFilter] = useState<IFilterAdminProducts>(initialState);
 
   useEffect(() => {
     if (!initialLoad) {
@@ -47,35 +56,39 @@ function Filters({
       }
 
       setFilter(newFilter);
+      Dispatch(filterProducts(newFilter));
       setInitialLoad(true);
     } else {
       const newUrl = new URLSearchParams(location.search);
+      const newFil: IFilterAdminProducts = {};
       for (const [key, value] of newUrl.entries()) {
-        console.log(key, value);
-        setNavFilter({ ...navFilter, [key]: decodeURIComponent(value) });
+        newFil[key as keyof IFilterAdminProducts] = decodeURIComponent(value);
       }
+      Dispatch(filterProducts(newFil));
     }
-  }, [initialLoad, location.search, setFilter]);
-  useEffect(() => {
-    console.log(navFilter);
-  }, [navFilter, setFilter]);
+  }, [initialLoad, params, setFilter, Dispatch]);
+
   useEffect(() => {
     if (initialLoad) {
       const newUrl = new URLSearchParams();
-      for (const [key, value] of Object.entries(filter)) {
-        if (value) {
-          newUrl.append(key, value);
+      if (Object.keys(ArrayProducts).length > 0) {
+        for (const [key, value] of Object.entries(ArrayProducts)) {
+          if (value) {
+            newUrl.append(key, value);
+          }
         }
       }
       navigate(`?${newUrl.toString()}`);
     }
-  }, [filter, navigate, initialLoad]);
+  }, [filter, navigate, initialLoad, ArrayProducts]);
 
   const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilter({ ...filter, [name]: value });
+    Dispatch(filterProducts({ ...ArrayProducts, [name]: value }));
   };
   const handleReset = () => {
+    Dispatch(filterProducts({}));
     setFilter(initialState);
     navigate('/admin/products', { replace: true });
   };
@@ -94,7 +107,7 @@ function Filters({
         onChange={handleFilter}
         name='sellingPrice'
         id='sellingPrice'
-        disabled={filter.sellingPrice !== ''}
+        disabled={Object.prototype.hasOwnProperty.call(ArrayProducts, 'sellingPrice')}
         defaultValue={'Todos'}
         className='max-w-[78px] hover:bg-bright-sun-800'>
         <option value='Todos' disabled>
@@ -107,7 +120,7 @@ function Filters({
         onChange={handleFilter}
         name='category'
         id='category'
-        disabled={filter.category !== ''}
+        disabled={Object.prototype.hasOwnProperty.call(ArrayProducts, 'category')}
         defaultValue={'Todas'}
         className='max-w-[110px] hover:bg-bright-sun-800'>
         <option value='Todas' disabled>
@@ -119,7 +132,7 @@ function Filters({
           ))}
       </select>
       <select
-        disabled={filter.brand !== ''}
+        disabled={Object.prototype.hasOwnProperty.call(ArrayProducts, 'brand')}
         onChange={handleFilter}
         name='brand'
         id='brand'
@@ -132,7 +145,7 @@ function Filters({
           allBrands.data?.brands.map((el: ICategories) => <option key={el._id}>{el.name}</option>)}
       </select>
       <select
-        disabled={filter.salesNumber !== ''}
+        disabled={Object.prototype.hasOwnProperty.call(ArrayProducts, 'salesNumber')}
         onChange={handleFilter}
         name='salesNumber'
         id='salesNumber'

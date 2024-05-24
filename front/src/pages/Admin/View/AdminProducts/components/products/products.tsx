@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 function Products() {
   const [oneProduct, responseP] = useLazyQuery(getProductById);
 
@@ -95,6 +96,7 @@ function Products() {
       notifyCategory(error as Error);
     }
   };
+
   return (
     <div className='w-[85%] flex items-center justify-center mt-3 min-h-[500px] max-h-[650px]'>
       <div className={styled.table}>
@@ -117,26 +119,34 @@ function Products() {
               {response.data?.allProducts.length > 0 &&
                 response.data?.allProducts.map((product: IAllProducts, i: number) => (
                   <tr key={i} className={!product.status ? 'bg-athens-gray-400 text-zeus-100' : ''}>
-                    <td>
-                      <div className='flex justify-center gap-3 items-center'>
-                        <img
-                          src={product.picture}
-                          alt={product.name}
-                          className='w-[50px] h-[50px]'
-                        />
-                        <p className='h-fit'>{product.name}</p>
-                      </div>
+                    <td className='cursor-pointer py-2'>
+                      <Link to={`/admin/products/detail/${product._id}`} className='text-zeus-50'>
+                        <div className='flex justify-around gap-3 items-center'>
+                          <img
+                            src={product.picture}
+                            alt={product.name}
+                            className='w-[50px] h-[50px]'
+                          />
+                          <p className='h-fit'>{product.name}</p>
+                        </div>
+                      </Link>
                     </td>
-                    <td>
+                    <td className='cursor-pointer'>
                       {product.sellingPrice.toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
                       })}
                     </td>
                     <td>
-                      {product.referencePrice === null ? 'Sin descuento' : product.referencePrice}
+                      {product.referencePrice === null
+                        ? 'Sin descuento'
+                        : (
+                            ((product.referencePrice - product.sellingPrice) /
+                              product.referencePrice) *
+                            100
+                          ).toFixed(2) + '%'}
                     </td>
-                    <td>{product?.category?.name}</td>
+                    <td className='cursor-pointer'>{product?.category?.name}</td>
                     <td className='w-[300px]'>
                       <div className='flex justify-center gap-x-[25px]'>
                         <div className='flex justify-center w-[85px] gap-1'>

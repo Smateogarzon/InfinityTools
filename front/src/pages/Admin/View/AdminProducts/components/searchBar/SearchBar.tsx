@@ -1,6 +1,11 @@
 import { FaSearch } from 'react-icons/fa';
 import style from './searchBar.module.css';
 import { IFilterAdminProducts } from '../../interface';
+import { useAppDispatch, useAppSelector } from '../../../../../../store';
+import { filterProducts } from '../../../../../../store/slices/filterUserAdmin.slice';
+interface IProduct {
+  [key: string]: any; //eslint-disable-line
+}
 function DropdownSearchBar({
   filter,
   setFilter,
@@ -8,8 +13,13 @@ function DropdownSearchBar({
   filter: IFilterAdminProducts;
   setFilter: React.Dispatch<React.SetStateAction<IFilterAdminProducts>>;
 }) {
+  const { ArrayProducts } = useAppSelector((state) => state.filtersUserAdmin) as {
+    ArrayProducts: IProduct;
+  };
+  const dispatch = useAppDispatch();
   const handleChageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter({ ...filter, name: e.target.value });
+    dispatch(filterProducts({ ...ArrayProducts, name: e.target.value }));
   };
   return (
     <div className={style.searchBar}>
