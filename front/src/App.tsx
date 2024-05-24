@@ -19,6 +19,7 @@ import { useEffect } from 'react';
 import { Bounce, ToastContainer } from 'react-toastify';
 import SelectCategory from './pages/Client/View/categorySelecter/selecCategory';
 import Footer from './pages/Client/Components/Footer/Footer';
+import ViewProductDetail from './pages/Admin/View/AdminProducts/viewProductDetail';
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function App() {
         />
         <Route path='/login' element={<Login />} />
         <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
+        <Route path='admin/products/detail/:id' element={<ViewProductDetail />} />
         <Route
           path='/admin/*'
           element={
