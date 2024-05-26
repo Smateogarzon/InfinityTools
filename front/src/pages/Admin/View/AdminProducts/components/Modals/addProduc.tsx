@@ -114,7 +114,7 @@ function AddProduct({
       newErrors.name = 'El nombre es demasiado corto';
     }
 
-    if (updatedProduct.description && updatedProduct.description.length < 500) {
+    if (updatedProduct.description && updatedProduct.description.length < 300) {
       newErrors.description = 'La descripción es demasiado corta';
     }
 
