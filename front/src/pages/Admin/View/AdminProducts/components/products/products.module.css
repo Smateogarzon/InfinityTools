@@ -38,3 +38,27 @@
   background-color: #ff95008f; /* Example background color */
   border-radius: 10px; /* Example border radius */
 }
+
+.description {
+  display: flex;
+  flex-direction: column;
+  border: solid 3px #f57b00e9;
+}
+.description > *:not(:last-child) {
+  border-bottom: 2px solid #f57b00e9;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}

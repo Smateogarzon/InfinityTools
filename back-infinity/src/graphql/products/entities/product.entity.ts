@@ -5,6 +5,12 @@ import { IsString, IsNumber, IsPositive, IsArray, IsUrl, IsBoolean } from 'class
 import { Category } from '@/graphql/category/entities/category.entity';
 import { Subcategory } from '@/graphql/category/entities/subcategory.entity';
 import { Brand } from '@/graphql/brands/entities/brand.entity';
+export interface Description {
+  [key: string]: string;
+}
+export interface NestedDescription {
+  [key: string]: Description;
+}
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -20,8 +26,7 @@ export class Product {
   name: string;
 
   @Prop()
-  @Field()
-  @IsString()
+  @Field(() => String)
   description: string;
 
   @Prop()

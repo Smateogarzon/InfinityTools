@@ -67,7 +67,7 @@ function Filters({
       Dispatch(filterProducts(newFil));
     }
   }, [initialLoad, params, setFilter, Dispatch]);
-
+  /*eslint-disable*/
   useEffect(() => {
     if (initialLoad) {
       const newUrl = new URLSearchParams();
@@ -80,8 +80,8 @@ function Filters({
       }
       navigate(`?${newUrl.toString()}`);
     }
-  }, [filter, navigate, initialLoad, ArrayProducts]);
-
+  }, [filter, navigate, initialLoad]);
+  /*eslint-enable*/
   const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilter({ ...filter, [name]: value });

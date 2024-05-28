@@ -23,7 +23,9 @@ export default {
       sans: ['system-ui', 'sans-serif'],
       chelsea: ['Chelsea-Market', 'cursive'],
     },
-
+    boxShadow: {
+      'top-gray': '0 -4px 7px -1px rgba(0, 0, 0, 0.4)', // Sombra gris en la parte superior
+    },
     // https://coolors.co/eee3d6-c55d38-568a3f-394b38
     colors: {
       'bright-sun': {

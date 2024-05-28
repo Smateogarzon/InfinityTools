@@ -211,8 +211,8 @@ input CreateProductInput {
 }
 
 input UpdateProductInput {
-  name: String!
-  description: String!
+  name: String
+  description: String
   purchasePrice: Float
   sellingPrice: Float
   referencePrice: Float

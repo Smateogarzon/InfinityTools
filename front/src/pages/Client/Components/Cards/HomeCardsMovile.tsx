@@ -16,8 +16,10 @@ function HomeCardsMovile({ data }: { data: Data }) {
       </div>
 
       {/* Card info */}
-      <div className='text-athens-gray-950 p-2 flex flex-col items-center text-center text-base'>
-        <p className='font-semibold'>{data.title.substring(0, 30).toUpperCase()}...</p>
+      <div className='bg-Black-full  p-2 flex flex-col items-center text-center text-base'>
+        <p className='font-semibold text-bright-sun-50'>
+          {data.title.substring(0, 30).toUpperCase()}...
+        </p>
         <span className='line-clamp-1'>{data.brand}</span>
 
         <span className='text-bright-sun-600 font-bold text-xl pt-2'>
