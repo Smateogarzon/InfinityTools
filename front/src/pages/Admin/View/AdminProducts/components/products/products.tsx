@@ -118,16 +118,27 @@ function Products() {
             <tbody>
               {response.data?.allProducts.length > 0 &&
                 response.data?.allProducts.map((product: IAllProducts, i: number) => (
-                  <tr key={i} className={!product.status ? 'bg-athens-gray-400 text-zeus-100' : ''}>
+                  <tr
+                    key={i}
+                    className={
+                      !product.status ? 'bg-athens-gray-400 text-zeus-100 gap-3' : 'gap-3'
+                    }>
                     <td className='cursor-pointer py-2'>
-                      <Link to={`/admin/products/detail/${product._id}`} className='text-zeus-50'>
-                        <div className='flex justify-around gap-3 items-center'>
+                      <Link
+                        onClick={() => {
+                          !product.status && notify();
+                        }}
+                        to={product.status ? `/admin/products/detail/${product._id}` : '#'}
+                        className='text-zeus-50'>
+                        <div className='flex justify-between gap-3 items-center'>
                           <img
                             src={product.picture}
                             alt={product.name}
                             className='w-[50px] h-[50px]'
                           />
-                          <p className='h-fit'>{product.name}</p>
+                          <p className='h-fit  max-w-[290px] text-balance text-end'>
+                            {product.name}
+                          </p>
                         </div>
                       </Link>
                     </td>

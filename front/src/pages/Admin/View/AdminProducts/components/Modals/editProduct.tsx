@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllCategories, getBrands, getSubCategories, updateProduct } from '../../graphql/querys';
 import styled from './addProduct.module.css';
 import { IoMdClose } from 'react-icons/io';
-import { ICategories, ICreateProductInput } from '../../interface';
+import { ICategories, ICreateProductInput, Idescription } from '../../interface';
 import { Bounce, toast } from 'react-toastify';
 import animated from '../../../../../../assets/Animation - 1714697021815.json';
 import Lottie from 'lottie-react';
@@ -40,6 +40,37 @@ const initialErrors: Errors = {
   subcategory: '',
   brand: '',
 };
+const inicialDescription: Idescription = {
+  dimensiones: {
+    Alto: undefined,
+    Ancho: undefined,
+    Capacidad: undefined,
+    Largo: undefined,
+    Largo_de_la_manguera: undefined,
+    Peso: undefined,
+    Tamaño: undefined,
+  },
+  especificaciones: {
+    Amperaje: undefined,
+    Aspira_líquidos: '',
+    Características: '',
+    Color: '',
+    Consumo: undefined,
+    Cantidad_contenida_en_el_empaque: '',
+    Garantía_Producto: '',
+    Inalambrico: '',
+    Incluye: '',
+    Material: '',
+    Modelo: '',
+    País_de_Origen: '',
+    Pila: '',
+    Potencia: undefined,
+    Tipo: '',
+    Tipo_de_aspiradora: '',
+    Uso_de_Herramienta: '',
+    Voltaje: undefined,
+  },
+};
 
 function EditProduct({
   setClose,
@@ -58,16 +89,31 @@ function EditProduct({
   const [arrayFiles, setArrayFiles] = useState<(File | string)[]>([]);
   const [infoProduct, setInfoProduct] = useState<ICreateProductInput>(initialProductState);
   const [errors, setErrors] = useState<Errors>(initialErrors);
-
+  const [description, setDescription] = useState<Idescription>(inicialDescription);
+  const [optionsDimensions, setOptionsDimensions] = useState<string[]>(
+    Object.keys(description.dimensiones)
+  );
+  const [selectedDimension, setSelectedDimension] = useState('');
+  const [selectedEspecificaciones, setSelectedEspecificaciones] = useState('');
+  const [optionEspecificaciones, setOptionEspecificaciones] = useState<string[]>(
+    Object.keys(description.especificaciones)
+  );
+  const [valDimensions, setValDimensions] = useState<(string | number | undefined)[]>([]);
+  const [valEspecificaciones, setValEspecificaciones] = useState<(string | number | undefined)[]>(
+    []
+  );
+  const [initialLoading, setInitialLoading] = useState<boolean>(false);
+  const arrayDimensions = Object.keys(inicialDescription.dimensiones);
+  const arrayEspecificaciones = Object.keys(inicialDescription.especificaciones);
   useEffect(() => {
     if (data && data.data && data.data.FindOneproduct) {
       setSelectedFile(data.data.FindOneproduct.picture);
       setArrayFiles(data.data.FindOneproduct.extraPicture);
+      /*eslint-disable*/
       setInfoProduct((prev) => ({
         ...prev,
         _id: data.data.FindOneproduct._id,
         name: data.data.FindOneproduct.name,
-        description: data.data.FindOneproduct.description,
         purchasePrice: data.data.FindOneproduct.purchasePrice,
         sellingPrice: data.data.FindOneproduct.sellingPrice,
         referencePrice: data.data.FindOneproduct.referencePrice,
@@ -75,6 +121,7 @@ function EditProduct({
         subcategory: data.data.FindOneproduct.subcategory._id,
         brand: data.data.FindOneproduct.brand._id,
       }));
+      setDescription(JSON.parse(data.data.FindOneproduct.description));
 
       gSubcategories({
         variables: {
@@ -82,12 +129,22 @@ function EditProduct({
         },
         fetchPolicy: 'no-cache',
       });
+      setInitialLoading(true);
     }
   }, [data]);
+  /*eslint-enable*/
   useEffect(() => {
     allCategories.refetch();
     allBrands.refetch();
   }, [allBrands, allCategories]);
+
+  if (initialLoading) {
+    setValDimensions(Object.values(description.dimensiones));
+    setValEspecificaciones(Object.values(description.especificaciones));
+    setOptionEspecificaciones(Object.keys(description.especificaciones));
+    setOptionsDimensions(Object.keys(description.dimensiones));
+    setInitialLoading(false);
+  }
 
   const notifyCategory = (e: Error) =>
     toast.warn(`${e}`.substring(12), {
@@ -249,10 +306,12 @@ function EditProduct({
           });
         }
       }
-
       setInfoProduct(initialProductState);
       setErrors(initialErrors);
       setSelectedFile(null);
+      setSelectedDimension('');
+      setSelectedEspecificaciones('');
+      setDescription(inicialDescription);
       refetching();
       setArrayFiles([]);
       setClose(false);
@@ -260,7 +319,153 @@ function EditProduct({
       notifySubmit(error as Error);
     }
   };
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === 'dimension') {
+      setOptionsDimensions([...optionsDimensions, value]);
+      setSelectedDimension(value);
+    }
+    if (name === 'especificaciones') {
+      setOptionEspecificaciones([...optionEspecificaciones, value]);
+      setSelectedEspecificaciones(value);
+    }
+  };
 
+  const handleRemove = (selectedValue: string, index: number, name: string) => {
+    if (selectedValue === 'dimension') {
+      setOptionsDimensions(
+        optionsDimensions.filter((_, i) => {
+          return i !== index;
+        })
+      );
+      setDescription({
+        ...description,
+        dimensiones: {
+          ...description.dimensiones,
+          [name]: '',
+        },
+      });
+    }
+    if (selectedValue === 'especificaciones') {
+      setOptionEspecificaciones(
+        optionEspecificaciones.filter((_, i) => {
+          return i !== index;
+        })
+      );
+      setDescription({
+        ...description,
+        especificaciones: {
+          ...description.especificaciones,
+          [name]: '',
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (optionsDimensions.length === 0) {
+      setSelectedDimension('');
+    }
+    if (optionEspecificaciones.length === 0) {
+      setSelectedEspecificaciones('');
+    }
+  }, [selectedDimension, optionsDimensions, selectedEspecificaciones, optionEspecificaciones]);
+  const modifi = () => {
+    let sendDescription = { dimensiones: {}, especificaciones: {} };
+    for (const [key, value] of Object.entries(description.dimensiones)) {
+      if (key === 'Peso' && value !== undefined) {
+        sendDescription = {
+          ...sendDescription,
+          dimensiones: {
+            ...sendDescription.dimensiones,
+            [key]: Number(value),
+          },
+        };
+      }
+      if (value) {
+        sendDescription = {
+          ...sendDescription,
+          dimensiones: {
+            ...sendDescription.dimensiones,
+            [key]: value,
+          },
+        };
+      }
+    }
+    for (const [key, value] of Object.entries(description.especificaciones)) {
+      if (key === 'Amperaje' || key === 'Voltaje' || key === 'Potencia' || key === 'Consumo') {
+        if (value !== undefined) {
+          sendDescription = {
+            ...sendDescription,
+            especificaciones: {
+              ...sendDescription.especificaciones,
+              [key]: Number(value),
+            },
+          };
+        }
+      }
+      if (value && value !== '') {
+        sendDescription = {
+          ...sendDescription,
+          especificaciones: {
+            ...sendDescription.especificaciones,
+            [key]: value,
+          },
+        };
+      }
+    }
+    return sendDescription;
+  };
+  const handleEditDescription = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    option: string,
+    index: number
+  ) => {
+    const { name, value } = e.target;
+
+    if (option === 'dimensiones') {
+      if (value === '') {
+        handleRemove('dimensiones', index, name);
+      }
+      const tempVal = [...valDimensions];
+      tempVal[index] = value;
+      setValDimensions(tempVal);
+      const updatedDimensiones = {
+        ...description.dimensiones,
+        [name]: value,
+      };
+
+      setDescription({
+        ...description,
+        dimensiones: updatedDimensiones,
+      });
+    }
+    if (option === 'especificaciones') {
+      if (value === '') {
+        handleRemove('especificaciones', index, name);
+      }
+      const tempVal = [...valEspecificaciones];
+      tempVal[index] = value;
+      setValEspecificaciones(tempVal);
+      const updatedEspecificaciones = {
+        ...description.especificaciones,
+        [name]: value,
+      };
+
+      setDescription({
+        ...description,
+        especificaciones: updatedEspecificaciones,
+      });
+    }
+  };
+  /*eslint-disable */
+  useEffect(() => {
+    if (infoProduct._id !== '' && infoProduct._id !== undefined) {
+      const sendDescription = modifi();
+      setInfoProduct({ ...infoProduct, description: JSON.stringify(sendDescription) });
+    }
+  }, [description]);
+  /*eslint-enable */
   return (
     <div className='flex  flex-col absolute z-11 top-[25%] left-[30%] max-h-[500px]  w-[40%] bg-[#000000] p-5 rounded-xl'>
       <IoMdClose
@@ -370,16 +575,92 @@ function EditProduct({
             />
             {errors.name && <p className='text-[#ff0000]'>{errors.name}</p>}
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col gap-3'>
             <label htmlFor='description'>Descripción:</label>
-            <textarea
-              onChange={(e) => handleProduct(e)}
-              placeholder='Descripción'
-              id='description'
-              name='description'
-              value={infoProduct.description}
-              className='h-[100px] p-2 box-border  text-[#fff] bg-Black-low rounded-md border-solid border-1'
-            />
+            <div className='flex gap-[36px]'>
+              <p className='text-sm'>{'Dimensiones->'}</p>
+              <select
+                name='dimension'
+                id='dimension'
+                onChange={(e) => handleSelect(e)}
+                value={selectedDimension}
+                className=' bg-Black-low text-[#fff] cursor-pointer rounded-md'>
+                <option value='' disabled>
+                  Opciones
+                </option>
+                {arrayDimensions.map((dimension) => (
+                  <option
+                    key={dimension}
+                    value={dimension}
+                    disabled={optionsDimensions.includes(dimension)}>
+                    {dimension}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {optionsDimensions.length > 0 &&
+              optionsDimensions.map(
+                (dimension, i) =>
+                  valDimensions[i] !== '' && (
+                    <div key={dimension} className='flex gap-2'>
+                      <label htmlFor={`dimension-${i}`}>{dimension}:</label>
+                      <input
+                        value={valDimensions[i] || ''}
+                        onChange={(e) => handleEditDescription(e, 'dimensiones', i)}
+                        type='text'
+                        name={dimension}
+                        id={`dimension-${i}`}
+                        className=' text-[#fff] bg-Black-low rounded-md border-solid border-1'
+                      />
+                      <IoMdClose
+                        className='cursor-pointer'
+                        onClick={() => handleRemove('dimension', i, dimension)}
+                      />
+                    </div>
+                  )
+              )}
+            <div className='flex gap-2'>
+              <p className='text-sm'>{'Especificaciones->'}</p>
+              <select
+                name='especificaciones'
+                id='especificaciones'
+                onChange={(e) => handleSelect(e)}
+                value={selectedEspecificaciones}
+                className=' bg-Black-low text-[#fff] cursor-pointer rounded-md max-w-[150px]'>
+                <option value='' disabled>
+                  Opciones
+                </option>
+                {arrayEspecificaciones.length > 0 &&
+                  arrayEspecificaciones.map((especificaciones) => (
+                    <option
+                      key={especificaciones}
+                      value={especificaciones}
+                      disabled={optionEspecificaciones.includes(especificaciones)}>
+                      {especificaciones}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {optionEspecificaciones.length > 0 &&
+              optionEspecificaciones.map((especificaciones, i) => (
+                <div key={especificaciones} className='flex gap-2'>
+                  <label htmlFor={`especificaciones-${i}`} className='max-w-[150px] truncate ...'>
+                    {especificaciones}:
+                  </label>
+                  <input
+                    onChange={(e) => handleEditDescription(e, 'especificaciones', i)}
+                    type='text'
+                    value={valEspecificaciones[i] || ''}
+                    name={especificaciones}
+                    id={`especificaciones-${i}`}
+                    className=' text-[#fff] bg-Black-low rounded-md border-solid border-1'
+                  />
+                  <IoMdClose
+                    className='cursor-pointer'
+                    onClick={() => handleRemove('especificaciones', i, especificaciones)}
+                  />
+                </div>
+              ))}
             {errors.description && <p className='text-[#ff0000]'>{errors.description}</p>}
           </div>
           <div className='flex flex-col'>

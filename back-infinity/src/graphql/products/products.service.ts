@@ -290,6 +290,21 @@ export class ProductsService {
           throw new Error('la imagen secundaria no pudo ser eliminada');
         }
       });
+      const deleteSub = await this.subcategoryModel.findById(product.subcategory);
+      const deleteBrand = await this.brandModel.findById(product.brand);
+      const deleteCategory = await this.categoryModel.findById(product.category);
+      deleteSub.products = deleteSub.products.filter(
+        (e) => e.toString() !== product._id.toString()
+      );
+      deleteBrand.products = deleteBrand.products.filter(
+        (e) => e.toString() !== product._id.toString()
+      );
+      deleteCategory.products = deleteCategory.products.filter(
+        (e) => e.toString() !== product._id.toString()
+      );
+      await deleteSub.save();
+      await deleteBrand.save();
+      await deleteCategory.save();
       return await this.productModel.findByIdAndDelete(id);
     } catch (error) {
       return error;

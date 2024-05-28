@@ -8,10 +8,10 @@ export class UpdateProductInput extends PartialType(CreateProductInput) {
   _id: string;
   @Field(() => Boolean, { nullable: true })
   status: boolean;
-  @Field()
+  @Field({ nullable: true })
   name: string;
 
-  @Field()
+  @Field({ nullable: true })
   description: string;
 
   @Field(() => Float, { nullable: true })
