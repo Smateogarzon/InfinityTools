@@ -55,7 +55,7 @@ function DetailProduct() {
   const [description, setDescription] = useState<Idescription>(inicialDescription);
   const [randomDescription, setRandomDescription] = useState<(string | undefined)[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
-  console.log('🚀 ~ DetailProduct ~ data:', data);
+  /*eslint-disable*/
   useEffect(() => {
     getProduct({ variables: { id: id } });
     const temPictures = data?.FindOneproduct?.extraPicture || [];
@@ -63,6 +63,7 @@ function DetailProduct() {
     setShowImg(data?.FindOneproduct?.picture);
     setDescription(JSON.parse(data?.FindOneproduct?.description || '{}'));
   }, [data, getProduct]);
+  /*eslint-enable*/
   useEffect(() => {
     if (pictures.length > 1) {
       const baseHeight = 500 / pictures.length;

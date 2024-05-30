@@ -44,7 +44,21 @@ export const getProductById = gql`
     }
   }
 `;
-
+export const getFilterProducts = gql`
+  query FindAllproductsFilter($filter: Filters!) {
+    FindAllproductsFilter(filter: $filter) {
+      _id
+      name
+      picture
+      sellingPrice
+      referencePrice
+      category {
+        name
+      }
+      status
+    }
+  }
+`;
 export const updateProduct = gql`
   mutation updateProduct(
     $image: Upload

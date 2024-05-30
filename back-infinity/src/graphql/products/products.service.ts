@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductInput } from './dto/create-product.input';
+import { CreateProductInput, Filters } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -10,6 +10,13 @@ import { Category } from '../category/entities/category.entity';
 import { Subcategory } from '../category/entities/subcategory.entity';
 import { Brand } from '../brands/entities/brand.entity';
 
+interface IFilterProducts {
+  name?: { $regex: string; $options: string };
+  category?: string;
+  brand?: string;
+  sellingPrice?: 'Mayor Precio' | 'Menor Precio';
+  salesNumber?: 'Menores Ventas' | 'Mayores Ventas';
+}
 @Injectable()
 export class ProductsService {
   constructor(
@@ -110,6 +117,103 @@ export class ProductsService {
         .populate('category')
         .populate('subcategory')
         .populate('brand');
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async filters(filter: Filters) {
+    try {
+      const filterQuery: IFilterProducts = {};
+      let arrayFilters: Product[] = [];
+      if (filter.name) {
+        filterQuery.name = { $regex: filter.name, $options: 'i' };
+      }
+      const products = await this.productModel
+        .find(filterQuery)
+        .populate('category')
+        .populate('brand');
+      if (filter.category) {
+        if (arrayFilters.length > 0) {
+          for (let i = 0; i < arrayFilters.length; i++) {
+            if (arrayFilters[i].category.name === filter.category) {
+              arrayFilters.push(arrayFilters[i]);
+            }
+          }
+        } else {
+          for (let i = 0; i < products.length; i++) {
+            if (products[i].category.name === filter.category) {
+              arrayFilters.push(products[i]);
+            }
+          }
+        }
+      }
+      if (filter.brand) {
+        if (arrayFilters.length > 0) {
+          for (let i = 0; i < arrayFilters.length; i++) {
+            if (arrayFilters[i].brand.name === filter.brand) {
+              arrayFilters.push(arrayFilters[i]);
+            }
+          }
+        } else {
+          for (let i = 0; i < products.length; i++) {
+            if (products[i].brand.name === filter.brand) {
+              arrayFilters.push(products[i]);
+            }
+          }
+        }
+      }
+      if (filter.sellingPrice || filter.salesNumber) {
+        if (arrayFilters.length > 0) {
+          if (filter.sellingPrice === 'Menor Precio' && filter.salesNumber === 'Menores Ventas') {
+            arrayFilters.sort((a, b) => a.sellingPrice - b.sellingPrice);
+          }
+        }
+      }
+      if (filter.sellingPrice || filter.salesNumber) {
+        if (arrayFilters.length > 0) {
+          arrayFilters.sort((a, b) => {
+            let comparison = 0;
+
+            if (filter.sellingPrice) {
+              const sellingPriceOrder = filter.sellingPrice === 'Menor Precio' ? 1 : -1;
+              comparison = sellingPriceOrder * (a.sellingPrice - b.sellingPrice);
+              if (comparison !== 0) return comparison;
+            }
+
+            if (filter.salesNumber) {
+              const salesNumberOrder = filter.salesNumber === 'Menores Ventas' ? 1 : -1;
+              comparison = salesNumberOrder * (a.salesNumber - b.salesNumber);
+              if (comparison !== 0) return comparison;
+            }
+
+            return comparison;
+          });
+        } else {
+          arrayFilters = products;
+          arrayFilters.sort((a, b) => {
+            let comparison = 0;
+
+            if (filter.sellingPrice) {
+              const sellingPriceOrder = filter.sellingPrice === 'Menor Precio' ? 1 : -1;
+              comparison = sellingPriceOrder * (a.sellingPrice - b.sellingPrice);
+              if (comparison !== 0) return comparison;
+            }
+
+            if (filter.salesNumber) {
+              const salesNumberOrder = filter.salesNumber === 'Menores Ventas' ? 1 : -1;
+              comparison = salesNumberOrder * (a.salesNumber - b.salesNumber);
+              if (comparison !== 0) return comparison;
+            }
+
+            return comparison;
+          });
+        }
+      }
+      if (arrayFilters.length === 0) {
+        arrayFilters = products;
+      }
+      return arrayFilters;
     } catch (error) {
       return error;
     }

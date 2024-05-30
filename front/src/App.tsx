@@ -20,6 +20,7 @@ import { Bounce, ToastContainer } from 'react-toastify';
 import SelectCategory from './pages/Client/View/categorySelecter/selecCategory';
 import Footer from './pages/Client/Components/Footer/Footer';
 import ViewProductDetail from './pages/Admin/View/AdminProducts/viewProductDetail';
+import MapsServices from './pages/Client/View/serviceCenter/mapsServices';
 
 function App() {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ function App() {
               <Home />
               <Routes>
                 <Route path='/category/:name/:subcategory' element={<SelectCategory />} />
+                <Route path='/service_center' element={<MapsServices />} />
               </Routes>
               <Footer />
             </>
