@@ -6,6 +6,7 @@ import {
   BsListUl,
   BsTagFill,
 } from 'react-icons/bs';
+import { SiGooglemaps } from 'react-icons/si';
 import { FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import Categories from './categories';
@@ -24,24 +25,32 @@ function NavBarDesktop({ navRef, showLogout, logout, sticking, data, loading, er
           <li className='mx-5 '>
             <Link
               to='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
+              className='hover:text-bright-sun-400 transition text-base font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 lgm:text-xl'>
               <BsFillHouseDoorFill className='mr-2' />
               <span className='translate-y-[1px]'>Inicio</span>
             </Link>
           </li>
           <li
             onClick={() => setShowCategory(!showCategory)}
-            className='mx-5 hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
+            className='mx-5 hover:text-bright-sun-400 transition text-base font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 lgm:text-xl'>
             <BsListUl className='mr-2 cursor-pointer' />
             <span className='translate-y-[1px] cursor-pointer'>Categorías</span>
           </li>
-          <li className='mx-5 w-[200px]'>
-            <a
-              href='/'
-              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
-              <BsTagFill className='mr-2' />
+          <li className='mx-5 w-[150px] lgm:w-[200px]'>
+            <Link
+              to='/'
+              className='hover:text-bright-sun-400 transition text-base font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 lgm:text-xl'>
+              <BsTagFill />
               <span className='translate-y-[1px] '>Ofertas del día</span>
-            </a>
+            </Link>
+          </li>
+          <li className=' w-[200px] lgm:w-[250px]'>
+            <Link
+              to='/service_center'
+              className='hover:text-bright-sun-400 transition text-base font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600 lgm:text-xl'>
+              <SiGooglemaps />
+              <span className='translate-y-[1px] '>Centros de servicios</span>
+            </Link>
           </li>
         </ul>
         {showCategory && (

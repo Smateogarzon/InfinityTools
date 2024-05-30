@@ -16,11 +16,11 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-function Products() {
+function Products({ data }: { data: IAllProducts[] }) {
   const [oneProduct, responseP] = useLazyQuery(getProductById);
-
+  const [dataRender, setDataRender] = useState<IAllProducts[]>([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [editProductModal, setEditProductModal] = useState(false);
   const [DeleteProduct, setDeleteProduct] = useState<string[]>([]);
@@ -28,6 +28,13 @@ function Products() {
   const response = useQuery(getProducts);
   const [newStatus] = useMutation(updateStatus);
   const [clearProduct] = useMutation(delProduct);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setDataRender(data);
+    } else {
+      setDataRender(response.data?.allProducts);
+    }
+  }, [response.data?.allProducts, data]);
   const notifyCategory = (e: Error) =>
     toast.warn(`${e}`.substring(12), {
       position: 'top-center',
@@ -116,8 +123,8 @@ function Products() {
               </tr>
             </thead>
             <tbody>
-              {response.data?.allProducts.length > 0 &&
-                response.data?.allProducts.map((product: IAllProducts, i: number) => (
+              {dataRender?.length > 0 &&
+                dataRender.map((product: IAllProducts, i: number) => (
                   <tr
                     key={i}
                     className={

@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
-import { CreateProductInput } from './dto/create-product.input';
+import { CreateProductInput, Filters } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 // import { Req } from '@nestjs/common';
 import * as Upload from 'graphql-upload/Upload.js';
@@ -24,6 +24,14 @@ export class ProductsResolver {
   async findOne(@Args('id') id: string) {
     try {
       return await this.productsService.findOne(id);
+    } catch (error) {
+      return error;
+    }
+  }
+  @Query(() => [Product], { name: 'FindAllproductsFilter' })
+  async filters(@Args('filter') filter: Filters) {
+    try {
+      return await this.productsService.filters(filter);
     } catch (error) {
       return error;
     }

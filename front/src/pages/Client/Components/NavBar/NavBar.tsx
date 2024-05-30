@@ -40,7 +40,7 @@ export default function NavBar({ data, loading, error }: any) {
   return (
     <>
       {sticking && <div className='h-[55px]'></div>}
-      {width > 600 ? (
+      {width > 768 ? (
         <NavBarDesktop
           data={data}
           loading={loading}

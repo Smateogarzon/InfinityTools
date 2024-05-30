@@ -113,6 +113,7 @@ type Query {
   location(id: Int!): Location!
   allProducts: [Product!]!
   FindOneproduct(id: String!): Product!
+  FindAllproductsFilter(filter: Filters!): [Product!]!
   brands: [Brand!]!
   allCategories: [Category!]!
   categoryRender: [ResponseCategory!]!
@@ -126,6 +127,14 @@ input FindUserInput {
   rol: UserRol
   gender: UserGender
   city: String
+}
+
+input Filters {
+  name: String
+  category: String
+  sellingPrice: String
+  brand: String
+  salesNumber: String
 }
 
 type Mutation {

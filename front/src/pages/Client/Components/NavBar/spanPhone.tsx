@@ -1,6 +1,14 @@
 import { BsFillHouseDoorFill, BsListUl, BsTagFill } from 'react-icons/bs';
+import { SiGooglemaps } from 'react-icons/si';
+import { Link } from 'react-router-dom';
 
-function SpanPhone({ setShowMenu, setShowCategory }: any) {
+function SpanPhone({
+  setShowMenu,
+  setShowCategory,
+}: {
+  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCategory: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <>
       <div className='absolute z-9 top-[0vh] right-[-94vw] w-[100vw] h-[100vh] bg-zeus-975'></div>
@@ -26,12 +34,20 @@ function SpanPhone({ setShowMenu, setShowCategory }: any) {
             <span className='translate-y-[1px]'>Categorías</span>
           </li>
           <li className='[&>a]:text-2xl xsm:[&>a]:text-3xl'>
-            <a
-              href='/'
+            <Link
+              to='/'
               className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
               <BsTagFill className='mr-2' onClick={() => setShowMenu(false)} />
               <span className='translate-y-[1px]'>Ofertas del día</span>
-            </a>
+            </Link>
+          </li>
+          <li className='[&>a]:text-2xl xsm:[&>a]:text-3xl'>
+            <Link
+              to='/service_center'
+              className='hover:text-bright-sun-400 transition text-xl font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
+              <SiGooglemaps className='mr-2' onClick={() => setShowMenu(false)} />
+              <span className='translate-y-[1px]'>Centros de ayuda</span>
+            </Link>
           </li>
         </ul>
       </div>

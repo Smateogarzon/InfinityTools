@@ -102,7 +102,7 @@ export class Product {
   @IsArray()
   reviews: string[];
 
-  @Prop()
+  @Prop({ default: 0 })
   @Field(() => Int, { nullable: true })
   @IsNumber({ allowNaN: false, allowInfinity: false })
   @IsPositive()
