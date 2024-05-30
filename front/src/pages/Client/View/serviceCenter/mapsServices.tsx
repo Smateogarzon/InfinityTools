@@ -3,7 +3,6 @@ import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { MarkerWithInfowindow } from './marker';
 import { initialCenter, MapProps } from './servicios';
 const key = import.meta.env.VITE_GOOGLE_MAPS;
-console.log('🚀 ~ key:', key);
 
 function MapsServices() {
   const [ubications, setUbications] = useState<MapProps>(initialCenter);
