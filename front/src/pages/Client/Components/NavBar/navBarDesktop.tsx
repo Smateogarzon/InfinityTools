@@ -10,9 +10,11 @@ import { SiGooglemaps } from 'react-icons/si';
 import { FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import Categories from './categories';
+import { useAppSelector } from '../../../../store';
 /* eslint-disable */
 function NavBarDesktop({ navRef, showLogout, logout, sticking, data, loading, error }: any) {
   /* eslint-enable */
+  const { rol } = useAppSelector((state) => state.auth);
   const [showCategory, setShowCategory] = useState(false);
 
   return (
@@ -66,7 +68,7 @@ function NavBarDesktop({ navRef, showLogout, logout, sticking, data, loading, er
       <ul className='flex items-center pr-7'>
         <li className='mx-5'>
           <Link
-            to='/login'
+            to={rol === '' ? '/login' : '/profile'}
             className='hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
             <BsFillPersonFill className='h-[30px] w-[30px]' />
           </Link>

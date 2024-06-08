@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import animation from '../../../../../../assets/Animation - 1714697021815.json';
@@ -47,7 +47,9 @@ const inicialDescription: Idescription = {
 };
 
 function DetailProduct() {
+  const [width, setWidth] = useState<number>(window.innerWidth);
   const { id } = useParams();
+  const location = useLocation();
   const [getProduct, { data, loading }] = useLazyQuery(getProductById);
   const [pictures, setPictures] = useState<string[]>([]);
   const [showImg, setShowImg] = useState<string>('');
@@ -55,6 +57,14 @@ function DetailProduct() {
   const [description, setDescription] = useState<Idescription>(inicialDescription);
   const [randomDescription, setRandomDescription] = useState<(string | undefined)[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
+  const [selling, setSelling] = useState<boolean>(false);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [width]);
+  useEffect(() => {
+    if (location.pathname === `/detail/${id}`) setSelling(true);
+  }, []);
   /*eslint-disable*/
   useEffect(() => {
     getProduct({ variables: { id: id } });
@@ -66,9 +76,19 @@ function DetailProduct() {
   /*eslint-enable*/
   useEffect(() => {
     if (pictures.length > 1) {
-      const baseHeight = 500 / pictures.length;
-      const heightWithOffset = baseHeight - 8; // Restar 2rem (32px)
-      setHImg(`${heightWithOffset}px`);
+      if (width > 1159) {
+        const baseHeight = 500 / pictures.length;
+        const heightWithOffset = baseHeight - 8; // Restar 2rem (32px)
+        setHImg(`${heightWithOffset}px`);
+      } else if (width > 900) {
+        const baseHeight = 350 / pictures.length;
+        const heightWithOffset = baseHeight - 8; // Restar 2rem (32px)
+        setHImg(`${heightWithOffset}px`);
+      } else {
+        const baseHeight = 250 / pictures.length;
+        const heightWithOffset = baseHeight - 8; // Restar 2rem (32px)
+        setHImg(`${heightWithOffset}px`);
+      }
     }
   }, [pictures.length]);
   useEffect(() => {
@@ -97,9 +117,16 @@ function DetailProduct() {
       setRandomDescription(arrayVal);
     }
   }, [description]);
+  const handleCountProduct = (current: string) => {
+    if (current === 'desc') {
+      if (totalProducts > 0) setTotalProducts(totalProducts - 1);
+    } else if (current === 'asc') {
+      setTotalProducts(totalProducts + 1);
+    }
+  };
 
   return (
-    <div className='w-fit flex justify-center my-3 py-3 pb-10 bg-Black-full px-5 '>
+    <div className='w-[720px] flex justify-center my-3 py-3 pb-10 bg-Black-full px-5 md:w-[900px] xlg:w-fit overflow-hidden'>
       {loading ? (
         <div className='w-[50%]'>
           <Lottie animationData={animation} />
@@ -115,13 +142,17 @@ function DetailProduct() {
                       key={i}
                       src={picture}
                       alt={i.toString()}
-                      className={`w-[100px]  cursor-pointer rounded-lg`}
+                      className={`w-[80px] md:w-[100px]  cursor-pointer rounded-lg`}
                       style={{ height: hImg }}
                       onMouseEnter={() => setShowImg(picture)}
                     />
                   ))}
                 </div>
-                <img src={showImg} alt='major' className='w-[500px] h-[500px] rounded-xl' />
+                <img
+                  src={showImg}
+                  alt='major'
+                  className='w-[250px] h-[250px] md:w-[350px] md:h-[350px] xlg:w-[500px] xlg:h-[500px] rounded-xl'
+                />
               </div>
 
               <div className='flex flex-col gap-2 max-w-[600px]'>
@@ -160,7 +191,7 @@ function DetailProduct() {
               </div>
             </section>
             <section className='flex flex-col gap-3'>
-              <div className='flex flex-col gap-3 mt-3 border-solid border-2 border-bright-sun-600 p-2 rounded w-[450px] h-fit'>
+              <div className='flex flex-col gap-3 mt-3 border-solid border-2 border-bright-sun-600 p-2 rounded w-[300px] md:w-[350px] xlg:w-[450px] h-fit'>
                 <p className='text-lg font-bold text-left '>
                   {data?.FindOneproduct?.brand.name.toUpperCase()}
                 </p>
@@ -187,6 +218,31 @@ function DetailProduct() {
                     currency: 'USD',
                   })}
                 </p>
+                {selling && (
+                  <div className='flex gap-1  items-center'>
+                    <div className='flex gap-1'>
+                      <button
+                        className='cursor-pointer w-fit px-2 text-lg text-bold bg-blue flex items-center rounded-lg'
+                        onClick={() => handleCountProduct('desc')}>
+                        -
+                      </button>
+                      <input
+                        type='text'
+                        className=' w-[50px] text-lg text-center bg-zeus-200 rounded'
+                        onChange={(e) => setTotalProducts(Number(e.target.value))}
+                        value={totalProducts}
+                      />
+                      <button
+                        className='cursor-pointer w-fit px-2 text-lg text-bold bg-Red flex items-center rounded-lg'
+                        onClick={() => handleCountProduct('asc')}>
+                        +
+                      </button>
+                    </div>
+                    <button className='cursor-pointer w-fit px-2 text-lg text-bold bg-bright-sun-600 flex items-center rounded-lg'>
+                      Añadir al carrito
+                    </button>
+                  </div>
+                )}
                 {Number(data?.FindOneproduct?.sellingPrice) > 100000 && (
                   <p className='text-sm  text-left '>
                     <b className='text-bright-sun-600 text-base'>Envío gratis</b> a todo el país
@@ -221,8 +277,8 @@ function DetailProduct() {
                 </article>
               </div>
               <div className='mt-4 max-w-[450px]'>
-                <h2>En combo es más vacano.</h2>
-                <div className='flex flex-wrap gap-2 w-full'>
+                <h2>En combo es más Bacano.</h2>
+                <div className='flex flex-wrap gap-2 w-full max-h-[300px] overflow-y-scroll'>
                   <Sets />
                   <Sets />
                   <Sets />

@@ -20,15 +20,18 @@ export class GoogleStrategyConfig extends PassportStrategy(Strategy, 'google') {
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     try {
-      const user = await this.authService.ValidateUser({
+      const { user, userExist } = await this.authService.ValidateUser({
         email: profile.emails[0].value,
         familyName: profile.name.givenName,
         photo: profile.photos[0].value,
       });
 
-      if (user) {
+      if (user && userExist === true) {
         const jwt = await this.jwtService.generateToken(user.id);
-        return { jwt };
+        return { jwt, userExist: true, name: user.firtsName };
+      } else {
+        const jwt = await this.jwtService.generateToken(user.id);
+        return { jwt, userExist: false, name: user.firtsName };
       }
 
       return null;

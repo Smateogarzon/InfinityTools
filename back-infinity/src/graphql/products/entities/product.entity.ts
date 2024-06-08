@@ -102,6 +102,10 @@ export class Product {
   @IsArray()
   reviews: string[];
 
+  @Prop({ default: 5 })
+  @Field(() => Int)
+  NumberReviews: number;
+
   @Prop({ default: 0 })
   @Field(() => Int, { nullable: true })
   @IsNumber({ allowNaN: false, allowInfinity: false })

@@ -31,7 +31,7 @@ import { CategoryModule } from './graphql/category/category.module';
     MongooseModule.forRoot(process.env.MONGO_URL),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '10h' },
       global: true,
     }),
 

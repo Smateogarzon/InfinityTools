@@ -15,17 +15,24 @@ import Home from './pages/Client/View/Home/Home';
 import Login from './pages/Client/View/Login&Register/login';
 import { useDispatch } from 'react-redux';
 import { getFacebookAccess, getGoogleAccess } from '@/store/slices/auth.slice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Bounce, ToastContainer } from 'react-toastify';
 import SelectCategory from './pages/Client/View/categorySelecter/selecCategory';
 import Footer from './pages/Client/Components/Footer/Footer';
 import ViewProductDetail from './pages/Admin/View/AdminProducts/viewProductDetail';
 import MapsServices from './pages/Client/View/serviceCenter/mapsServices';
+import Register from './pages/Client/View/Login&Register/Register';
+import Profile from './pages/Client/View/profile/profile';
+import DetailProduct from './pages/Client/View/detail/detail';
+import DetailProductMobile from './pages/Admin/View/AdminProducts/components/products/detailProductMobile';
 
 function App() {
   const dispatch = useDispatch();
   const query = useLocation().search;
-
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [width]);
   useEffect(() => {
     (() => {
       if (query === '?auth=google') {
@@ -59,11 +66,17 @@ function App() {
               <Routes>
                 <Route path='/category/:name/:subcategory' element={<SelectCategory />} />
                 <Route path='/service_center' element={<MapsServices />} />
+                <Route path='/profile' element={<Profile />} />
+                <Route
+                  path='/detail/:id'
+                  element={width < 725 ? <DetailProductMobile /> : <DetailProduct />}
+                />
               </Routes>
               <Footer />
             </>
           }
         />
+        <Route path='/register/:name' element={<Register />} />
         <Route path='/login' element={<Login />} />
         <Route path='admin/client/detail/:id' element={<ViewClientDetail />} />
         <Route path='admin/products/detail/:id' element={<ViewProductDetail />} />
