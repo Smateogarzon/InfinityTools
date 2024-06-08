@@ -8,12 +8,14 @@ import { User } from './entities/user.entity';
 import { LocationService } from '../location/location.service';
 import { CreateLocationInput } from '../location/dto/create-location.input';
 import { IQuery } from './enums/interfaces';
+import { JwtServices } from '@/services/jwt.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private readonly JwtServices: JwtServices
   ) {}
 
   async findAll(numPage: number) {
@@ -48,7 +50,7 @@ export class UsersService {
     try {
       const configPage: number = 2;
       const currentPage = (numPage - 1) * configPage;
-      let query: IQuery = {};
+      const query: IQuery = {};
       if (filter.name) {
         query.completeName = { $regex: filter.name.trim(), $options: 'i' };
       }
@@ -62,7 +64,7 @@ export class UsersService {
         query.gender = filter.gender;
       }
       if (filter.register || filter.city) {
-        let queryBuilder = this.userModel.find(query).populate('location');
+        const queryBuilder = this.userModel.find(query).populate('location');
 
         if (filter.register && !filter.city) {
           const dateOrder = await queryBuilder
@@ -158,7 +160,9 @@ export class UsersService {
     const session = await this.userModel.startSession();
     session.startTransaction();
     try {
-      const user = await this.userModel.findByIdAndUpdate(id, updateUserInput);
+      const jwtId = await this.JwtServices.validateToken(id);
+
+      const user = await this.userModel.findByIdAndUpdate(jwtId.userId, updateUserInput);
       session.commitTransaction();
       return user;
     } catch (error) {

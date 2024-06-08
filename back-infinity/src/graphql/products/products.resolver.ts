@@ -36,6 +36,22 @@ export class ProductsResolver {
       return error;
     }
   }
+  @Query(() => [Product], { name: 'FindDescountProduct' })
+  async findDescount(@Args('filter') filter: string) {
+    try {
+      return await this.productsService.findDescount(filter);
+    } catch (error) {
+      return error;
+    }
+  }
+  @Query(() => [Product], { name: 'FindMoreSales' })
+  async findMoreSales() {
+    try {
+      return await this.productsService.findMoreSales();
+    } catch (error) {
+      return error;
+    }
+  }
   @Mutation(() => Product, { name: 'createProduct' })
   async createProduct(
     @Args({ name: 'image', type: () => GraphQLUpload }) image: Upload,

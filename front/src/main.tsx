@@ -12,6 +12,7 @@ const httpLink = createUploadLink({
   headers: {
     'Apollo-Require-Preflight': 'true',
   },
+  credentials: 'include',
 });
 const client = new ApolloClient({
   cache: new InMemoryCache(),

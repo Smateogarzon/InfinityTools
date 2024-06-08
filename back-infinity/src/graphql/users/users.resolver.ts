@@ -4,7 +4,7 @@ import { User } from './entities/user.entity';
 import { CreateUserInput, FindUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateLocationInput } from '../location/dto/create-location.input';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { JwtServices } from '@/services/jwt.service';
 import { PaginationUser } from './entities/pagination.user';
 
@@ -65,12 +65,13 @@ export class UsersResolver {
     }
   }
 
-  @Mutation(() => User)
+  @Mutation(() => User, { name: 'UpdateUser' })
   async updateUser(
-    @Args('id', { type: () => String }) id: string,
-    @Args('updateUserInput') updateUserInput: UpdateUserInput
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+    @Context('req') req: Request
   ) {
     try {
+      const id = req.cookies['session'];
       return await this.usersService.update(id, updateUserInput);
     } catch (error) {
       throw error;

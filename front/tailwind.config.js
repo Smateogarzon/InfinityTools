@@ -13,6 +13,7 @@ export default {
       md: '769px',
       lgm: '920px',
       lg: '1024px',
+      xlg: '1160px',
       xl: '1280px',
       '2xl': '1536px',
     },
@@ -89,6 +90,7 @@ export default {
         low: '#1C1914',
       },
       Red: '#FF0000',
+      blue: '#1DCAF1',
     },
   },
   plugins: [

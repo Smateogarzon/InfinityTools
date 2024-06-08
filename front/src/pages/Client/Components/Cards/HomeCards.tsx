@@ -3,74 +3,41 @@ import HomeCard from '../Card/HomeCard';
 import HomeCardsMovile from './HomeCardsMovile';
 
 interface Data {
-  title: string;
-  brand: string;
-  rating: number;
-  price: number;
-  image: string;
+  _id: string;
+  name: string;
+  brand: {
+    name: string;
+  };
+  referencePrice: number;
+  sellingPrice: number;
+  picture: string;
+  NumberReviews: number;
 }
 
-function HomeCards({ title }: { title: string }) {
+function HomeCards({
+  title,
+  data,
+  descount,
+}: {
+  title: string;
+  data: Array<Data>;
+  descount: boolean;
+}) {
   const [width, setWidth] = useState<number>(window.innerWidth);
   useEffect(() => {
     setWidth(window.innerWidth);
   }, [window.innerWidth]);
-
-  const arrayOfCards: Array<Data> = [
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-    {
-      brand: 'Bosch Herramientas',
-      title: 'PULIDORA INALÁMBRICA BOSCH GWS 180-LI 18V SIN SATERIA',
-      rating: 4,
-      price: 175000,
-      image: 'https://http2.mlstatic.com/D_NQ_NP_932141-MLU72756927398_112023-O.webp',
-    },
-  ];
 
   return (
     <div className='my-[50px]'>
       <h4 className='text-3xl text-bright-sun-600 text-center italic'>{title.toUpperCase()}</h4>
 
       <div className='flex flex-wrap justify-center w-full gap-3 smm: max-w-[1000px] mx-auto'>
-        {arrayOfCards.map((data, i) => {
+        {data?.map((data) => {
           return width > 599 ? (
-            <HomeCard key={i} data={data} />
+            <HomeCard key={data._id} data={data} descount={descount} />
           ) : (
-            <HomeCardsMovile key={i} data={data} />
+            <HomeCardsMovile key={data._id} data={data} descount={descount} />
           );
         })}
       </div>

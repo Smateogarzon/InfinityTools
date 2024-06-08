@@ -30,11 +30,18 @@ export class Auth {
         user.email = createUser.email;
         user.firtsName = createUser.familyName;
         user.picture = createUser.photo;
+        user.completeName = `${createUser.familyName}`;
         await user.save();
+      } else {
+        if (user.rol === 'USER') {
+          await session.commitTransaction();
+          return { user, userExist: true };
+        }
+        throw new Error('logueate por inicio de sesion mayorista');
       }
       if (user.rol === 'USER') {
         await session.commitTransaction();
-        return user;
+        return { user, userExist: false };
       } else {
         throw new Error('logueate por inicio de sesion mayorista');
       }

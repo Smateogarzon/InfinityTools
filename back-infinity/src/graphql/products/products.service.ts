@@ -121,7 +121,47 @@ export class ProductsService {
       return error;
     }
   }
+  async findDescount(filter: string) {
+    try {
+      if (filter === '') {
+        const products = await this.productModel.find().populate('brand');
+        const productsFiltered = products
+          .filter((e) => e.referencePrice && e.referencePrice !== null)
+          .sort((a, b) => {
+            const priceA = ((a.referencePrice - a.sellingPrice) / a.referencePrice) * 100;
+            const priceB = ((b.referencePrice - b.sellingPrice) / b.referencePrice) * 100;
+            return priceB - priceA;
+          });
+        return productsFiltered;
+      } else {
+        const products = await this.productModel.find().populate('brand');
+        const productsFiltered = products
+          .filter((e) => e.referencePrice && e.referencePrice !== null)
+          .sort((a, b) => {
+            const priceA = ((a.referencePrice - a.sellingPrice) / a.referencePrice) * 100;
+            const priceB = ((b.referencePrice - b.sellingPrice) / b.referencePrice) * 100;
+            return priceB - priceA;
+          })
+          .splice(0, 8);
 
+        return productsFiltered;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+  async findMoreSales() {
+    try {
+      const products = await this.productModel.find().populate('brand');
+      const productsFiltered = products
+        .sort((a, b) => {
+          return b.salesNumber - a.salesNumber;
+        })
+        .splice(0, 8);
+
+      return productsFiltered;
+    } catch (error) {}
+  }
   async filters(filter: Filters) {
     try {
       const filterQuery: IFilterProducts = {};

@@ -16,13 +16,26 @@ export class AppController {
   handleCallback(@Req() req: Request, @Res() res: Response) {
     try {
       const user = req.user;
-      res.cookie('session', user, {
-        httpOnly: true,
-        maxAge: 3600000,
-        sameSite: 'none',
-        secure: true,
-      });
-      res.redirect(`${process.env.FRONTEND_URL}/?auth=google`);
+      const jwt = user['jwt'];
+      const userExist = user['userExist'];
+      const name = user['name'];
+      if (userExist) {
+        res.cookie('session', jwt, {
+          httpOnly: true,
+          maxAge: 3600000,
+          sameSite: 'none',
+          secure: true,
+        });
+        res.redirect(`${process.env.FRONTEND_URL}/?auth=google`);
+      } else {
+        res.cookie('session', jwt, {
+          httpOnly: true,
+          maxAge: 3600000,
+          sameSite: 'none',
+          secure: true,
+        });
+        res.redirect(`${process.env.FRONTEND_URL}/register/${name}`);
+      }
     } catch (error) {
       res.status(404).send('Not Found');
     }
