@@ -25,9 +25,9 @@ function HomeCardsMovile({ data, descount }: { data: Data; descount: boolean }) 
       </Link>
 
       {/* Card info */}
-      <Link to={`/detail/${data._id}`}>
+      <Link to={`/detail/${data._id}`} className='text-zeus-50'>
         <div className='bg-Black-full  p-2 flex flex-col items-center text-center text-base'>
-          <p className='font-semibold text-bright-sun-50'>
+          <p className='font-semibold text-bright-sun-50 text-sm'>
             {data.name.substring(0, 30).toUpperCase()}...
           </p>
           <span className='line-clamp-1'>{data.brand.name}</span>
