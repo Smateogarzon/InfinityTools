@@ -21,6 +21,7 @@ import { FacebookStrategy } from './config/facebookStrategi';
 import { ProductsModule } from './graphql/products/products.module';
 import { BrandsModule } from './graphql/brands/brands.module';
 import { CategoryModule } from './graphql/category/category.module';
+import { ShoppingCartModule } from './graphql/shopping-cart/shopping-cart.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { CategoryModule } from './graphql/category/category.module';
     ProductsModule,
     BrandsModule,
     CategoryModule,
+    ShoppingCartModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     PassportModule.register({ session: true }),
   ],

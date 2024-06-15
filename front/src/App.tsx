@@ -25,9 +25,14 @@ import Register from './pages/Client/View/Login&Register/Register';
 import Profile from './pages/Client/View/profile/profile';
 import DetailProduct from './pages/Client/View/detail/detail';
 import DetailProductMobile from './pages/Admin/View/AdminProducts/components/products/detailProductMobile';
+import { useAppDispatch, useAppSelector } from './store';
+import { cartUser } from './store/thukns/auth.thuks';
+import Cart from './pages/Client/View/cart/cart';
 
 function App() {
+  const { rol } = useAppSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const dispatchAsync = useAppDispatch();
   const query = useLocation().search;
   const [width, setWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -42,6 +47,12 @@ function App() {
       }
     })();
   }, [dispatch, query]);
+
+  useEffect(() => {
+    if (rol !== '') {
+      dispatchAsync(cartUser());
+    }
+  }, [rol, dispatchAsync]);
 
   return (
     <>
@@ -71,6 +82,7 @@ function App() {
                   path='/detail/:id'
                   element={width < 725 ? <DetailProductMobile /> : <DetailProduct />}
                 />
+                <Route path='/cart/:id?' element={<Cart />} />
               </Routes>
               <Footer />
             </>

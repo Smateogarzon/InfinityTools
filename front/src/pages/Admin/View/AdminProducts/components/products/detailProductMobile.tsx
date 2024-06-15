@@ -1,5 +1,5 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import animation from '../../../../../../assets/Animation - 1714697021815.json';
 import Lottie from 'lottie-react';
@@ -14,6 +14,11 @@ import Sets from '../../../../../../components/sets/sets';
 import SumaryReviews from '../../../../../../components/reviews/summaryReviews';
 import Reviews from '../../../../../../components/reviews/reviews';
 import { CSSTransition } from 'react-transition-group';
+import { Bounce, toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../../../../../store';
+import { IProducts } from './interface';
+import { addShoppingCart } from '../../../../../Client/View/detail/graphql/query';
+import { addItemsCart } from '../../../../../../store/slices/auth.slice';
 const inicialDescription: Idescription = {
   dimensiones: {
     Alto: undefined,
@@ -50,6 +55,9 @@ function DetailProductMobile() {
   const [width, setWidth] = useState<number>(window.innerWidth);
   const { id } = useParams();
   const location = useLocation();
+  const [cart] = useMutation(addShoppingCart);
+  const dispatchAsync = useAppDispatch();
+
   const [getProduct, { data, loading }] = useLazyQuery(getProductById);
   const [pictures, setPictures] = useState<string[]>([]);
   const [showImg, setShowImg] = useState<string>('');
@@ -58,9 +66,12 @@ function DetailProductMobile() {
   const [randomDescription, setRandomDescription] = useState<(string | undefined)[]>([]);
   const [showReviews, setShowReviews] = useState<boolean>(false);
   const [selling, setSelling] = useState<boolean>(false);
-  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [totalProducts, setTotalProducts] = useState<number>(1);
+  const { rol, infoCart } = useAppSelector((state) => state.auth);
+
   useEffect(() => {
     setWidth(window.innerWidth);
+    window.scrollTo(0, 0);
   }, [width]);
   useEffect(() => {
     if (location.pathname === `/detail/${id}`) setSelling(true);
@@ -73,7 +84,6 @@ function DetailProductMobile() {
     setShowImg(data?.FindOneproduct?.picture);
     setDescription(JSON.parse(data?.FindOneproduct?.description || '{}'));
   }, [data, getProduct]);
-  /*eslint-enable*/
   useEffect(() => {
     if (pictures.length > 1) {
       const baseHeight = 310 / pictures.length;
@@ -81,6 +91,8 @@ function DetailProductMobile() {
       setHImg(`${heightWithOffset}px`);
     }
   }, [pictures.length]);
+  /*eslint-enable*/
+
   useEffect(() => {
     const arrayVal = [];
     if (!description.dimensiones || !description.especificaciones) return;
@@ -107,14 +119,85 @@ function DetailProductMobile() {
       setRandomDescription(arrayVal);
     }
   }, [description]);
+  const notify = () =>
+    toast.warn('Tienes que iniciar sesión para agregar un producto', {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
+  const notifyDisable = () =>
+    toast.warn('El producto ya se encuentra en tu carrito, modificalo en tu carrito', {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
+  const notifyError = () =>
+    toast.warn('Hubo un error al agregar el producto a tu carrito', {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
+  const notifyAddCart = () =>
+    toast.success('Agregado al carrito con exito', {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      transition: Bounce,
+    });
   const handleCountProduct = (current: string) => {
     if (current === 'desc') {
-      if (totalProducts > 0) setTotalProducts(totalProducts - 1);
+      if (totalProducts > 1) setTotalProducts(totalProducts - 1);
     } else if (current === 'asc') {
       setTotalProducts(totalProducts + 1);
     }
   };
+  const handleAddProduct = async () => {
+    try {
+      // Crear el objeto producto
+      const disable = infoCart.products.some((e: IProducts) => e.idProduct === id);
+      if (disable) {
+        notifyDisable();
+        return;
+      }
+      const newProduct = {
+        idProduct: id,
+        priceProduct: Number(data?.FindOneproduct?.sellingPrice),
+        quantity: totalProducts,
+        total: totalProducts * Number(data?.FindOneproduct?.sellingPrice),
+      };
+      const response = await cart({ variables: { createShoppingCartInput: newProduct } });
 
+      if (response.data?.addProductToCart) {
+        dispatchAsync(addItemsCart(response.data?.addProductToCart));
+      }
+      notifyAddCart();
+    } catch (error) {
+      notifyError();
+    }
+  };
   return (
     <div className='w-full flex justify-center my-3 py-3 pb-10 bg-Black-full px-5 overflow-hidden'>
       {loading ? (
@@ -175,7 +258,7 @@ function DetailProductMobile() {
                 <div className='flex gap-1  items-center'>
                   <div className='flex gap-1'>
                     <button
-                      className='cursor-pointer w-fit px-2 text-lg text-bold bg-blue flex items-center rounded-lg'
+                      className='cursor-pointer w-fit px-2 text-lg text-bold bg-Red flex items-center rounded-lg'
                       onClick={() => handleCountProduct('desc')}>
                       -
                     </button>
@@ -186,12 +269,14 @@ function DetailProductMobile() {
                       value={totalProducts}
                     />
                     <button
-                      className='cursor-pointer w-fit px-2 text-lg text-bold bg-Red flex items-center rounded-lg'
+                      className='cursor-pointer w-fit px-2 text-lg text-bold bg-blue flex items-center rounded-lg'
                       onClick={() => handleCountProduct('asc')}>
                       +
                     </button>
                   </div>
-                  <button className='cursor-pointer w-fit px-2 text-lg text-bold bg-bright-sun-600 flex items-center rounded-lg'>
+                  <button
+                    onClick={() => (rol === '' ? notify() : handleAddProduct())}
+                    className='cursor-pointer w-fit px-2 text-lg text-bold bg-bright-sun-600 flex items-center rounded-lg'>
                     Añadir al carrito
                   </button>
                 </div>
@@ -236,8 +321,10 @@ function DetailProductMobile() {
                 <p className='text-zeus-50 text-lg '>Dimensiones:</p>
                 <div className={styled.description}>
                   {Object.entries(description.dimensiones).map(([key, value]) => (
-                    <div key={key} className='flex items-center'>
-                      <p className='text-Black-full font-bold bg-zeus-200 w-[180px] p-1'>{key}</p>
+                    <div key={key} className='flex items-center '>
+                      <p className='text-Black-full font-bold bg-bright-sun-700 min-w-[160px] p-1 h-full'>
+                        {key}
+                      </p>
                       <p className='text-zeus-50 text-sm pl-2'>{value}</p>
                     </div>
                   ))}
@@ -252,7 +339,7 @@ function DetailProductMobile() {
                   <div className={styled.description}>
                     {Object.entries(description.especificaciones).map(([key, value]) => (
                       <div key={key} className='flex items-center'>
-                        <p className='text-Black-full justify-start font-bold bg-zeus-200 min-w-[180px] p-1 h-full flex items-center '>
+                        <p className='text-Black-full justify-start font-bold bg-bright-sun-700 min-w-[150px] p-1 h-full flex items-center text-sm '>
                           {key.replace(/_/g, ' ')}
                         </p>
                         <p className='text-zeus-50 text-sm text-balance pl-2 '>{value}</p>

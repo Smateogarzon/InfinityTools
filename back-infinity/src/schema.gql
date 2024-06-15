@@ -27,7 +27,7 @@ type User {
   picture: String
   salesHistory: String!
   reviews: String!
-  shoppingCart: String!
+  shoppingCart: String
   orders: String!
   date: DateTime!
   completeName: String
@@ -105,6 +105,25 @@ type ResponseCategory {
   subcategories: [String!]!
 }
 
+type ProductCart {
+  idProduct: String
+  priceProduct: Float
+  quantity: Float
+  total: Float
+}
+
+type ProductsCart {
+  _id: String
+  delited: Boolean
+  totalItems: Float
+  user: User
+  products: [ProductCart!]
+  date: DateTime!
+  status: Boolean!
+  total: Float
+  sendVideo: Boolean!
+}
+
 type Query {
   FindAllusers(numPage: Int!): PaginationUser!
   FindOneuser(id: String!): User!
@@ -121,6 +140,8 @@ type Query {
   allCategories: [Category!]!
   categoryRender: [ResponseCategory!]!
   allSubcategories(id: String!): [Subcategory!]!
+  FindCart: ProductsCart!
+  FindCartById(id: String!): ProductsCart!
 }
 
 input FindUserInput {
@@ -159,6 +180,9 @@ type Mutation {
   removeCategory(id: String!): Category!
   createSubCategory(createCategoryInput: CreateCategoryInput!, id: String!): Category!
   clearSubcategory(id: String!, categoryId: String!): Subcategory!
+  addProductToCart(createShoppingCartInput: CreateShoppingCartInput!): ProductsCart!
+  updateProductToCart(createShoppingCartInput: CreateShoppingCartInput!): ProductsCart!
+  remove(id: String!): ProductsCart!
 }
 
 input CreateUserInput {
@@ -249,4 +273,11 @@ input CreateCategoryInput {
 
 input UpdateCategoryInput {
   name: String
+}
+
+input CreateShoppingCartInput {
+  idProduct: String!
+  priceProduct: Float
+  quantity: Float!
+  total: Float
 }

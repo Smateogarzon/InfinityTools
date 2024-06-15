@@ -83,7 +83,7 @@ export class User {
   reviews: string;
 
   @Prop()
-  @Field()
+  @Field({ nullable: true })
   shoppingCart: string;
 
   @Prop()

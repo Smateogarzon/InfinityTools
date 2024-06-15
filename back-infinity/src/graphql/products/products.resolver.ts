@@ -28,6 +28,7 @@ export class ProductsResolver {
       return error;
     }
   }
+
   @Query(() => [Product], { name: 'FindAllproductsFilter' })
   async filters(@Args('filter') filter: Filters) {
     try {
