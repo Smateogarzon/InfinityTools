@@ -107,7 +107,7 @@ function NavBarDesktop({ navRef, showLogout, logout, sticking, data, loading, er
             className=' hover:text-bright-sun-400 transition font-semibold flex items-center text-bright-sun-600 visited:text-bright-sun-600'>
             <BsCartFill className='h-[25px] w-[25px]' />
           </Link>
-          {idCart !== '' && (
+          {idCart !== '' && infoCart.totalItems && (
             <span
               className='absolute -top-2 right-5 text-sm font-bold rounded-full bg-bright-sun-400 text-zeus-950 min-w-[25px]
             min-h-[25px] flex justify-center items-center'>
