@@ -26,8 +26,9 @@ export class UsersResolver {
   }
 
   @Query(() => User, { name: 'FindOneuser' })
-  async findOne(@Args('id', { type: () => String }) id: string) {
+  async findOne(@Context('req') req: Request) {
     try {
+      const id = req.cookies['session'];
       return await this.usersService.findOne(id);
     } catch (error) {
       throw error;

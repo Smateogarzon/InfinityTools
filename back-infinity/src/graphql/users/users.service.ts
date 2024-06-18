@@ -15,7 +15,7 @@ export class UsersService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
     private locationService: LocationService,
-    private readonly JwtServices: JwtServices
+    private JwtServices: JwtServices
   ) {}
 
   async findAll(numPage: number) {
@@ -36,7 +36,8 @@ export class UsersService {
 
   async findOne(id: string) {
     try {
-      const user = await this.userModel.findById(id).populate('location');
+      const idJwt = await this.JwtServices.validateToken(id);
+      const user = await this.userModel.findById(idJwt.userId).populate('location');
       if (!user) {
         throw new Error('Usuario no encontrado');
       }

@@ -126,7 +126,7 @@ type ProductsCart {
 
 type Query {
   FindAllusers(numPage: Int!): PaginationUser!
-  FindOneuser(id: String!): User!
+  FindOneuser: User!
   FindUserQuery(filter: FindUserInput!, numPage: Int!): PaginationUser!
   LogIn(email: String!, password: String!): User!
   AllLocation: [Location!]!

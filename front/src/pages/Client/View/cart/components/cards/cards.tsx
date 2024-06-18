@@ -54,7 +54,6 @@ function Carts({ products }: { products: IPcart }) {
   const deleteProduct = async () => {
     try {
       const { data } = await dCart({ variables: { id: products._id } });
-      console.log('🚀 ~ deleteProduct ~ data:', data);
       if (data && data.remove && data.remove.delited === false) {
         dispatchAsync(addItemsCart(data.remove));
         notify();
@@ -90,24 +89,24 @@ function Carts({ products }: { products: IPcart }) {
   }, [totalProducts]);
   /* eslint-enable */
   return (
-    <div className='w-full flex justify-center'>
-      <div className='w-[90%]  bg-[#211e1a82] mt-4 flex rounded gap-5 items-center py-2'>
+    <div className='max-h-[180px] mb:max-h-[115px] w-full flex justify-center'>
+      <div className='w-full md:w-[90%]  bg-[#211e1a82] mt-4 flex rounded gap-2 md:gap-5 items-center py-2'>
         <Link to={`/detail/${products._id}`} className='text-zeus-50'>
-          <div className='overflow-hidden flex items-center ml-2 min-w-[120px]'>
+          <div className='overflow-hidden flex items-center ml-2 md:min-w-[120px]'>
             <img
               src={products.picture}
               alt={products.name}
-              className='w-[120px] h-[100px] rounded '
+              className='w-[80px] xs:w-[100px] md:w-[120px] h-[80px] xs:h-[100px] rounded '
             />
           </div>
         </Link>
         <div className=' flex w-full flex-col gap-2 relative'>
-          <h3>{products.brand?.name.toLocaleUpperCase()}</h3>
+          <h3 className='text-base md:text-lg'>{products.brand?.name.toLocaleUpperCase()}</h3>
           <p className='text-sm pr-2'>{products.name}</p>
           <div className='flex flex-col gap-1 lgm:flex-row '>
             <div className='flex  gap-1 items-center'>
               <button
-                className='cursor-pointer w-fit px-2 text-base text-bold bg-Red flex items-center rounded-lg'
+                className='cursor-pointer w-4 h-5 md:h-fit md:w-fit px-2 text-lg md:text-base justify-center text-bold bg-Red flex items-center rounded-lg'
                 onClick={() => {
                   totalProducts > 1 && setTotalProducts(totalProducts - 1);
                 }}>
@@ -122,7 +121,7 @@ function Carts({ products }: { products: IPcart }) {
                 value={totalProducts}
               />
               <button
-                className='cursor-pointer w-fit px-2 text-base text-bold bg-blue flex items-center rounded-lg'
+                className='cursor-pointer  w-4 h-5 md:h-fit md:w-fit px-2 text-base text-bold bg-blue flex items-center rounded-lg justify-center'
                 onClick={() => {
                   setTotalProducts(totalProducts + 1);
                 }}>

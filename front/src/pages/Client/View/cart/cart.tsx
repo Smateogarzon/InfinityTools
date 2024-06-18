@@ -74,18 +74,19 @@ function Cart() {
   }, [infoCart]);
   /*eslint-enable*/
   return (
-    <div className='min-h-[500px] w-full flex justify-center'>
+    <div className='min-h-[800px] w-full flex justify-center'>
       {response.loading ? (
         <Lottie animationData={Animation} loop={true} style={{ width: '320px', height: '320px' }} />
       ) : (
-        <div className='w-[80%] bg-Black-full flex justify-between'>
-          <div className='w-[85%] h-full mb-3'>
+        <div className='w-full md:w-[80%] bg-Black-full flex flex-col md:flex-row justify-between items-center'>
+          <div className='h-full w-full md:w-[85%] md:h-full mb-3'>
             {state.length > 0 &&
               state.map((product) => <Carts key={product._id} products={product} />)}
           </div>
 
-          <div className='h-full w-[2px] bg-bright-sun-100' />
+          <div className='h-[2px] w-full md:h-full md:w-[2px] bg-bright-sun-100' />
           <PayMethos products={infoCart.total} />
+          <div className='h-[2px] w-full md:h-full md:w-[3px] bg-bright-sun-100' />
         </div>
       )}
     </div>

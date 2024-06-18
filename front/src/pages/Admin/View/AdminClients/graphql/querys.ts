@@ -21,6 +21,14 @@ export const getUserById = gql`
     }
   }
 `;
+export const userInfoProfile = gql`
+  ${UserInfoFragment}
+  query FindOneuser {
+    FindOneuser {
+      ...UserInfo
+    }
+  }
+`;
 
 export const getAllLocations = gql`
   query FindAllLocations {
