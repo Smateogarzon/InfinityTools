@@ -105,7 +105,11 @@ export class BannersService {
       if (!deleteImage) {
         throw new Error('la imagen secundaria no pudo ser eliminada');
       }
-      return await this.bannerModel.deleteOne({ name: del.name });
+      const deleteBanner = await this.bannerModel.findOneAndDelete(
+        { name: del.name },
+        { new: true }
+      );
+      return deleteBanner;
     } catch (error) {
       return error;
     }
