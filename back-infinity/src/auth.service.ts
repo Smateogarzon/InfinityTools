@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '@/graphql/users/entities/user.entity';
-import { Emailservice } from './services/funtionsMail.service';
 
 interface IAuth {
   email: string;
@@ -18,10 +17,7 @@ interface IAuthFacebook {
 
 @Injectable()
 export class Auth {
-  constructor(
-    @InjectModel('User') private userModel: Model<User>,
-    private readonly emailService: Emailservice
-  ) {}
+  constructor(@InjectModel('User') private userModel: Model<User>) {}
   async ValidateUser(createUser: IAuth) {
     const session = await this.userModel.startSession();
     session.startTransaction();
@@ -35,7 +31,6 @@ export class Auth {
         user.firtsName = createUser.familyName;
         user.picture = createUser.photo;
         user.completeName = `${createUser.familyName}`;
-        await this.emailService.sendEmail(user.email, user.firtsName);
         await user.save();
       } else {
         if (user.rol === 'USER') {

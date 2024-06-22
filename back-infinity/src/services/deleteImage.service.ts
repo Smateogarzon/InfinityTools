@@ -13,12 +13,14 @@ export default async function deleteImageFromGCS(imageUrl: string): Promise<bool
     }
 
     const bucketName = urlParts[3];
+    console.log('🚀 ~ deleteImageFromGCS ~ bucketName:', bucketName);
     const filePath = decodeURIComponent(urlParts[4]);
 
     const bucket = storage.bucket(bucketName);
     const file = bucket.file(filePath);
 
     await file.delete();
+    console.log(`Image deleted successfully: ${imageUrl}`);
     return true;
   } catch (error) {
     return false;

@@ -124,13 +124,6 @@ type ProductsCart {
   sendVideo: Boolean!
 }
 
-type Banner {
-  _id: String!
-  name: String!
-  picture: String!
-  label: [String!]
-}
-
 type Query {
   FindAllusers(numPage: Int!): PaginationUser!
   FindOneuser: User!
@@ -144,8 +137,6 @@ type Query {
   FindDescountProduct(filter: String!): [Product!]!
   FindMoreSales: [Product!]!
   brands: [Brand!]!
-  Allbanners: [Banner!]!
-  bannerIMG(search: String!): [Banner!]!
   allCategories: [Category!]!
   categoryRender: [ResponseCategory!]!
   allSubcategories(id: String!): [Subcategory!]!
@@ -184,10 +175,6 @@ type Mutation {
   createBrand(createBrandInput: CreateBrandInput!): Brand!
   updateBrand(id: String!, updateBrandInput: UpdateBrandInput!): Brand!
   deleteBrand(id: String!): Brand!
-  createBanner(createBannerInput: CreateBannerInput!, image: Upload!): Banner!
-  updateBanner(updateBannerInput: CreateBannerInput!): Banner!
-  removeBanner(updateBannerInput: CreateBannerInput!): Banner!
-  deleteBanner(updateBannerInput: CreateBannerInput!): Banner!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(id: String!, updateCategoryInput: UpdateCategoryInput!): Category!
   removeCategory(id: String!): Category!
@@ -278,12 +265,6 @@ input CreateBrandInput {
 
 input UpdateBrandInput {
   name: String!
-}
-
-input CreateBannerInput {
-  name: String
-  label: String
-  only: Boolean
 }
 
 input CreateCategoryInput {

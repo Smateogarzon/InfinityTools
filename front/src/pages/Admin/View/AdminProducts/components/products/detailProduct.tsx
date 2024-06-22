@@ -84,7 +84,7 @@ function DetailProduct() {
     setPictures([data?.FindOneproduct?.picture, ...temPictures]);
     setShowImg(data?.FindOneproduct?.picture);
     setDescription(JSON.parse(data?.FindOneproduct?.description || '{}'));
-  }, [data, getProduct, id]);
+  }, [data, getProduct]);
   useEffect(() => {
     if (pictures.length > 1) {
       if (width > 1159) {

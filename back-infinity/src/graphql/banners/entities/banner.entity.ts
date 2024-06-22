@@ -8,8 +8,6 @@ export type BannerDocument = HydratedDocument<Banner>;
 @Schema()
 @ObjectType()
 export class Banner {
-  @Field()
-  _id: string;
   @Prop()
   @Field()
   @IsString()
@@ -20,10 +18,6 @@ export class Banner {
   @Field()
   @IsUrl()
   picture: string;
-
-  @Prop()
-  @Field(() => [String], { nullable: true })
-  label: string[];
 }
 
 export const BannerSchema = SchemaFactory.createForClass(Banner);
