@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import banner from '../../../../assets/banner1.jpg';
 import SearchBar from '../SearchBar/SearchBar';
 import { findImg } from '../../../Admin/View/AdminBannersPublics/graphql/query';
 import { useEffect, useState } from 'react';
@@ -10,7 +9,7 @@ export default function SearchBanner() {
       search: 'Banner principal Home',
     },
   });
-  const [img, setImg] = useState(banner);
+  const [img, setImg] = useState('');
 
   useEffect(() => {
     if (data) setImg(data?.bannerIMG[0]?.picture);
