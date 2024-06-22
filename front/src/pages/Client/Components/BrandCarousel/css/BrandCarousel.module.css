@@ -1,6 +1,6 @@
 .slider {
   animation-name: brand-carousel;
-  animation-duration: 25s;
+  animation-duration: 50s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }

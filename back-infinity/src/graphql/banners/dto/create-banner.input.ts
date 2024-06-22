@@ -1,7 +1,13 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateBannerInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field({ nullable: true })
+  name: string;
+
+  @Field({ nullable: true })
+  label: string;
+
+  @Field({ nullable: true })
+  only: boolean;
 }

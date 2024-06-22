@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EmailService } from './services/emailSend.service';
+import { Emailservice } from './services/funtionsMail.service';
 import { NodemailerConfigService } from './config/email.config';
 import { JwtModule } from '@nestjs/jwt';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -22,6 +22,7 @@ import { ProductsModule } from './graphql/products/products.module';
 import { BrandsModule } from './graphql/brands/brands.module';
 import { CategoryModule } from './graphql/category/category.module';
 import { ShoppingCartModule } from './graphql/shopping-cart/shopping-cart.module';
+import { BannersModule } from './graphql/banners/banners.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ShoppingCartModule } from './graphql/shopping-cart/shopping-cart.module
     LocationModule,
     ProductsModule,
     BrandsModule,
+    BannersModule,
     CategoryModule,
     ShoppingCartModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
@@ -62,9 +64,9 @@ import { ShoppingCartModule } from './graphql/shopping-cart/shopping-cart.module
   ],
   controllers: [AppController],
   providers: [
-    AppService,
-    EmailService,
     NodemailerConfigService,
+    Emailservice,
+    AppService,
     JwtServices,
     GoogleStrategyConfig,
     SerealizerG,

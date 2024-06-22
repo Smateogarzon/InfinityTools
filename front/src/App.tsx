@@ -9,7 +9,6 @@ import ViewBannersPublics from './pages/Admin/View/AdminBannersPublics/ViewBanne
 import ViewSeoAndMetadata from './pages/Admin/View/AdminSeoAndMetadata/ViewSeoAndMetadata';
 import ViewMailing from './pages/Admin/View/AdminMailing/ViewMailing';
 import ViewPartners from './pages/Admin/View/AdminPartners/ViewPartners';
-import ViewBanners from './pages/Admin/View/AdminBanners/ViewBanners';
 import NavAdmin from './pages/Admin/Components/NavAdmin/NavAdmin';
 import Home from './pages/Client/View/Home/Home';
 import Login from './pages/Client/View/Login&Register/login';
@@ -107,7 +106,6 @@ function App() {
                 <Route path='/seoAndMetadata' element={<ViewSeoAndMetadata />} />
                 <Route path='/admin/mailing' element={<ViewMailing />} />
                 <Route path='/partners' element={<ViewPartners />} />
-                <Route path='/banners' element={<ViewBanners />} />
               </Routes>
             </>
           }

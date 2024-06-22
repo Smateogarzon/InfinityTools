@@ -93,13 +93,6 @@ function NavAdmin() {
             Asociados
           </Link>
         </li>
-        <li
-          className={`text-zeus-50 cursor-pointer ${selectedOption === 'Banner' ? 'bg-bright-sun-600 py-2 w-full' : ''} py-2 px-4`}
-          onClick={() => handleOptionClick('Banner')}>
-          <Link to='/admin/banners' className='pr-[200px] py-2 text-zeus-50'>
-            Banner
-          </Link>
-        </li>
       </ul>
     </nav>
   );
