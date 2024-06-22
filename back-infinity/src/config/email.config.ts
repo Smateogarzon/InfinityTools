@@ -10,8 +10,8 @@ export class NodemailerConfigService {
   private readonly password: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.email = this.configService.get<string>('EMAIL');
-    this.password = this.configService.get<string>('EMAIL_PASSWORD');
+    this.email = this.configService.get<string>('GOOGLE_EMAIL');
+    this.password = this.configService.get<string>('GOOGLE_PASS');
   }
 
   createTransporter(): nodemailer.Transporter {

@@ -1,27 +1,36 @@
-import React, { useEffect, CSSProperties } from 'react';
+import { useEffect, CSSProperties, useState } from 'react';
 import { useSnapCarousel } from 'react-snap-carousel';
+/*eslint-disable*/
 
-import bannerDos from '../../../../assets/banner2.jpg';
-import bannerTres from '../../../../assets/banner3.jpg';
-import bannerCuatro from '../../../../assets/banner4.jpg';
-
-const Carousel: React.FC = () => {
-  const { scrollRef, snapPointIndexes, pages, goTo, activePageIndex } = useSnapCarousel();
-
-  const url: string[] = [bannerDos, bannerTres, bannerCuatro];
+function Carousel({ data }: any) {
+  const { scrollRef, snapPointIndexes, pages, goTo, activePageIndex, refresh } = useSnapCarousel();
+  const [url, setUrl] = useState<string[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const nextIndex = (activePageIndex + 1) % url.length;
-      goTo(nextIndex);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [goTo, activePageIndex, url.length]);
+    if (data && data.length > 0) {
+      const newUrls = data.map((item: any) => item?.picture);
+      setUrl(newUrls);
+    }
+  }, [data, refresh]);
 
+  useEffect(() => {
+    if (url.length > 0) {
+      const interval = setInterval(() => {
+        const nextIndex = (activePageIndex + 1) % url.length;
+        goTo(nextIndex);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [activePageIndex, url, goTo]);
+  useEffect(() => {
+    if (url.length > 0) {
+      refresh();
+    }
+  }, [url, refresh]);
   const styles: {
-    root: CSSProperties; // Asegúrate de añadir CSSProperties para indicar que es un objeto de estilos
-    scroll: CSSProperties; // También aquí
-    controls: CSSProperties; // Aquí y en todas las demás propiedades de estilo que sean objetos
+    root: CSSProperties;
+    scroll: CSSProperties;
+    controls: CSSProperties;
     nextPrevButtonDisabled: CSSProperties;
     paginationButton: CSSProperties;
     paginationButtonActive: CSSProperties;
@@ -96,6 +105,6 @@ const Carousel: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Carousel;

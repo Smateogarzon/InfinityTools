@@ -37,7 +37,9 @@ export const client = new ApolloClient({
 const rootElement = document.getElementById('root');
 
 if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(
+  const root = ReactDOM.createRoot(rootElement);
+
+  root.render(
     <CustomStore>
       <ApolloProvider client={client}>
         <BrowserRouter>
