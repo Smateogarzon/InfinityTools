@@ -6,16 +6,25 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class Emailservice {
   private transporter: nodemailer.Transporter;
-  private readonly API_URL: string;
   private readonly GOOGLE_EMAIL: string;
 
   constructor(
     private readonly nodemailerConfigService: NodemailerConfigService,
     private readonly configService: ConfigService
   ) {
-    this.transporter = this.nodemailerConfigService.createTransporter();
     this.GOOGLE_EMAIL = this.configService.get<string>('GOOGLE_EMAIL');
+    this.initializeTransporter();
   }
+  private async initializeTransporter() {
+    try {
+      this.transporter = await this.nodemailerConfigService.createTransporter();
+      console.log('Transporter inicializado correctamente');
+    } catch (error) {
+      console.error('Error al inicializar el transporter:', error);
+      throw new Error('No se pudo inicializar el transporter de nodemailer');
+    }
+  }
+
   async sendEmail(email: string, name: string) {
     const image = 'https://storage.googleapis.com/pictures_infinity/logo.png';
     const mailOptions = {
@@ -138,8 +147,11 @@ export class Emailservice {
       ],
     };
     try {
-      await this.transporter.sendMail(mailOptions);
-      console.log('Correo enviado correctamente');
+      if (!this.transporter) {
+        throw new Error('El transporter de nodemailer no está inicializado');
+      }
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Correo enviado correctamente:', info.messageId);
     } catch (error) {
       console.error(`Error al enviar email: ${error.message}`);
     }
